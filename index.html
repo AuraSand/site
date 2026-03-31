@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraSand 灵动沙漏 - 沉浸式 3D 艺术专注计时器</title>
+    <meta name="description" content="绝美3D质感动態沙漏，陪伴您的沉浸专注时刻。多款精美艺术主题，让时间流动成艺术。">
+    <!-- 引入思源黑体，增加高级感 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #D94814; /* 提取自你截图中的倒计时橙红色 */
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); /* 梦幻渐变背景 */
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --text-main: #2D3748;
+            --text-light: #4A5568;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 导航栏 */
+        nav {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            letter-spacing: 1px;
+        }
+
+        /* 首屏布局 */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 5%;
+            min-height: 80vh;
+        }
+
+        .hero-text {
+            flex: 1;
+            max-width: 500px;
+            animation: fadeUp 1s ease-out;
+        }
+
+        .hero-text h1 {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .hero-text p {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        /* 下载区域 */
+        .download-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .play-badge img {
+            height: 60px;
+            transition: transform 0.3s ease;
+        }
+
+        .play-badge:hover img {
+            transform: translateY(-3px);
+        }
+
+        .qr-box {
+            background: #fff;
+            padding: 8px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .qr-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+        }
+        
+        .qr-text {
+            font-size: 10px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* 右侧手机模型 */
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .phone-mockup {
+            width: 320px;
+            border-radius: 40px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            border: 8px solid rgba(255,255,255,0.8);
+            /* 这里引用你的长截图 */
+            content: url('screenshot.png'); 
+            object-fit: cover;
+            background: #fff;
+        }
+
+        /* 卖点特性区域 */
+        .features {
+            max-width: 1200px;
+            margin: 50px auto 100px;
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--primary-color);
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* 底部版权 */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+        }
+
+        footer a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        /* 动画定义 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 响应式设计 (手机端适配) */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 20px;
+            }
+            .hero-text h1 { font-size: 36px; }
+            .download-area {
+                justify-content: center;
+                flex-direction: column;
+                margin-bottom: 40px;
+            }
+            .phone-mockup { width: 280px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航栏 -->
+    <nav>
+        <div class="logo">AuraSand</div>
+    </nav>
+
+    <!-- 首屏介绍 -->
+    <section class="hero">
+        <div class="hero-text">
+            <h1>让时间，<br>流动成艺术。</h1>
+            <p>告别枯燥的数字。绝美 3D 质感动态沙漏，配合专属深海白噪音，为您打造零干扰的沉浸式专注空间。每一次翻转，都是一场视觉与心灵的疗愈。</p>
+            
+            <div class="download-area">
+                <!-- Google Play 下载按钮 -->
+                <a href="https://play.google.com/store/apps/details?id=com.siteflare.hourglass" target="_blank" class="play-badge">
+                    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/zh-cn_badge_web_generic.png" alt="Get it on Google Play">
+                </a>
+                
+                <!-- 扫码下载区域 (需在同级目录放入 qrcode.png) -->
+                <div class="qr-box">
+                    <img src="qrcode.png" alt="扫码下载 AuraSand" onerror="this.style.display='none'">
+                    <span class="qr-text">扫码获取</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <!-- 手机截图展示 (需在同级目录放入 screenshot.png) -->
+            <div class="phone-mockup"></div>
+        </div>
+    </section>
+
+    <!-- 核心特性 -->
+    <section class="features">
+        <div class="feature-card">
+            <h3>🎨 3D 数字潮玩</h3>
+            <p>从梦幻独角兽到晶莹鲸鱼，收集风格各异的精美艺术沙漏，打造专属桌面美学。</p>
+        </div>
+        <div class="feature-card">
+            <h3>🧘 极致沉浸心流</h3>
+            <p>开启 Zen 模式，UI 智能隐退。让视觉完全聚焦于流动的沙砾，告别一切干扰。</p>
+        </div>
+        <div class="feature-card">
+            <h3>🎶 全方位感官体验</h3>
+            <p>专属高品质背景白噪音，配合细腻的交互震动与动画特效，让专注充满仪式感。</p>
+        </div>
+        <div class="feature-card">
+            <h3>⏳ 灵活时间掌控</h3>
+            <p>1-999 分钟随心设定，智能记录您的专属习惯。支持锁屏通知与后台精确运行。</p>
+        </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer>
+        <p>© 2026 AuraSand. All rights reserved.</p>
+        <div style="margin-top: 10px;">
+            <a href="https://play.google.com/store/apps/details?id=com.siteflare.hourglass" target="_blank">Google Play</a>
+            <!-- 此处可添加隐私政策链接 -->
+            <a href="https://luyiwind.github.io/Hourglass-privacy/">Privacy Policy</a> 
+            <a href="mailto:luyiuestc@gmail.com">Contact Us</a>
+        </div>
+    </footer>
+
+</body>
+</html>
