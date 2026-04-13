@@ -274,9 +274,8 @@
         function toggleVideo(type) {
             player.pause();
             viewport.className = 'video-viewport ' + type;
-            viewport.style.display = 'flex'; // 1. 先让容器在页面上占据空间
+            viewport.style.display = 'flex';
         
-            // 2. 核心修复：给 Edge 一点反应时间，确保渲染窗口已创建再加载视频
             setTimeout(() => {
                 player.src = sources[type];
                 player.load();
@@ -286,10 +285,11 @@
                     player.volume = 0.5;
                     player.play().catch(() => {});
                     player.oncanplay = null;
+                    
+                    // ✅ 移到这儿：确保视频加载、容器展开后再滚动
+                    viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 };
-            }, 50); 
-        
-            viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 50);
         }
 
         function hideVideo() {
