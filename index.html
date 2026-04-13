@@ -74,6 +74,7 @@
             object-fit: contain; 
             will-change: transform;
             transform: translateZ(0);
+            backface-visibility: hidden;
             -webkit-transform: translateZ(0);
         }
 
@@ -271,27 +272,23 @@
         const player = document.getElementById('player');
 
         function toggleVideo(type) {
-            // 核心修复逻辑：先停止，确保容器显示后再挂载 src，并强制跳转首帧唤醒 Edge 渲染器
             player.pause();
             viewport.className = 'video-viewport ' + type;
-            viewport.style.display = 'flex'; // 先显示容器
-
-            player.src = sources[type]; // 再挂载资源
-            player.load();
-
-            // 监听元数据加载：强制踢一脚到 0.1s 解决黑屏
-            player.onloadedmetadata = () => {
-                player.currentTime = 0.1; 
-            };
-
-            // 监听就绪状态：正式播放
-            player.oncanplay = () => {
-                player.muted = false;
-                player.volume = 0.5;
-                player.play().catch(e => console.log("Playback interaction required"));
-                player.oncanplay = null;
-            };
-
+            viewport.style.display = 'flex'; // 1. 先让容器在页面上占据空间
+        
+            // 2. 核心修复：给 Edge 一点反应时间，确保渲染窗口已创建再加载视频
+            setTimeout(() => {
+                player.src = sources[type];
+                player.load();
+                
+                player.oncanplay = () => {
+                    player.muted = false;
+                    player.volume = 0.5;
+                    player.play().catch(() => {});
+                    player.oncanplay = null;
+                };
+            }, 50); 
+        
             viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
