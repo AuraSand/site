@@ -68,11 +68,13 @@
         .video-viewport.vertical video { height: 70vh; width: auto; max-width: 90vw; }
         .video-viewport.horizontal video { width: 90vw; max-width: 900px; height: auto; }
         
-        /* 核心修复：添加 transform 强制开启 GPU 渲染层 */
+        /* 核心修复：will-change 和 translateZ 强制唤醒 Edge GPU 渲染层 */
         video { 
             display: block; 
             object-fit: contain; 
-            transform: translateZ(0); 
+            will-change: transform;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
         }
 
         .video-close-btn {
@@ -149,8 +151,7 @@
         </div>
         <div id="videoViewport" class="video-viewport">
             <div class="video-container">
-                <!-- 核心修复：去掉了内部空的 source 标签 -->
-                <video id="player" playsinline loop preload="metadata"></video>
+                <video id="player" playsinline loop preload="auto"></video>
             </div>
             <button class="video-close-btn" onclick="hideVideo()" data-i18n="closeVid">Close Demo ✕</button>
         </div>
@@ -270,18 +271,25 @@
         const player = document.getElementById('player');
 
         function toggleVideo(type) {
-            // 核心修复：等渲染层就绪后再播放
+            // 核心修复逻辑：先停止，确保容器显示后再挂载 src，并强制跳转首帧唤醒 Edge 渲染器
             player.pause();
-            player.src = sources[type];
             viewport.className = 'video-viewport ' + type;
-            viewport.style.display = 'flex';
-            
+            viewport.style.display = 'flex'; // 先显示容器
+
+            player.src = sources[type]; // 再挂载资源
             player.load();
+
+            // 监听元数据加载：强制踢一脚到 0.1s 解决黑屏
+            player.onloadedmetadata = () => {
+                player.currentTime = 0.1; 
+            };
+
+            // 监听就绪状态：正式播放
             player.oncanplay = () => {
                 player.muted = false;
                 player.volume = 0.5;
-                player.play().catch(e => console.log("Playback error"));
-                player.oncanplay = null; // 避免重复触发
+                player.play().catch(e => console.log("Playback interaction required"));
+                player.oncanplay = null;
             };
 
             viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -290,6 +298,7 @@
         function hideVideo() {
             viewport.style.display = 'none';
             player.pause();
+            player.src = ""; // 彻底卸载，防止后台占用渲染层
         }
 
         function changeLanguage(langCode) {
