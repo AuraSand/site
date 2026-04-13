@@ -1,18 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN"> <!-- 默认语言标签将由 JS 动态更改 -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AuraSand 灵动沙漏 - 沉浸式 3D 艺术专注计时器</title>
-    <!-- ⬇️ 新增这一行：添加 Favicon ⬇️ -->
+    <title data-i18n="pageTitle">AuraSand 灵动沙漏 - 沉浸式 3D 艺术专注计时器</title>
     <link rel="icon" type="image/png" href="logo.png">
     <meta name="description" content="绝美3D质感动態沙漏，陪伴您的沉浸专注时刻。多款精美艺术主题，让时间流动成艺术。">
-    <!-- 引入思源黑体，增加高级感 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- 引入思源黑体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #D94814; /* 提取自你截图中的倒计时橙红色 */
-            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); /* 梦幻渐变背景 */
+            --primary-color: #D94814;
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
             --glass-bg: rgba(255, 255, 255, 0.6);
             --glass-border: rgba(255, 255, 255, 0.4);
             --text-main: #2D3748;
@@ -23,7 +22,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Noto Sans SC', sans-serif;
+            /* 字体栈包含中日英韩 */
+            font-family: 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans KR', sans-serif;
         }
 
         body {
@@ -33,7 +33,7 @@
             overflow-x: hidden;
         }
 
-        /* 导航栏 */
+        /* 导航栏 & 语言切换 */
         nav {
             padding: 20px 5%;
             display: flex;
@@ -48,6 +48,19 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
             letter-spacing: 1px;
         }
+
+        .lang-selector {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 20px;
+            outline: none;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+        }
+        .lang-selector option { color: #000; }
 
         /* 首屏布局 */
         .hero {
@@ -94,10 +107,7 @@
             height: 60px;
             transition: transform 0.3s ease;
         }
-
-        .play-badge:hover img {
-            transform: translateY(-3px);
-        }
+        .play-badge:hover img { transform: translateY(-3px); }
 
         .qr-box {
             background: #fff;
@@ -109,18 +119,8 @@
             align-items: center;
             animation: fadeIn 1.5s ease-out;
         }
-
-        .qr-box img {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-        }
-        
-        .qr-text {
-            font-size: 10px;
-            color: #888;
-            margin-top: 4px;
-        }
+        .qr-box img { width: 80px; height: 80px; border-radius: 8px; }
+        .qr-text { font-size: 10px; color: #888; margin-top: 4px; }
 
         /* 右侧手机模型 */
         .hero-image {
@@ -136,10 +136,62 @@
             border-radius: 40px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.2);
             border: 8px solid rgba(255,255,255,0.8);
-            /* 这里引用你的长截图 */
             content: url('screenshot.png'); 
             object-fit: cover;
             background: #fff;
+        }
+
+        /* 视频展示区 */
+        .video-showcase {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 5%;
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .video-title {
+            color: rgba(255,255,255,0.9);
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        /* 竖屏视频（带手机壳） */
+        .video-vertical-wrapper {
+            width: 260px;
+            height: 562px; /* 约 16:9 比例 */
+            border-radius: 36px;
+            border: 8px solid rgba(255,255,255,0.9);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            background: #000;
+        }
+        
+        /* 横屏视频（圆角阴影） */
+        .video-horizontal-wrapper {
+            width: 560px;
+            height: 315px;
+            border-radius: 20px;
+            border: 4px solid rgba(255,255,255,0.6);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            background: #000;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* 卖点特性区域 */
@@ -148,7 +200,7 @@
             margin: 50px auto 100px;
             padding: 0 5%;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
         }
 
@@ -200,31 +252,25 @@
             50% { transform: translateY(-20px); }
             100% { transform: translateY(0px); }
         }
-
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        /* 响应式设计 (手机端适配) */
-        @media (max-width: 768px) {
-            .hero {
-                flex-direction: column;
-                text-align: center;
-                padding-top: 20px;
-            }
+        /* 响应式设计 */
+        @media (max-width: 850px) {
+            .hero { flex-direction: column; text-align: center; padding-top: 20px; }
             .hero-text h1 { font-size: 36px; }
-            .download-area {
-                justify-content: center;
-                flex-direction: column;
-                margin-bottom: 40px;
-            }
+            .download-area { justify-content: center; flex-direction: column; margin-bottom: 40px; }
             .phone-mockup { width: 280px; }
+            
+            /* 手机端视频区改成堆叠显示 */
+            .video-showcase { flex-direction: column; gap: 30px; }
+            .video-horizontal-wrapper { width: 100%; height: auto; aspect-ratio: 16/9; }
         }
     </style>
 </head>
@@ -233,51 +279,89 @@
     <!-- 导航栏 -->
     <nav>
         <div class="logo">AuraSand</div>
+        <!-- 语言切换器：新增简体中文 -->
+        <select class="lang-selector" id="langSwitcher" onchange="changeLanguage(this.value)">
+            <option value="zh-CN">简体中文</option>
+            <option value="en">English</option>
+            <option value="zh-TW">繁體中文</option>
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+        </select>
     </nav>
 
     <!-- 首屏介绍 -->
     <section class="hero">
         <div class="hero-text">
-            <h1>让时间，<br>流动成艺术。</h1>
-            <p>告别枯燥的数字。绝美 3D 质感动态沙漏，配合专属深海白噪音，为您打造零干扰的沉浸式专注空间。每一次翻转，都是一场视觉与心灵的疗愈。</p>
+            <h1 data-i18n="heroTitle">让时间，<br>流动成艺术。</h1>
+            <p data-i18n="heroDesc">告别枯燥的数字。绝美 3D 质感动态沙漏，配合专属深海白噪音，为您打造零干扰的沉浸式专注空间。每一次翻转，都是一场视觉与心灵的疗愈。</p>
             
             <div class="download-area">
-                <!-- Google Play 下载按钮 -->
                 <a href="https://play.google.com/store/apps/details?id=com.siteflare.hourglass" target="_blank" class="play-badge">
-                    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/zh-cn_badge_web_generic.png" alt="Get it on Google Play">
+                    <img id="playBadgeImg" src="https://play.google.com/intl/en_us/badges/static/images/badges/zh-cn_badge_web_generic.png" alt="Get it on Google Play">
                 </a>
-                
-                <!-- 扫码下载区域 (需在同级目录放入 qrcode.png) -->
                 <div class="qr-box">
-                    <img src="qrcode.png" alt="扫码下载 AuraSand" onerror="this.style.display='none'">
-                    <span class="qr-text">扫码获取</span>
+                    <img src="qrcode.png" alt="QR Code" onerror="this.style.display='none'">
+                    <span class="qr-text" data-i18n="scanQr">扫码获取</span>
                 </div>
             </div>
         </div>
-
         <div class="hero-image">
-            <!-- 手机截图展示 (需在同级目录放入 screenshot.png) -->
             <div class="phone-mockup"></div>
+        </div>
+    </section>
+
+    <!-- 视频展示区域 -->
+    <section class="video-showcase">
+        <!-- 竖屏视频 -->
+        <div class="video-container">
+            <span class="video-title" data-i18n="vidMobile">📱 手机端沉浸体验</span>
+            <div class="video-vertical-wrapper">
+                <!-- 已填入竖屏视频链接 -->
+                <video autoplay loop muted playsinline>
+                    <source src="https://www.siteflare.de5.net/api/public/dl/H28ZnnW3/Screenrecorder-2026-04-13-07-53-23-461.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+        
+        <!-- 横屏视频 -->
+        <div class="video-container">
+            <span class="video-title" data-i18n="vidTablet">💻 平板宽屏视效</span>
+            <div class="video-horizontal-wrapper">
+                <!-- 已填入横屏视频链接 -->
+                <video autoplay loop muted playsinline>
+                    <source src="https://www.siteflare.de5.net/api/public/dl/JgOv90hk/Screenrecorder-2026-04-13-07-54-57-966.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
         </div>
     </section>
 
     <!-- 核心特性 -->
     <section class="features">
         <div class="feature-card">
-            <h3>🎨 3D 数字潮玩</h3>
-            <p>从梦幻独角兽到晶莹鲸鱼，收集风格各异的精美艺术沙漏，打造专属桌面美学。</p>
+            <h3 data-i18n="f1Title">🎨 3D 数字潮玩</h3>
+            <p data-i18n="f1Desc">从梦幻独角兽到晶莹鲸鱼，收集风格各异的精美艺术沙漏，打造专属桌面美学。</p>
         </div>
         <div class="feature-card">
-            <h3>🧘 极致沉浸心流</h3>
-            <p>开启 Zen 模式，UI 智能隐退。让视觉完全聚焦于流动的沙砾，告别一切干扰。</p>
+            <h3 data-i18n="f2Title">🧘 极致沉浸心流</h3>
+            <p data-i18n="f2Desc">开启 Zen 模式，UI 智能隐退。让视觉完全聚焦于流动的沙砾，告别一切干扰。</p>
         </div>
         <div class="feature-card">
-            <h3>🎶 全方位感官体验</h3>
-            <p>专属高品质背景白噪音，配合细腻的交互震动与动画特效，让专注充满仪式感。</p>
+            <h3 data-i18n="f3Title">🎶 全方位感官体验</h3>
+            <p data-i18n="f3Desc">专属高品质背景白噪音，配合细腻的交互震动与动画特效，让专注充满仪式感。</p>
         </div>
         <div class="feature-card">
-            <h3>⏳ 灵活时间掌控</h3>
-            <p>1-999 分钟随心设定，智能记录您的专属习惯。支持锁屏通知与后台精确运行。</p>
+            <h3 data-i18n="f4Title">⏳ 灵活时间掌控</h3>
+            <p data-i18n="f4Desc">1-999 分钟随心设定，智能记录您的专属习惯。支持锁屏通知与后台精确运行。</p>
+        </div>
+        <div class="feature-card">
+            <h3 data-i18n="f5Title">✨ 隐藏计时 & 专属禅语 (Pro)</h3>
+            <p data-i18n="f5Desc">告别数字焦虑。支持隐藏倒计时滴答，浮现宁静禅语。支持自定义箴言，让每一次专注都成为心灵对话。</p>
+        </div>
+        <div class="feature-card">
+            <h3 data-i18n="f6Title">⛈️ 声光联动拟真特效</h3>
+            <p data-i18n="f6Desc">独创天气联动体验。当屏幕闪过雷电，雨声与闪电完美同步交织，带给您极具穿透力的沉浸式视听享受。</p>
         </div>
     </section>
 
@@ -286,11 +370,184 @@
         <p>© 2026 AuraSand. All rights reserved.</p>
         <div style="margin-top: 10px;">
             <a href="https://play.google.com/store/apps/details?id=com.siteflare.hourglass" target="_blank">Google Play</a>
-            <!-- 此处可添加隐私政策链接 -->
-            <a href="https://luyiwind.github.io/Hourglass-privacy/">Privacy Policy</a> 
-            <a href="mailto:luyiuestc@gmail.com">Contact Us</a>
+            <a href="https://luyiwind.github.io/Hourglass-privacy/" data-i18n="privacy">Privacy Policy</a> 
+            <a href="mailto:luyiuestc@gmail.com" data-i18n="contact">Contact Us</a>
         </div>
     </footer>
+
+    <!-- 多语言逻辑脚本 -->
+    <script>
+        // 语言包字典 (新增 zh-CN 简体中文)
+        const translations = {
+            "zh-CN": {
+                "pageTitle": "AuraSand 灵动沙漏 - 沉浸式 3D 艺术专注计时器",
+                "heroTitle": "让时间，<br>流动成艺术。",
+                "heroDesc": "告别枯燥的数字。绝美 3D 质感动态沙漏，配合专属深海白噪音，为您打造零干扰的沉浸式专注空间。每一次翻转，都是一场视觉与心灵的疗愈。",
+                "scanQr": "扫码获取",
+                "vidMobile": "📱 手机端沉浸体验",
+                "vidTablet": "💻 平板宽屏视效",
+                "f1Title": "🎨 3D 数字潮玩",
+                "f1Desc": "从梦幻独角兽到晶莹鲸鱼，收集风格各异的精美艺术沙漏，打造专属桌面美学。",
+                "f2Title": "🧘 极致沉浸心流",
+                "f2Desc": "开启 Zen 模式，UI 智能隐退。让视觉完全聚焦于流动的沙砾，告别一切干扰。",
+                "f3Title": "🎶 全方位感官体验",
+                "f3Desc": "专属高品质背景白噪音，配合细腻的交互震动与动画特效，让专注充满仪式感。",
+                "f4Title": "⏳ 灵活时间掌控",
+                "f4Desc": "1-999 分钟随心设定，智能记录您的专属习惯。支持锁屏通知与后台精确运行。",
+                "f5Title": "✨ 隐藏计时 & 专属禅语 (Pro)",
+                "f5Desc": "告别数字焦虑。支持隐藏倒计时滴答，浮现宁静禅语。支持自定义箴言，让每一次专注都成为心灵对话。",
+                "f6Title": "⛈️ 声光联动拟真特效",
+                "f6Desc": "独创天气联动体验。当屏幕闪过雷电，雨声与闪电完美同步交织，带给您极具穿透力的沉浸式视听享受。",
+                "privacy": "隐私政策",
+                "contact": "联系我们",
+                "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/zh-cn_badge_web_generic.png"
+            },
+            "en": {
+                "pageTitle": "AuraSand - Immersive 3D Hourglass Timer",
+                "heroTitle": "Let time flow<br>into art.",
+                "heroDesc": "Say goodbye to boring digits. A stunning 3D aesthetic hourglass with exclusive deep-sea white noise creates a zero-distraction focus space. Every flip is a visual and mental healing.",
+                "scanQr": "Scan to Download",
+                "vidMobile": "📱 Mobile Immersive UI",
+                "vidTablet": "💻 Tablet Widescreen",
+                "f1Title": "🎨 3D Digital Art",
+                "f1Desc": "From dreamy unicorns to crystal whales, collect exquisite art hourglasses to build your desktop aesthetics.",
+                "f2Title": "🧘 Extreme Flow State",
+                "f2Desc": "Enable Zen mode for smart UI hiding. Focus entirely on the flowing sand and eliminate all distractions.",
+                "f3Title": "🎶 Sensory Experience",
+                "f3Desc": "Exclusive high-quality white noise, paired with delicate haptic feedback, makes focusing a ritual.",
+                "f4Title": "⏳ Flexible Timer",
+                "f4Desc": "Set any time from 1-999 mins. Supports lock screen notifications and precise background tracking.",
+                "f5Title": "✨ Hide Timer & Zen Quotes (Pro)",
+                "f5Desc": "Say goodbye to digital anxiety. Hide the ticking numbers and display calming Zen quotes. Customize your own mottos.",
+                "f6Title": "⛈️ Synced Weather Effects",
+                "f6Desc": "Immersive weather sync. Experience the perfect harmony of lightning flashes and thunder sounds for ultimate immersion.",
+                "privacy": "Privacy Policy",
+                "contact": "Contact Us",
+                "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+            },
+            "zh-TW": {
+                "pageTitle": "AuraSand 靈動沙漏 - 沉浸式 3D 藝術專注計時器",
+                "heroTitle": "讓時間，<br>流動成藝術。",
+                "heroDesc": "告別枯燥的數字。絕美 3D 質感動態沙漏，配合專屬深海白噪音，為您打造零干擾的沉浸式專注空間。每一次翻轉，都是一場視覺與心靈的療癒。",
+                "scanQr": "掃碼獲取",
+                "vidMobile": "📱 手機端沉浸體驗",
+                "vidTablet": "💻 平板寬螢幕視效",
+                "f1Title": "🎨 3D 數位潮玩",
+                "f1Desc": "從夢幻獨角獸到晶瑩鯨魚，收集風格各異的精美藝術沙漏，打造專屬桌面美學。",
+                "f2Title": "🧘 極致沉浸心流",
+                "f2Desc": "開啟 Zen 模式，UI 智能隱退。讓視覺完全聚焦於流動的沙礫，告別一切干擾。",
+                "f3Title": "🎶 全方位感官體驗",
+                "f3Desc": "專屬高品質背景白噪音，配合細膩的互動震動與動畫特效，讓專注充滿儀式感。",
+                "f4Title": "⏳ 靈活時間掌控",
+                "f4Desc": "1-999 分鐘隨心設定，智能記錄您的專屬習慣。支援鎖定螢幕通知與後台精確運行。",
+                "f5Title": "✨ 隱藏計時 & 專屬禪語 (Pro)",
+                "f5Desc": "告別數字焦慮。支援隱藏倒數計時，浮現寧靜禪語。支援自訂箴言，讓每一次專注都成為心靈對話。",
+                "f6Title": "⛈️ 聲光聯動擬真特效",
+                "f6Desc": "獨創天氣聯動體驗。當螢幕閃過雷電，雨聲與閃電完美同步交織，帶給您極具穿透力的沉浸式視聽享受。",
+                "privacy": "隱私權政策",
+                "contact": "聯絡我們",
+                "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/zh-tw_badge_web_generic.png"
+            },
+            "ja": {
+                "pageTitle": "AuraSand - 没入型 3D アート 砂時計タイマー",
+                "heroTitle": "時間を、<br>芸術に。",
+                "heroDesc": "退屈な数字とはお別れ。美しい3Dの砂時計と専用のホワイトノイズが、邪魔のない没入型の集中空間を作ります。ひっくり返すたびに心が癒されます。",
+                "scanQr": "スキャンしてDL",
+                "vidMobile": "📱 モバイル没入体験",
+                "vidTablet": "💻 タブレット横画面",
+                "f1Title": "🎨 3D デジタルアート",
+                "f1Desc": "ユニコーンからクリスタルクジラまで、多彩なアート砂時計を集めてデスクトップを美しく。",
+                "f2Title": "🧘 究極のフロー状態",
+                "f2Desc": "ZenモードでUIを非表示。流れる砂に視覚を集中させ、すべての気を散らすものを排除。",
+                "f3Title": "🎶 全感覚体験",
+                "f3Desc": "高品質なホワイトノイズと繊細な振動・エフェクトが、集中を一つの儀式にします。",
+                "f4Title": "⏳ 柔軟な時間管理",
+                "f4Desc": "1〜999分で自由に設定。ロック画面の通知と正確なバックグラウンド実行をサポート。",
+                "f5Title": "✨ タイマー非表示 & 禅語 (Pro)",
+                "f5Desc": "数字の焦りから解放。タイマーを隠し、落ち着く禅語を表示。好きな言葉のカスタマイズも可能。",
+                "f6Title": "⛈️ 雷雨シンクロエフェクト",
+                "f6Desc": "没入型天候エフェクト。画面が光る雷と雨の音が完璧にシンクロする究極の体験。",
+                "privacy": "プライバシーポリシー",
+                "contact": "お問い合わせ",
+                "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/ja_badge_web_generic.png"
+            },
+            "ko": {
+                "pageTitle": "AuraSand - 몰입형 3D 모래시계 타이머",
+                "heroTitle": "시간을<br>예술로 만들다.",
+                "heroDesc": "지루한 숫자와 작별하세요. 아름다운 3D 모래시계와 심해 백색 소음이 방해 없는 몰입형 집중 공간을 만듭니다.",
+                "scanQr": "스캔하여 다운로드",
+                "vidMobile": "📱 모바일 몰입형 UI",
+                "vidTablet": "💻 태블릿 와이드 스크린",
+                "f1Title": "🎨 3D 디지털 아트",
+                "f1Desc": "유니콘부터 고래까지, 다양한 스타일의 예술적인 모래시계를 수집하여 나만의 데스크탑 미학을 만드세요.",
+                "f2Title": "🧘 극강의 몰입 상태",
+                "f2Desc": "Zen 모드를 켜면 UI가 숨겨집니다. 흐르는 모래에 집중하고 모든 방해 요소를 차단하세요.",
+                "f3Title": "🎶 감각적인 경험",
+                "f3Desc": "고품질 백색 소음과 섬세한 진동 피드백이 집중을 하나의 의식으로 만듭니다.",
+                "f4Title": "⏳ 유연한 시간 설정",
+                "f4Desc": "1-999분 자유롭게 설정. 잠금 화면 알림 및 정확한 백그라운드 실행을 지원합니다.",
+                "f5Title": "✨ 타이머 숨기기 & 명언 (Pro)",
+                "f5Desc": "숫자 강박에서 벗어나세요. 타이머를 숨기고 평온한 명언을 띄웁니다. 나만의 좌우명 커스텀 지원.",
+                "f6Title": "⛈️ 날씨 싱크 효과",
+                "f6Desc": "몰입형 날씨 동기화. 번개 번쩍임과 빗소리의 완벽한 조화를 경험하세요.",
+                "privacy": "개인정보 처리방침",
+                "contact": "문의하기",
+                "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/ko_badge_web_generic.png"
+            }
+        };
+
+        // 执行语言切换逻辑
+        function changeLanguage(langCode) {
+            const dict = translations[langCode];
+            if (!dict) return;
+
+            // 替换文本内容
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.innerHTML = dict[key];
+                }
+            });
+
+            // 替换 Google Play 徽章图片
+            const playBadge = document.getElementById('playBadgeImg');
+            if (playBadge && dict['playBadge']) {
+                playBadge.src = dict['playBadge'];
+            }
+
+            // 修改 HTML 语言属性
+            document.documentElement.lang = langCode;
+            
+            // 保存用户偏好
+            localStorage.setItem('aura_lang', langCode);
+            document.getElementById('langSwitcher').value = langCode;
+        }
+
+        // 初始化加载语言
+        window.onload = function() {
+            // 1. 优先读取用户手动选择过的语言
+            let savedLang = localStorage.getItem('aura_lang');
+            
+            // 2. 如果没有保存过，自动判断浏览器语言
+            if (!savedLang) {
+                const browserLang = navigator.language.toLowerCase();
+                if (browserLang.includes('zh-tw') || browserLang.includes('zh-hk') || browserLang.includes('zh-hant')) {
+                    savedLang = 'zh-TW'; // 繁体中文
+                } else if (browserLang.includes('zh')) {
+                    savedLang = 'zh-CN'; // 简体中文
+                } else if (browserLang.includes('ja')) {
+                    savedLang = 'ja';
+                } else if (browserLang.includes('ko')) {
+                    savedLang = 'ko';
+                } else {
+                    savedLang = 'en'; // 默认兜底英文
+                }
+            }
+
+            // 应用语言
+            changeLanguage(savedLang);
+        };
+    </script>
 
 </body>
 </html>
