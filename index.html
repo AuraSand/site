@@ -388,6 +388,8 @@
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active-tab');
             });
+
+            hideLiveDemo(); 
         }
 
         // 统一尺寸应用逻辑，解决 Edge 兼容性并消除虚线
@@ -466,9 +468,11 @@
         function hideLiveDemo() {
             const viewport = document.getElementById('liveDemoViewport');
             const iframe = document.getElementById('flutterIframe');
+            const loader = document.getElementById('flutterLoading');
             viewport.style.display = 'none';
             // 可选：隐藏时清空 iframe 释放内存，如果需要保持状态则注释掉下面一行
-            // iframe.src = ""; 
+            iframe.src = ""; 
+            loader.style.display = 'block';
         }
 
         async function toggleVideo(type) {
