@@ -56,6 +56,61 @@
         }
         .tab-btn:hover { background: #fff; transform: translateY(-2px); }
 
+        /* 手机模拟器框架样式 */
+        .live-viewport {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .phone-frame-mockup {
+            width: 100%;
+            max-width: 402px; /* 匹配 iPhone 16 Pro 逻辑宽度 */
+            aspect-ratio: 402 / 874; /* 强制锁定 iPhone 16 Pro 比例 */
+            background: #111;
+            border: 10px solid #222; /* 模拟手机中框 */
+            border-radius: 45px; /* 模拟圆角屏 */
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            transform: translateZ(0);
+        }
+        
+        .phone-inner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+        
+        #flutterIframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+        
+        /* 加载动画样式 */
+        .flutter-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+        }
+        
+        /* 按钮高亮样式 */
+        .live-btn {
+            background: linear-gradient(135deg, #D94814 0%, #ff7e5f 100%) !important;
+            color: white !important;
+            border: none !important;
+        }
+
         .video-viewport {
             max-width: 100%; margin: 0 auto; display: none; 
             flex-direction: column; align-items: center; gap: 15px;
@@ -151,7 +206,17 @@
         <div class="demo-tabs">
             <button class="tab-btn" onclick="toggleVideo('vertical')" data-i18n="vidMobile">📱 Mobile Demo</button>
             <button class="tab-btn" onclick="toggleVideo('horizontal')" data-i18n="vidTablet">💻 Tablet Demo</button>
-            <button class="tab-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;" onclick="toggleFlutterDemo()" data-i18n="liveDemo">✨ Live Web Demo</button>
+            <button class="tab-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;" onclick="loadLiveDemo()" data-i18n="liveDemo">✨ Live Web Demo</button>
+        </div>
+        <div id="liveDemoViewport" class="live-viewport" style="display: none;">
+            <div class="phone-frame-mockup">
+                <div class="phone-inner">
+                    <div id="flutterLoading" class="flutter-loader">⌛ Loading AuraSand...</div>
+                    <!-- 这里的 src 填你部署后的 GitHub Pages 地址 -->
+                    <iframe id="flutterIframe" src="" allow="accelerometer; gyroscope; pointer-lock;"></iframe>
+                </div>
+            </div>
+            <button class="video-close-btn" onclick="hideLiveDemo()" data-i18n="closeVid" style="margin-top: 20px;">Close Demo ✕</button>
         </div>
         <div id="videoViewport" class="video-viewport">
             <div class="video-container" id="videoContainer"></div>
@@ -323,31 +388,34 @@
             }
         }
 
-        async function toggleFlutterDemo() {
-    viewport.style.display = 'flex';
-    viewport.className = 'video-viewport vertical'; // 使用垂直比例，因为沙漏通常是纵向的
-    
-    // 设置一个适合手机预览的比例 (9:16)
-    const ratio = 9 / 19.5; 
-    applyPreciseRatio('vertical', ratio);
+        function loadLiveDemo() {
+            // 隐藏视频预览，显示 Live Demo
+            hideVideo();
+            const viewport = document.getElementById('liveDemoViewport');
+            const iframe = document.getElementById('flutterIframe');
+            const loader = document.getElementById('flutterLoading');
+            const FLUTTER_APP_URL = "https://aurasand.pages.dev/";
+            
+            viewport.style.display = 'flex';
+            
+            // 只有在 iframe 没加载时才设置 src，避免重复加载
+            if (iframe.src !== FLUTTER_APP_URL) {
+                iframe.src = FLUTTER_APP_URL;
+                iframe.onload = () => {
+                    loader.style.display = 'none';
+                };
+            }
+        
+            // 自动滚动到预览区域
+            setTimeout(() => {
+                viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
 
-    // 加载 Flutter Web App
-    container.innerHTML = `
-        <div style="width:100%; height:100%; background:#f0f0f0; display:flex; align-items:center; justify-content:center; position:relative;">
-            <div id="loading-spinner" style="position:absolute;">⌛ Loading...</div>
-            <iframe 
-                src="https://aurasand.pages.dev/" 
-                style="width:100%; height:100%; border:none;" 
-                allow="accelerometer; gyroscope; pointer-lock;"
-                onload="document.getElementById('loading-spinner').remove()">
-            </iframe>
-        </div>
-    `;
-
-    setTimeout(() => {
-        viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 100);
-}
+        function hideLiveDemo() {
+            const viewport = document.getElementById('liveDemoViewport');
+            viewport.style.display = 'none';
+        }
 
         async function toggleVideo(type) {
             const source = videoSources[type];
