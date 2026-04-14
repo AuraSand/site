@@ -372,6 +372,24 @@
             });
         }
 
+        // 统一关闭所有演示窗口
+        function closeAllDemos() {
+            // 1. 隐藏视频窗口
+            viewport.style.display = 'none';
+            container.innerHTML = '';
+            container.style.width = '0';
+            container.style.height = '0';
+        
+            // 2. 隐藏 Live Demo 窗口
+            const liveViewport = document.getElementById('liveDemoViewport');
+            liveViewport.style.display = 'none';
+            
+            // 3. 移除所有按钮的 active 高亮状态 (可选优化)
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active-tab');
+            });
+        }
+
         // 统一尺寸应用逻辑，解决 Edge 兼容性并消除虚线
         function applyPreciseRatio(type, ratio) {
             if (type === 'vertical') {
@@ -418,7 +436,7 @@
         
         // 2. 修改加载函数
         function loadLiveDemo() {
-            hideVideo();
+            closeAllDemos();
             const viewport = document.getElementById('liveDemoViewport');
             const iframe = document.getElementById('flutterIframe');
             const loader = document.getElementById('flutterLoading');
@@ -454,6 +472,7 @@
         }
 
         async function toggleVideo(type) {
+            closeAllDemos();
             const source = videoSources[type];
             viewport.style.display = 'flex';
             viewport.className = 'video-viewport ' + type;
