@@ -187,6 +187,7 @@
             padding: 20px 0;
             animation: fadeIn 0.5s ease;
             width: 100%;
+            overflow: hidden; /* 防止内容溢出 */
         }
         
         /* 手机/平板演示共用黑色边框 —— 与live demo一致 */
@@ -200,6 +201,7 @@
             transform: translateZ(0);
             transition: width 0.3s ease, height 0.3s ease;
             margin: 0 auto;
+            max-width: 100%; /* 确保不超出父容器 */
         }
         
         /* 视频内部填充 */
@@ -364,10 +366,22 @@
                 font-size: 15px;
             }
             
-            /* 确保黑色边框内视频比例舒适 */
+            /* 视频容器移动端适配 - 关键修复 */
             .phone-frame-mockup, .video-container {
                 border-width: 6px;
                 border-radius: 34px;
+                /* 移动端最大宽度限制为视口宽度减去padding */
+                max-width: calc(100vw - 40px) !important;
+                width: 100% !important;
+            }
+            
+            /* 演示区域padding调整 */
+            .demo-section {
+                padding: 0 20px;
+            }
+            
+            .live-viewport, .video-viewport {
+                padding: 20px 0;
             }
         }
 
@@ -389,6 +403,13 @@
             .phone-mockup {
                 width: 200px;
                 height: 400px;
+            }
+            
+            /* 更小的屏幕进一步收紧 */
+            .phone-frame-mockup, .video-container {
+                border-width: 4px;
+                border-radius: 24px;
+                max-width: calc(100vw - 30px) !important;
             }
         }
 
@@ -435,7 +456,6 @@
         <div class="demo-tabs">
             <button class="tab-btn" onclick="toggleVideo('vertical')" data-i18n="vidMobile">📱 手机演示</button>
             <button class="tab-btn" onclick="toggleVideo('horizontal')" data-i18n="vidTablet">💻 平板演示</button>
-            <!-- <button class="tab-btn" style="background: linear-gradient(135deg, #D94814 0%, #ff7e5f 100%); color: white; border: none;" onclick="loadLiveDemo()" data-i18n="liveDemo">✨ 在线体验</button> -->
         </div>
         
         <!-- Live Web Demo 视口 (与视频演示统一样式) -->
@@ -512,69 +532,69 @@
                     "screenshot": "screenshot_en.webp",
                     "heroTitle": "Let time flow <br>into art.",
                     "heroDesc": "Say goodbye to boring digits. Stunning 3D aesthetic hourglasses with exclusive white noise, rain effects, and animation effects create a zero-distraction focus space for you.",
-                    "vidMobile": "📱 Mobile Demo", "vidTablet": "💻 Tablet Demo", "liveDemo": "✨ Live Web Demo", "closeVid": "Close Demo ✕", "scanQr": "Scan to DL",
+                    "VidMobile": "📱 Mobile Demo", "VidTablet": "💻 Tablet Demo", "liveDemo": "✨ Live Web Demo", "closeVid": "Close Demo ✕", "scanQr": "Scan to DL",
                     "f1Title": "🎨 3D Digital Art", "f1Desc": "From dreamy unicorns to crystal whales, collect exquisite art hourglasses to build your desktop aesthetics.",
-                    "f2Title": "🧘 Extreme Flow State", "f2Desc": "Enable Zen mode for smart UI hiding. Focus entirely on the flowing sand and eliminate all distractions.",
-                    "f3Title": "🎶 Sensory Experience", "f3Desc": "Exclusive high-quality white noise and haptic feedback make every focus session a ritual.",
-                    "f4Title": "⏳ Flexible Timer", "f4Desc": "Set any time from 1-999 mins. Supports lock screen notifications and precise background tracking.",
-                    "f5Title": "✨ Hide Timer & Zen Quotes (Pro)", "f5Desc": "Say goodbye to digital anxiety. Hide the ticking digits and display calming Zen quotes.",
-                    "f6Title": "⛈️ Synced Weather Effects (Pro)", "f6Desc": "Unique weather-synced experience. Rain and lightning sounds are perfectly synchronized.",
+                    "F2Title": "🧘 Extreme Flow State", "F2Desc": "Enable Zen mode for smart UI hiding. Focus entirely on the flowing sand and eliminate all distractions.",
+                    "F3Title": "🎶 Sensory Experience", "F3Desc": "Exclusive high-quality white noise and haptic feedback make every focus session a ritual.",
+                    "F4Title": "⏳ Flexible Timer", "F4Desc": "Set any time from 1-999 mins. Supports lock screen notifications and precise background tracking.",
+                    "F5Title": "✨ Hide Timer & Zen Quotes (Pro)", "F5Desc": "Say goodbye to digital anxiety. Hide the ticking digits and display calming Zen quotes.",
+                    "F6Title": "⛈️ Synced Weather Effects (Pro)", "F6Desc": "Unique weather-synced experience. Rain and lightning sounds are perfectly synchronized.",
                     "privacy": "Privacy Policy", "contact": "Contact Us",
                     "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
                 },
                 "zh-CN": {
                     "screenshot": "screenshot_zh-CN.webp",
                     "heroTitle": "让时间，<br>流动成艺术。",
-                    "heroDesc": "告别枯燥的数字。绝美 3D 质感动态沙漏，配合专属白噪音、下雨等音效和动画特效，为您打造零干扰的沉浸式专注空间。",
-                    "vidMobile": "📱 手机端演示", "vidTablet": "💻 平板端演示", "liveDemo": "✨ 在线试用", "closeVid": "收起演示 ✕", "scanQr": "扫码获取",
-                    "f1Title": "🎨 3D 数字潮玩", "f1Desc": "从梦幻独角兽到晶莹鲸鱼，收集风格各异的精美艺术沙漏，打造专属桌面美学。",
-                    "f2Title": "🧘 极致沉浸心流", "f2Desc": "开启 Zen 模式，UI 智能隐退。让视觉完全聚焦于流动的沙砾，告别一切干扰。",
-                    "f3Title": "🎶 全方位感官体验", "f3Desc": "专属高品质背景白噪音，配合细腻的交互震动与动画特效，让专注充满仪式感。",
-                    "f4Title": "⏳ 灵活时间掌控", "f4Desc": "1-999 分钟随心设定。支持锁屏通知与后台精确运行。",
-                    "f5Title": "✨ 隐藏计时 & 专属禅语 (Pro)", "f5Desc": "告别数字焦虑。支持隐藏倒计时滴答，浮现宁静禅语。让每一次专注都成为心灵对话。",
-                    "f6Title": "⛈️ 声光联动拟真特效(Pro)", "f6Desc": "独创天气联动体验。当屏幕闪过雷电，雨声与闪电完美同步交织，带给您极具穿透力的沉浸式视听享受。",
+                    "HeroDesc": "告别枯燥的数字。绝美 3D 质感动态沙漏，配合专属白噪音、下雨等音效和动画特效，为您打造零干扰的沉浸式专注空间。",
+                    "VidMobile": "📱 手机端演示", "VidTablet": "💻 平板端演示", "liveDemo": "✨ 在线试用", "closeVid": "收起演示 ✕", "scanQr": "扫码获取",
+                    "F1Title": "🎨 3D 数字潮玩", "F1Desc": "从梦幻独角兽到晶莹鲸鱼，收集风格各异的精美艺术沙漏，打造专属桌面美学。",
+                    "F2Title": "🧘 极致沉浸心流", "F2Desc": "开启 Zen 模式，UI 智能隐退。让视觉完全聚焦于流动的沙砾，告别一切干扰。",
+                    "F3Title": "🎶 全方位感官体验", "F3Desc": "专属高品质背景白噪音，配合细腻的交互震动与动画特效，让专注充满仪式感。",
+                    "F4Title": "⏳ 灵活时间掌控", "F4Desc": "1-999 分钟随心设定。支持锁屏通知与后台精确运行。",
+                    "F5Title": "✨ 隐藏计时 & 专属禅语 (Pro)", "F5Desc": "告别数字焦虑。支持隐藏倒计时滴答，浮现宁静禅语。让每一次专注都成为心灵对话。",
+                    "F6Title": "⛈️ 声光联动拟真特效(Pro)", "F6Desc": "独创天气联动体验。当屏幕闪过雷电，雨声与闪电完美同步交织，带给您极具穿透力的沉浸式视听享受。",
                     "privacy": "隐私政策", "contact": "联系我们",
                     "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/zh-cn_badge_web_generic.png"
                 },
                 "zh-TW": {
                     "screenshot": "screenshot_zh-TW.webp",
-                    "heroTitle": "讓時間，<br>流動成藝術。",
-                    "heroDesc": "告別枯燥的數字。絕美 3D 質感動態沙漏，配合專屬白噪音、下雨等音效和動畫特效，為您打造零干擾的沉浸式專注空間。",
-                    "vidMobile": "📱 手機端演示", "vidTablet": "💻 平板端演示", "liveDemo": "✨ 線上試用", "closeVid": "收起演示 ✕", "scanQr": "掃碼獲取",
-                    "f1Title": "🎨 3D 數位潮玩", "f1Desc": "從夢幻獨角獸到晶瑩鯨魚，收集風格各異的精美藝術沙漏，打造專屬桌面美學。",
-                    "f2Title": "🧘 極致沉浸心流", "f2Desc": "開啟 Zen 模式，UI 智能隱退。讓視覺完全聚焦於流動的沙礫，告別一切干擾。",
-                    "f3Title": "🎶 全方位感官體驗", "f3Desc": "專屬高品質背景白噪音，配合細膩的互動震動與動畫特效，讓專注充滿儀式感。",
-                    "f4Title": "⏳ 靈活時間掌控", "f4Desc": "1-999 分鐘隨心設定。支援鎖屏通知與後台精確運行。",
-                    "f5Title": "✨ 隱藏計時 & 專屬禪語 (Pro)", "f5Desc": "告別數字焦慮。支援隱藏倒計時滴答，浮現寧靜禪語。讓每一次專注都成為心靈對話。",
-                    "f6Title": "⛈️ 聲光聯動擬真特效(Pro)", "f6Desc": "獨創天氣聯動體驗。當螢幕閃過雷電，雨聲與閃電完美同步交織，帶給您極具穿透力的沉浸式視聽享受。",
+                    "HeroTitle": "讓時間，<br>流動成藝術。",
+                    "HeroDesc": "告別枯燥的數字。絕美 3D 質感動態沙漏，配合專屬白噪音、下雨等音效和動畫特效，為您打造零干擾的沉浸式專注空間。",
+                    "VidMobile": "📱 手機端演示", "VidTablet": "💻 平板端演示", "LiveDemo": "✨ 線上試用", "closeVid": "收起演示 ✕", "scanQr": "掃碼獲取",
+                    "F1Title": "🎨 3D 數位潮玩", "F1Desc": "從夢幻獨角獸到晶瑩鯨魚，收集風格各異的精美藝術沙漏，打造專屬桌面美學。",
+                    "F2Title": "🧘 極致沉浸心流", "F2Desc": "開啟 Zen 模式，UI 智能隱退。讓視覺完全聚焦於流動的沙礫，告別一切干擾。",
+                    "F3Title": "🎶 全方位感官體驗", "F3Desc": "專屬高品質背景白噪音，配合細膩的互動震動與動畫特效，讓專注充滿儀式感。",
+                    "F4Title": "⏳ 靈活時間掌控", "F4Desc": "1-999 分鐘隨心設定。支援鎖屏通知與後台精確運行。",
+                    "F5Title": "✨ 隱藏計時 & 專屬禪語 (Pro)", "F5Desc": "告別數字焦慮。支援隱藏倒計時滴答，浮現寧靜禪語。讓每一次專注都成為心靈對話。",
+                    "F6Title": "⛈️ 聲光聯動擬真特效(Pro)", "F6Desc": "獨創天氣聯動體驗。當螢幕閃過雷電，雨聲與閃電完美同步交織，帶給您極具穿透力的沉浸式視聽享受。",
                     "privacy": "隱私政策", "contact": "聯繫我們",
                     "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/zh-tw_badge_web_generic.png"
                 },
                 "ja": {
                     "screenshot": "screenshot_jp.webp",
-                    "heroTitle": "時間を、<br>芸術に。",
-                    "heroDesc": "退屈な数字とはお別れ。美しい3Dの砂時計と、専用のホワイトノイズ、雨音、アニメーション効果が、没入型の集中空間を作ります。",
-                    "vidMobile": "📱 モバイルデモ", "vidTablet": "💻 タブレットデモ", "liveDemo": "✨ ライブデモ", "closeVid": "閉じる ✕", "scanQr": "スキャンしてDL",
-                    "f1Title": "🎨 3Dデジタルアート", "f1Desc": "夢のようなユニコーンからクリスタルクジラまで、多彩なアート砂時計を集めてデスクトップを美しく。",
-                    "f2Title": "🧘 究極のフロー状態", "f2Desc": "ZenモードでUIを非表示。砂の流れに集中し、すべての気を散らすものを排除。",
-                    "f3Title": "🎶 五感体験", "f3Desc": "高品質なホワイトノイズと繊細な振動・エフェクトが、集中を一つの儀式にします。",
-                    "f4Title": "⏳ 柔軟な時間管理", "f4Desc": "1〜999分で自由に設定。正確なバックグラウンド実行をサポート。",
-                    "f5Title": "✨ タイマー非表示 & 禅語 (Pro)", "f5Desc": "数字の焦りから解放。タイマーを隠し、禅語を表示。好きな言葉のカスタマイズも可能。",
-                    "f6Title": "⛈️ 雷雨シンクロエフェクト (Pro)", "f6Desc": "没入型天候エフェクト。雷と雨の音が完璧にシンクロする究極の体験。",
+                    "HeroTitle": "時間を、<br>芸術に。",
+                    "HeroDesc": "退屈な数字とはお別れ。美しい3Dの砂時計と、専用のホワイトノイズ、雨音、アニメーション効果が、没入型の集中空間を作ります。",
+                    "VidMobile": "📱 モバイルデモ", "VidTablet": "💻 タブレットデモ", "LiveDemo": "✨ ライブデモ", "closeVid": "閉じる ✕", "scanQr": "スキャンしてDL",
+                    "F1Title": "🎨 3Dデジタルアート", "F1Desc": "夢のようなユニコーンからクリスタルクジラまで、多彩なアート砂時計を集めてデスクトップを美しく。",
+                    "F2Title": "🧘 究極のフロー状態", "F2Desc": "ZenモードでUIを非表示。砂の流れに集中し、すべての気を散らすものを排除。",
+                    "F3Title": "🎶 五感体験", "F3Desc": "高品質なホワイトノイズと繊細な振動・エフェクトが、集中を一つの儀式にします。",
+                    "F4Title": "⏳ 柔軟な時間管理", "F4Desc": "1〜999分で自由に設定。正確なバックグラウンド実行をサポート。",
+                    "F5Title": "✨ タイマー非表示 & 禅語 (Pro)", "F5Desc": "数字の焦りから解放。タイマーを隠し、禅語を表示。好きな言葉のカスタマイズも可能。",
+                    "F6Title": "⛈️ 雷雨シンクロエフェクト (Pro)", "F6Desc": "没入型天候エフェクト。雷と雨の音が完璧にシンクロする究極の体験。",
                     "privacy": "プライバシーポリシー", "contact": "お問い合わせ",
                     "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/ja_badge_web_generic.png"
                 },
                 "ko": {
                     "screenshot": "screenshot_ko.webp",
-                    "heroTitle": "시간을<br>예술로 만들다.",
-                    "heroDesc": "지루한 숫자와 작별하세요. 아름다운 3D 모래시계와 전용 백색 소음, 빗소리, 애니메이션 효과가 방해 없는 집중 공간을 만듭니다。",
-                    "vidMobile": "📱 모바일 데모", "vidTablet": "💻 태블릿 데모", "liveDemo": "✨ 라이브 데모", "closeVid": "닫기 ✕", "scanQr": "다운로드 스캔",
-                    "f1Title": "🎨 3D 디지털 아트", "f1Desc": "유니콘부터 고래까지, 다양한 예술적인 모래시계를 수집하여 나만의 데스크탑 미학을 만드세요.",
-                    "f2Title": "🧘 극강의 몰입 상태", "f2Desc": "Zen 모드를 켜면 UI가 숨겨집니다. 흐르는 모래에 집중하고 모든 방해 요소를 차단하세요.",
-                    "f3Title": "🎶 감각적인 경험", "f3Desc": "고품질 백색 소음과 섬세한 진동 피드백이 집중을 하나의 의식으로 만듭니다.",
-                    "f4Title": "⏳ 유연한 시간 설정", "f4Desc": "1-999분 설정. 정확한 백그라운드 실행을 지원합니다.",
-                    "f5Title": "✨ 명언 & 타이머 숨기기 (Pro)", "f5Desc": "숫자 강박에서 벗어나세요. 타이머를 숨기고 명언을 띄웁니다. 나만의 명언 커스텀 지원.",
-                    "f6Title": "⛈️ 날씨 싱크 효과 (Pro)", "f6Desc": "몰입형 날씨 동기화. 번개 번쩍임과 빗소리의 완벽한 조화를 경험하세요.",
+                    "HeroTitle": "시간을<br>예술로 만들다.",
+                    "HeroDesc": "지루한 숫자와 작별하세요. 아름다운 3D 모래시계와 전용 백색 소음, 빗소리, 애니메이션 효과가 방해 없는 집중 공간을 만듭니다。",
+                    "VidMobile": "📱 모바일 데모", "VidTablet": "💻 태블릿 데모", "LiveDemo": "✨ 라이브 데모", "closeVid": "닫기 ✕", "scanQr": "다운로드 스캔",
+                    "F1Title": "🎨 3D 디지털 아트", "F1Desc": "유니콘부터 고래까지, 다양한 예술적인 모래시계를 수집하여 나만의 데스크탑 미학을 만드세요.",
+                    "F2Title": "🧘 극강의 몰입 상태", "F2Desc": "Zen 모드를 켜면 UI가 숨겨집니다. 흐르는 모래에 집중하고 모든 방해 요소를 차단하세요.",
+                    "F3Title": "🎶 감각적인 경험", "F3Desc": "고품질 백색 소음과 섬세한 진동 피드백이 집중을 하나의 의식으로 만듭니다.",
+                    "F4Title": "⏳ 유연한 시간 설정", "F4Desc": "1-999분 설정. 정확한 백그라운드 실행을 지원합니다.",
+                    "F5Title": "✨ 명언 & 타이머 숨기기 (Pro)", "F5Desc": "숫자 강박에서 벗어나세요. 타이머를 숨기고 명언을 띄웁니다. 나만의 명언 커스텀 지원.",
+                    "F6Title": "⛈️ 날씨 싱크 효과 (Pro)", "F6Desc": "몰입형 날씨 동기화. 번개 번쩍임과 빗소리의 완벽한 조화를 경험하세요.",
                     "privacy": "개인정보 처리방침", "contact": "문의하기",
                     "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/ko_badge_web_generic.png"
                 }
@@ -627,35 +647,59 @@
                 });
             }
 
+            // 修复：应用视频尺寸时考虑移动端屏幕宽度限制
             function applyVideoSize(type, ratio) {
+                const isMobile = window.innerWidth <= 768;
+                const maxWidth = isMobile ? window.innerWidth - 40 : window.innerWidth * 0.85; // 移动端留出边距
+                const maxHeight = window.innerHeight * 0.7;
+                
+                let targetW, targetH;
+                
                 if (type === 'vertical') {
-                    const h = Math.min(window.innerHeight * 0.7, 700);
-                    const w = h * ratio;
-                    container.style.height = Math.round(h) + 'px';
-                    container.style.width = Math.round(w) + 'px';
+                    // 竖屏视频：优先限制高度，然后检查宽度
+                    targetH = Math.min(maxHeight, 700);
+                    targetW = targetH * ratio;
+                    
+                    // 如果计算出的宽度超出限制 按宽度重新计算
+                    if (targetW > maxWidth) {
+                        targetW = maxWidth;
+                        targetH = targetW / ratio;
+                    }
                 } else {
-                    const w = Math.min(window.innerWidth * 0.85, 900);
-                    const h = w / ratio;
-                    container.style.width = Math.round(w) + 'px';
-                    container.style.height = Math.round(h) + 'px';
+                    // 横屏视频：优先限制宽度
+                    targetW = Math.min(maxWidth, 900);
+                    targetH = targetW / ratio;
+                    
+                    // 如果高度超出限制 按高度重新计算
+                    if (targetH > maxHeight) {
+                        targetH = maxHeight;
+                        targetW = targetH * ratio;
+                    }
                 }
+                
+                container.style.width = Math.round(targetW) + 'px';
+                container.style.height = Math.round(targetH) + 'px';
             }
 
             // 调整live demo尺寸
             function adjustLiveDemoSize() {
                 if (!liveMockup || liveViewport.style.display === 'none') return;
                 const ratio = 402 / 874; 
+                const isMobile = window.innerWidth <= 768;
+                const maxWidth = isMobile ? window.innerWidth - 40 : window.innerWidth * 0.9;
+                
                 let targetH = window.innerHeight * 0.75;
                 let targetW = targetH * ratio;
-                const maxW = window.innerWidth * 0.9;
-                if (targetW > maxW) {
-                    targetW = maxW;
+                
+                if (targetW > maxWidth) {
+                    targetW = maxWidth;
                     targetH = targetW / ratio;
                 }
-                if (targetW > 402) {
+                if (!isMobile && targetW > 402) {
                     targetW = 402;
                     targetH = targetW / ratio;
                 }
+                
                 liveMockup.style.width = Math.round(targetW) + 'px';
                 liveMockup.style.height = Math.round(targetH) + 'px';
             }
@@ -664,8 +708,11 @@
                 closeAllDemos();
                 const source = videoSources[type];
                 viewport.style.display = 'flex';
+                
+                // 初始应用尺寸
                 applyVideoSize(type, source.defaultRatio);
                 
+                // 异步检测真实比例并调整
                 detectVideoRatio(source.mp4, source.defaultRatio).then(realRatio => {
                     applyVideoSize(type, realRatio);
                 });
@@ -709,22 +756,31 @@
                     const key = el.getAttribute('data-i18n');
                     if (dict[key]) el.innerHTML = dict[key];
                 });
-                phoneMockup.style.backgroundImage = `url('${dict['screenshot']}')`;
+                PhoneMockup.style.backgroundImage = `url('${dict['screenshot']}')`;
                 const badgeUrl = dict['playBadge'];
-                // 检测google可用性
+                // 检测Google可用性
                 const detector = new Image();
                 detector.onload = () => { googleAvailable = true; playBadgeImg.src = badgeUrl; };
-                detector.onerror = () => { googleAvailable = false; playBadgeImg.src = badgeUrl; }; // 依然显示对应语言图片
+                detector.onerror = () => { googleAvailable = false; playBadgeImg.src = badgeUrl; };
                 detector.src = badgeUrl;
                 localStorage.setItem('aura_lang', langCode);
                 document.getElementById('langSwitcher').value = langCode;
             };
 
-            // 初始化
+            // 修复：窗口大小改变时重新计算视频尺寸
             window.addEventListener('resize', () => {
                 adjustLiveDemoSize();
+                
+                // 如果视频正在播放 重新计算尺寸
                 if (viewport.style.display === 'flex' && container.children.length > 0) {
-                    // 简单处理
+                    // 根据当前容器宽高比判断是竖屏还是横屏
+                    const currentW = parseFloat(container.style.width || 0);
+                    const currentH = parseFloat(container.style.height || 0);
+                    if (currentW > 0 && currentH > 0) {
+                        const currentRatio = currentW / currentH;
+                        const type = currentRatio < 1 ? 'vertical' : 'horizontal';
+                        applyVideoSize(type, currentRatio);
+                    }
                 }
             });
 
@@ -739,7 +795,6 @@
                     else lang = 'en';
                 }
                 changeLanguage(lang);
-                // 预调整
                 adjustLiveDemoSize();
             };
         })();
