@@ -191,7 +191,7 @@
         
         /* 手机/平板演示共用黑色边框 —— 与live demo一致 */
         .phone-frame-mockup, .video-container {
-            background: #0b0b0b;      /* 深色中框背景 */
+            background: #000;          /* 改为纯黑色背景，消除黑边 */
             border: 8px solid #1e1e1e; /* 模拟金属中框 */
             border-radius: 40px;       /* 圆润边框 */
             box-shadow: 0 30px 50px rgba(0,0,0,0.5), 0 0 0 2px #3a3a3a inset;
@@ -214,6 +214,7 @@
             border: none; 
             display: block;
             background: #000;
+            object-fit: fill; /* 强制填充，消除黑边 */
         }
 
         .phone-inner {
@@ -402,7 +403,7 @@
 
         /* 保证在PC上视频容器也有黑边 —— 已经应用了 phone-frame-mockup 样式 */
         .video-container {
-            background: #0b0b0b;
+            background: #000;
             border: 8px solid #1e1e1e;
         }
     </style>
@@ -506,12 +507,12 @@
                 'vertical': {
                     youtube: 'QpeLBJT2Avo',
                     mp4: 'https://www.siteflare.de5.net/api/public/dl/_fb4cklN/portrait.mp4',
-                    defaultRatio: 588 / 1280
+                    defaultRatio: 588 / 1280  // 竖屏比例 0.459375
                 },
                 'horizontal': {
                     youtube: 'kr_1uMlBTPs',
                     mp4: 'https://www.siteflare.de5.net/api/public/dl/4NE6pTSS/land.mp4',
-                    defaultRatio: 1280 / 588
+                    defaultRatio: 1280 / 588  // 横屏比例 2.17687
                 }
             };
 
@@ -537,7 +538,7 @@
                     "vidMobile": "📱 手机端演示", "vidTablet": "💻 平板端演示", "liveDemo": "✨ 在线试用", "closeVid": "收起演示 ✕", "scanQr": "扫码获取",
                     "f1Title": "🎨 3D 数字潮玩", "f1Desc": "从梦幻独角兽到晶莹鲸鱼，收集风格各异的精美艺术沙漏，打造专属桌面美学。",
                     "f2Title": "🧘 极致沉浸心流", "f2Desc": "开启 Zen 模式，UI 智能隐退。让视觉完全聚焦于流动的沙砾，告别一切干扰。",
-                    "f3Title": "🎶 全方位感官体验", "f3Desc": "专属高品质背景白噪音，配合细腻的交互震动与动画特效，让专注充满仪式感。",
+                    "f3Title": "🎶 全方位感官体验", "f3Desc": "专属高品质背景白噪音，配合细腻的互动震动与动画特效，让专注充满仪式感。",
                     "f4Title": "⏳ 灵活时间掌控", "f4Desc": "1-999 分钟随心设定。支持锁屏通知与后台精确运行。",
                     "f5Title": "✨ 隐藏计时 & 专属禅语 (Pro)", "f5Desc": "告别数字焦虑。支持隐藏倒计时滴答，浮现宁静禅语。让每一次专注都成为心灵对话。",
                     "f6Title": "⛈️ 声光联动拟真特效(Pro)", "f6Desc": "独创天气联动体验。当屏幕闪过雷电，雨声与闪电完美同步交织，带给您极具穿透力的沉浸式视听享受。",
@@ -600,6 +601,7 @@
             
             let googleAvailable = false;
             let currentVideoType = null; // 记录当前显示的视频类型
+            let currentVideoRatio = null; // 记录当前视频的实际比例
             const FLUTTER_APP_URL = "https://aurasand.pages.dev/";
 
             // 辅助函数：关闭所有演示
@@ -610,6 +612,7 @@
                 container.style.width = '0';
                 container.style.height = '0';
                 currentVideoType = null;
+                currentVideoRatio = null;
                 // 隐藏live
                 liveViewport.style.display = 'none';
                 flutterIframe.src = "";
@@ -622,54 +625,70 @@
                     const tempVideo = document.createElement('video');
                     tempVideo.style.display = 'none';
                     tempVideo.preload = "metadata";
-                    const timeout = setTimeout(() => resolve(defaultRatio), 3000);
+                    const timeout = setTimeout(() => {
+                        console.log('Video metadata timeout, using default ratio:', defaultRatio);
+                        resolve(defaultRatio);
+                    }, 3000);
+                    
                     tempVideo.onloadedmetadata = () => {
                         clearTimeout(timeout);
-                        resolve(tempVideo.videoWidth / tempVideo.videoHeight);
+                        const ratio = tempVideo.videoWidth / tempVideo.videoHeight;
+                        console.log(`Video dimensions: ${tempVideo.videoWidth}x${tempVideo.videoHeight}, ratio: ${ratio}`);
+                        resolve(ratio);
                         tempVideo.remove();
                     };
+                    
                     tempVideo.onerror = () => {
                         clearTimeout(timeout);
+                        console.log('Video metadata load error, using default ratio:', defaultRatio);
                         resolve(defaultRatio);
                         tempVideo.remove();
                     };
+                    
                     tempVideo.src = mp4Url;
                 });
             }
 
-            // 修复后的尺寸计算函数 - 确保不超出屏幕
+            // 计算视频尺寸 - 严格按比例，消除黑边
             function applyVideoSize(type, ratio) {
-                // 获取可用宽度（考虑内边距）
-                const maxWidth = window.innerWidth * 0.9; // 最大宽度为屏幕的90%
-                const maxHeight = window.innerHeight * 0.7; // 最大高度为屏幕的70%
+                const isMobile = window.innerWidth <= 768;
+                const maxWidth = isMobile ? window.innerWidth * 0.9 : 800;
+                const maxHeight = isMobile ? window.innerHeight * 0.6 : 600;
+                
+                let width, height;
                 
                 if (type === 'vertical') {
                     // 竖屏视频：优先用高度限制
-                    let h = Math.min(maxHeight, 700);
-                    let w = h * ratio;
+                    height = Math.min(maxHeight, isMobile ? 600 : 700);
+                    width = height * ratio;
                     
-                    // 如果宽度超出，用宽度反算高度
-                    if (w > maxWidth) {
-                        w = maxWidth;
-                        h = w / ratio;
+                    // 如果宽度超出，用宽度反算
+                    if (width > maxWidth) {
+                        width = maxWidth;
+                        height = width / ratio;
                     }
-                    
-                    container.style.height = Math.round(h) + 'px';
-                    container.style.width = Math.round(w) + 'px';
                 } else {
                     // 横屏视频：优先用宽度限制
-                    let w = Math.min(maxWidth, 900);
-                    let h = w / ratio;
+                    width = Math.min(maxWidth, isMobile ? 500 : 800);
+                    height = width / ratio;
                     
-                    // 如果高度超出，用高度反算宽度
-                    if (h > maxHeight) {
-                        h = maxHeight;
-                        w = h * ratio;
+                    // 如果高度超出，用高度反算
+                    if (height > maxHeight) {
+                        height = maxHeight;
+                        width = height * ratio;
                     }
-                    
-                    container.style.width = Math.round(w) + 'px';
-                    container.style.height = Math.round(h) + 'px';
                 }
+                
+                // 确保是整数像素
+                width = Math.round(width);
+                height = Math.round(height);
+                
+                container.style.width = width + 'px';
+                container.style.height = height + 'px';
+                
+                console.log(`Applied size for ${type}: ${width}x${height}, ratio: ${ratio}`);
+                
+                return { width, height };
             }
 
             // 调整live demo尺寸
@@ -700,21 +719,20 @@
 
             window.toggleVideo = async function(type) {
                 closeAllDemos();
-                currentVideoType = type; // 记录当前类型
+                currentVideoType = type;
                 const source = videoSources[type];
                 viewport.style.display = 'flex';
                 
-                // 先使用默认比例设置初始尺寸
-                applyVideoSize(type, source.defaultRatio);
+                console.log(`Toggle video: ${type}`);
                 
-                // 异步获取真实比例后重新调整
-                detectVideoRatio(source.mp4, source.defaultRatio).then(realRatio => {
-                    // 确保当前还是同一种视频类型
-                    if (currentVideoType === type) {
-                        applyVideoSize(type, realRatio);
-                    }
-                });
-
+                // 获取真实视频比例
+                const realRatio = await detectVideoRatio(source.mp4, source.defaultRatio);
+                currentVideoRatio = realRatio;
+                
+                // 应用尺寸
+                applyVideoSize(type, realRatio);
+                
+                // 插入视频元素
                 if (googleAvailable) {
                     container.innerHTML = `<iframe src="https://www.youtube.com/embed/${source.youtube}?autoplay=1&rel=0&modestbranding=1" allow="autoplay; fullscreen"></iframe>`;
                 } else {
@@ -730,6 +748,7 @@
                 container.style.width = '0';
                 container.style.height = '0';
                 currentVideoType = null;
+                currentVideoRatio = null;
             };
 
             window.loadLiveDemo = function() {
@@ -761,23 +780,30 @@
                 // 检测google可用性
                 const detector = new Image();
                 detector.onload = () => { googleAvailable = true; playBadgeImg.src = badgeUrl; };
-                detector.onerror = () => { googleAvailable = false; playBadgeImg.src = badgeUrl; }; // 依然显示对应语言图片
+                detector.onerror = () => { googleAvailable = false; playBadgeImg.src = badgeUrl; };
                 detector.src = badgeUrl;
                 localStorage.setItem('aura_lang', langCode);
                 document.getElementById('langSwitcher').value = langCode;
             };
 
-            // 监听窗口大小变化，重新调整演示区域
+            // 监听窗口大小变化
             window.addEventListener('resize', () => {
                 adjustLiveDemoSize();
                 
-                // 如果视频正在显示，重新调整其尺寸
-                if (viewport.style.display === 'flex' && currentVideoType) {
-                    const source = videoSources[currentVideoType];
-                    if (source) {
-                        applyVideoSize(currentVideoType, source.defaultRatio);
-                    }
+                if (viewport.style.display === 'flex' && currentVideoType && currentVideoRatio) {
+                    applyVideoSize(currentVideoType, currentVideoRatio);
                 }
+            });
+
+            // 监听屏幕方向变化
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => {
+                    adjustLiveDemoSize();
+                    
+                    if (viewport.style.display === 'flex' && currentVideoType && currentVideoRatio) {
+                        applyVideoSize(currentVideoType, currentVideoRatio);
+                    }
+                }, 100);
             });
 
             window.onload = () => {
@@ -791,7 +817,6 @@
                     else lang = 'en';
                 }
                 changeLanguage(lang);
-                // 预调整
                 adjustLiveDemoSize();
             };
         })();
