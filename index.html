@@ -418,6 +418,7 @@
             <option value="zh-TW">繁體中文</option>
             <option value="ja">日本語</option>
             <option value="ko">한국어</option>
+            <option value="pt-BR">Português (Brasil)</option>
         </select>
     </nav>
 
@@ -884,7 +885,13 @@
                 let lang = localStorage.getItem('aura_lang');
                 if (!lang) {
                     const browserLang = navigator.language.toLowerCase();
-                    if (browserLang.includes('tw') || browserLang.includes('hk')) lang = 'zh-TW';
+                    // 巴西葡萄牙语检测（优先精确匹配 pt-br）
+                    if (browserLang === 'pt-br') lang = 'pt-BR';
+                    // 其他葡萄牙语变体（葡萄牙、安哥拉、莫桑比克等）也使用巴西葡萄牙语
+                    else if (browserLang.startsWith('pt-')) lang = 'pt-BR';
+                    else if (browserLang === 'pt') lang = 'pt-BR';
+                    // 中文检测
+                    else if (browserLang.includes('tw') || browserLang.includes('hk')) lang = 'zh-TW';
                     else if (browserLang.includes('zh')) lang = 'zh-CN';
                     else if (browserLang.includes('ja')) lang = 'ja';
                     else if (browserLang.includes('ko')) lang = 'ko';
