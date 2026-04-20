@@ -441,8 +441,11 @@
         
         .gallery-item {
             flex-shrink: 0;
-            width: 220px;
-            height: 440px;
+            /* 移除固定宽高 */
+            /* width: 220px; */
+            /* height: 440px; */
+            min-width: 180px;
+            min-height: 200px;
             border-radius: 28px;
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0,0,0,0.15);
@@ -1155,7 +1158,6 @@
                 track.className = 'gallery-track';
                 track.id = 'galleryTrack';
                 
-                // 创建双倍图片实现无缝循环
                 const allImages = [...images, ...images];
                 
                 allImages.forEach((img, index) => {
@@ -1164,10 +1166,23 @@
                     item.setAttribute('role', 'img');
                     item.setAttribute('aria-label', `AuraSand theme ${(index % images.length) + 1}: ${img.name.replace('.webp', '')}`);
                     
-                    const image = document.createElement('img');
+                    const image = new Image();
                     image.src = img.url;
                     image.alt = `AuraSand 3D hourglass theme: ${img.name.replace('.webp', '').replace(/_/g, ' ')}`;
-                    image.loading = 'lazy';
+                    image.style.width = '100%';
+                    image.style.height = '100%';
+                    image.style.objectFit = 'cover';
+                    
+                    image.onload = () => {
+                        const isLandscape = image.naturalWidth > image.naturalHeight;
+                        if (isLandscape) {
+                            item.style.width = '280px';
+                            item.style.height = '200px';
+                        } else {
+                            item.style.width = '220px';
+                            item.style.height = '440px';
+                        }
+                    };
                     
                     image.onerror = () => {
                         console.warn('Failed to load image:', img.url);
@@ -1180,10 +1195,8 @@
                 
                 galleryWrapper.appendChild(track);
                 
-                // 动态调整动画速度
-                const baseSpeed = 40;
-                const speedFactor = Math.max(20, baseSpeed - (images.length * 1.5));
-                track.style.animationDuration = `${speedFactor}s`;
+                // 固定速度，不受图片数量影响
+                track.style.animationDuration = '35s';
             }
 
             // 更新 Schema.org 截图数据
