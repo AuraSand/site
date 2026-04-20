@@ -23,7 +23,7 @@
     <meta name="twitter:description" data-i18n="twitterDesc" content="Transform time into digital art. 3D hourglass timer for deep focus & productivity.">
     <meta name="twitter:image" content="https://aurasand.github.io/site/screenshot_en.jpg">
     
-    <!-- 多语言 SEO - 使用查询参数而非子路径 -->
+    <!-- 多语言 SEO -->
     <link rel="alternate" hreflang="en" href="https://aurasand.github.io/site?lang=en">
     <link rel="alternate" hreflang="zh-CN" href="https://aurasand.github.io/site?lang=zh-CN">
     <link rel="alternate" hreflang="zh-TW" href="https://aurasand.github.io/site?lang=zh-TW">
@@ -40,7 +40,7 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
     
-    <!-- 预加载关键资源 -->
+    <!-- 预加载 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://play.google.com">
@@ -50,7 +50,7 @@
     <!-- 多语言字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     
-    <!-- Schema.org 结构化数据 - 动态版本 -->
+    <!-- Schema.org 结构化数据 -->
     <script type="application/ld+json" id="schemaApp">
     {
         "@context": "https://schema.org",
@@ -117,7 +117,6 @@
             flex-direction: column;
         }
 
-        /* SEO 隐藏但可访问的 H1 */
         .seo-h1 {
             position: absolute;
             width: 1px;
@@ -155,7 +154,6 @@
             font-weight: 500;
         }
 
-        /* Hero 区域 */
         .hero { 
             display: flex; 
             align-items: center; 
@@ -244,7 +242,6 @@
             max-width: 100%;
         }
 
-        /* 演示区域 */
         .demo-section { 
             max-width: 1200px; 
             margin: 20px auto 0; 
@@ -358,7 +355,6 @@
             background: rgba(0,0,0,0.7);
         }
 
-        /* 特性卡片 */
         .features {
             max-width: 1200px; 
             margin: 50px auto 80px; 
@@ -382,7 +378,7 @@
         .feature-card h3 { font-size: 22px; margin-bottom: 15px; color: var(--primary-color); }
         .feature-card p { font-size: 15px; color: var(--text-light); line-height: 1.7; }
 
-        /* ===== 动态截图画廊（移到底部） ===== */
+        /* 动态截图画廊 */
         .gallery-section {
             max-width: 1200px;
             margin: 60px auto 40px;
@@ -441,7 +437,6 @@
         
         .gallery-item {
             flex-shrink: 0;
-            /* 移除固定宽高，改为 JS 动态设置 */
             border-radius: 28px;
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0,0,0,0.15);
@@ -450,21 +445,6 @@
             cursor: pointer;
             background: #f0f0f0;
             position: relative;
-        }
-
-        /* 移动端适配 */
-        @media (max-width: 768px) {
-            .gallery-item {
-                border-width: 3px;
-                border-radius: 22px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .gallery-item {
-                border-width: 3px;
-                border-radius: 18px;
-            }
         }
         
         .gallery-item:hover {
@@ -493,22 +473,74 @@
             font-size: 14px;
         }
         
-        .gallery-error {
-            text-align: center;
-            color: rgba(255,255,255,0.9);
-            padding: 20px;
-            font-size: 14px;
-            background: rgba(255,100,100,0.2);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            margin: 20px 0;
-        }
-        
         .gallery-empty {
             text-align: center;
             color: rgba(255,255,255,0.8);
             padding: 40px;
             font-size: 14px;
+        }
+
+        /* 画廊导航 */
+        .gallery-navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .gallery-arrow {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-main);
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            user-select: none;
+        }
+
+        .gallery-arrow:hover {
+            background: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .gallery-arrow:active {
+            transform: scale(0.95);
+        }
+
+        .gallery-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .gallery-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-dot.active {
+            background: #fff;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        .gallery-dot:hover {
+            background: rgba(255,255,255,0.8);
         }
         
         @keyframes scrollGallery {
@@ -533,7 +565,6 @@
         }
         footer a:hover { text-decoration: underline; opacity: 1; }
 
-        /* 动画 */
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -561,7 +592,7 @@
             
             .gallery-header { flex-direction: column; text-align: center; }
             .gallery-title { font-size: 24px; }
-            .gallery-item { border-width: 3px; }
+            .gallery-item { border-width: 3px; border-radius: 22px; }
             .gallery-track { gap: 15px; }
             
             .demo-tabs .tab-btn { padding: 10px 18px; font-size: 15px; }
@@ -569,6 +600,12 @@
                 border-width: 6px;
                 border-radius: 34px;
                 max-width: 95%;
+            }
+            
+            .gallery-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
             }
         }
 
@@ -579,7 +616,7 @@
             .play-badge img { height: 50px; }
             .phone-mockup { width: 200px; height: 400px; }
             
-            .gallery-item {}
+            .gallery-item { border-width: 3px; border-radius: 18px; }
             
             .phone-frame-mockup, .video-container {
                 border-width: 5px;
@@ -591,7 +628,6 @@
 </head>
 <body>
 
-    <!-- SEO H1 (视觉隐藏但搜索引擎可见) -->
     <h1 class="seo-h1" data-i18n="seoH1">AuraSand - Aesthetic 3D Hourglass Focus Timer & Pomodoro App for Deep Work</h1>
 
     <nav>
@@ -614,19 +650,11 @@
             <h1 data-i18n="heroTitle">Let time flow <br>into art.</h1>
             <p data-i18n="heroDesc">Transform your time into digital art. AuraSand is an immersive 3D-effect hourglass designed for deep focus, studying, and meditation. Enjoy beautiful themes, interactive weather, and relaxing white noise.</p>
             <div class="download-area">
-                <a href="https://play.google.com/store/apps/details?id=com.siteflare.hourglass" 
-                   target="_blank" 
-                   class="play-badge" 
-                   rel="noopener"
-                   itemprop="downloadUrl">
-                    <img id="playBadgeImg" 
-                         src="en_badge_web_generic.png" 
-                         alt="Get AuraSand on Google Play - Aesthetic 3D Focus Timer" 
-                         style="height: 60px;"
-                         loading="lazy">
+                <a href="https://play.google.com/store/apps/details?id=com.siteflare.hourglass" target="_blank" class="play-badge" rel="noopener" itemprop="downloadUrl">
+                    <img id="playBadgeImg" src="en_badge_web_generic.png" alt="Get AuraSand on Google Play" style="height: 60px;" loading="lazy">
                 </a>
                 <div class="qr-box">
-                    <img src="qrcode.png" alt="QR code to download AuraSand app" onerror="this.style.display='none'" loading="lazy">
+                    <img src="qrcode.png" alt="QR code" onerror="this.style.display='none'" loading="lazy">
                     <span data-i18n="scanQr">Scan to Download</span>
                 </div>
             </div>
@@ -642,7 +670,6 @@
             <button class="tab-btn" onclick="toggleVideo('horizontal')" data-i18n="vidTablet">💻 Tablet Demo</button>
         </div>
         
-        <!-- Live Web Demo -->
         <div id="liveDemoViewport" class="live-viewport">
             <div class="phone-frame-mockup" id="liveMockup">
                 <div class="phone-inner">
@@ -653,7 +680,6 @@
             <button class="video-close-btn" onclick="hideLiveDemo()" data-i18n="closeVid">Close Demo ✕</button>
         </div>
 
-        <!-- 视频演示 -->
         <div id="videoViewport" class="video-viewport">
             <div class="video-container" id="videoContainer"></div>
             <button class="video-close-btn" onclick="hideVideo()" data-i18n="closeVid">Close Demo ✕</button>
@@ -687,14 +713,19 @@
         </div>
     </section>
 
-    <!-- ===== 动态截图画廊（移到底部） ===== -->
+    <!-- 动态截图画廊 -->
     <section class="gallery-section" aria-label="App Screenshots Gallery" id="gallerySection">
         <div class="gallery-header">
-            <h2 class="gallery-title" data-i18n="galleryTitle">Explore Beautiful Themes</h2>
+            <h2 class="gallery-title" data-i18n="galleryTitle">App Screenshots</h2>
             <span class="gallery-status" id="galleryStatus">Loading...</span>
         </div>
         <div class="gallery-wrapper" id="galleryWrapper">
-            <div class="gallery-loading" id="galleryLoading">⌛ Loading themes...</div>
+            <div class="gallery-loading" id="galleryLoading">⌛ Loading screenshots...</div>
+        </div>
+        <div class="gallery-navigation" id="galleryNav" style="display: none;">
+            <div class="gallery-arrow" id="galleryPrev" aria-label="Previous">←</div>
+            <div class="gallery-dots" id="galleryDots"></div>
+            <div class="gallery-arrow" id="galleryNext" aria-label="Next">→</div>
         </div>
     </section>
 
@@ -725,23 +756,21 @@
         </div>
     </footer>
 
-        <script>
+    <script>
         (function(){
-            // GitHub API 配置 - 动态获取 snapshot 文件夹
+            // GitHub API 配置
             const GITHUB_CONFIG = {
-                owner: 'AuraSand',           // GitHub 用户名
-                repo: 'site',  // 仓库名
-                path: 'snapshot',            // 截图文件夹路径（根目录下的 snapshot）
-                branch: 'main'               // 默认分支
+                owner: 'AuraSand',
+                repo: 'site',
+                path: 'snapshot',
+                branch: 'main'
             };
             
-            // 版本号配置
             const VERSION_CONFIG = {
                 url: 'https://raw.githubusercontent.com/luyiwind/Hourglass-cng/refs/heads/release/version.json',
                 fallbackVersion: '1.0.3'
             };
             
-            // 备用图片列表（API 失败时使用）- 使用绝对路径
             const FALLBACK_IMAGES = [
                 'snapshot/src_unicorn_01.webp',
                 'snapshot/src_whale_01.webp',
@@ -753,7 +782,6 @@
                 'snapshot/src_jewel_01.webp'
             ];
 
-            // 视频源配置
             const videoSources = {
                 'vertical': {
                     youtube: 'QpeLBJT2Avo',
@@ -767,27 +795,25 @@
                 }
             };
 
-            // 多语言翻译
             const translations = {
                 "en": {
                     "pageTitle": "AuraSand | Aesthetic 3D Hourglass Focus Timer & Pomodoro App",
-                    "metaDesc": "Transform time into digital art. AuraSand is an immersive 3D hourglass timer for deep focus, studying & meditation. Features aesthetic themes, weather effects & white noise.",
+                    "metaDesc": "Transform time into digital art. AuraSand is an immersive 3D hourglass timer for deep focus, studying & meditation.",
                     "ogTitle": "AuraSand | The Most Aesthetic 3D Focus Timer",
                     "ogDesc": "Transform your time into digital art. Immersive 3D hourglass for deep focus, studying & meditation.",
                     "twitterTitle": "AuraSand | Aesthetic 3D Focus Timer",
                     "twitterDesc": "Transform time into digital art. 3D hourglass timer for deep focus & productivity.",
                     "seoH1": "AuraSand - Aesthetic 3D Hourglass Focus Timer & Pomodoro App for Deep Work",
-                    "galleryTitle": "Explore Beautiful Themes",
-                    "galleryLoading": "Loading themes...",
+                    "galleryTitle": "App Screenshots",
+                    "galleryLoading": "Loading screenshots...",
                     "gallerySuccess": "{count} screenshots loaded",
-                    "galleryError": "Failed to load themes",
-                    "galleryEmpty": "No themes found",
+                    "galleryError": "Failed to load screenshots",
+                    "galleryEmpty": "No screenshots found",
                     "screenshot": "screenshot_en.webp",
                     "heroTitle": "Let time flow <br>into art.",
-                    "heroDesc": "Transform your time into digital art. AuraSand is an immersive 3D-effect hourglass designed for deep focus, studying, and meditation. Enjoy beautiful themes, interactive weather, and relaxing white noise.",
+                    "heroDesc": "Transform your time into digital art. AuraSand is an immersive 3D-effect hourglass designed for deep focus, studying, and meditation.",
                     "vidMobile": "📱 Mobile Demo", 
                     "vidTablet": "💻 Tablet Demo", 
-                    "liveDemo": "✨ Live Web Demo", 
                     "closeVid": "Close Demo ✕", 
                     "scanQr": "Scan to Download",
                     "f1Title": "🎨 3D Digital Art", 
@@ -813,23 +839,22 @@
                 },
                 "zh-CN": {
                     "pageTitle": "AuraSand 灵动沙漏 | 3D 沉浸式专注计时器与番茄钟",
-                    "metaDesc": "让时间流动成艺术。AuraSand 是一款专为深度工作、学习和冥想设计的 3D 质感动态沙漏。享受精美的艺术主题、视听天气特效以及助眠白噪音。",
+                    "metaDesc": "让时间流动成艺术。AuraSand 是一款专为深度工作、学习和冥想设计的 3D 质感动态沙漏。",
                     "ogTitle": "AuraSand 灵动沙漏 | 绝美 3D 专注计时器",
-                    "ogDesc": "告别枯燥的数字。绝美 3D 质感动态沙漏，配合专属白噪音、下雨等音效和动画特效，为您打造零干扰的沉浸式专注空间。",
+                    "ogDesc": "告别枯燥的数字。绝美 3D 质感动态沙漏，为您打造零干扰的沉浸式专注空间。",
                     "twitterTitle": "AuraSand 灵动沙漏 | 3D 专注计时器",
                     "twitterDesc": "让时间流动成艺术。专为深度工作、学习和冥想设计的 3D 质感动态沙漏。",
                     "seoH1": "AuraSand 灵动沙漏 - 3D 沉浸式专注计时器与番茄钟应用",
-                    "galleryTitle": "探索精美主题",
-                    "galleryLoading": "正在加载主题...",
+                    "galleryTitle": "应用截图",
+                    "galleryLoading": "正在加载截图...",
                     "gallerySuccess": "已加载 {count} 张截图",
-                    "galleryError": "加载主题失败",
-                    "galleryEmpty": "未找到主题",
+                    "galleryError": "加载截图失败",
+                    "galleryEmpty": "未找到截图",
                     "screenshot": "screenshot_zh-CN.webp",
                     "heroTitle": "让时间，<br>流动成艺术。",
                     "heroDesc": "告别枯燥的数字。绝美 3D 质感动态沙漏，配合专属白噪音、下雨等音效和动画特效，为您打造零干扰的沉浸式专注空间。",
                     "vidMobile": "📱 手机端演示", 
                     "vidTablet": "💻 平板端演示", 
-                    "liveDemo": "✨ 在线试用", 
                     "closeVid": "收起演示 ✕", 
                     "scanQr": "扫码获取",
                     "f1Title": "🎨 3D 数字潮玩", 
@@ -841,9 +866,9 @@
                     "f4Title": "⏳ 灵活时间掌控", 
                     "f4Desc": "1-999 分钟随心设定。支持锁屏通知与后台精确运行。",
                     "f5Title": "✨ 隐藏计时 & 专属禅语 (Pro)", 
-                    "f5Desc": "告别数字焦虑。支持隐藏倒计时滴答，浮现宁静禅语。让每一次专注都成为心灵对话。",
+                    "f5Desc": "告别数字焦虑。支持隐藏倒计时滴答，浮现宁静禅语。",
                     "f6Title": "⛈️ 声光联动拟真特效(Pro)", 
-                    "f6Desc": "独创天气联动体验。当屏幕闪过雷电，雨声与闪电完美同步交织，带给您极具穿透力的沉浸式视听享受。",
+                    "f6Desc": "独创天气联动体验。雨声与闪电完美同步交织，带给您极具穿透力的沉浸式视听享受。",
                     "privacy": "隐私政策", 
                     "contact": "联系我们",
                     "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/zh-cn_badge_web_generic.png",
@@ -855,23 +880,22 @@
                 },
                 "zh-TW": {
                     "pageTitle": "AuraSand 靈動沙漏 | 3D 沉浸式專注計時器與番茄鐘",
-                    "metaDesc": "讓時間流動成藝術。AuraSand 是一款專為深度工作、學習和冥想設計的 3D 質感動態沙漏。享受精美的藝術主題、視聽天氣特效以及助眠白噪音。",
+                    "metaDesc": "讓時間流動成藝術。AuraSand 是一款專為深度工作、學習和冥想設計的 3D 質感動態沙漏。",
                     "ogTitle": "AuraSand 靈動沙漏 | 絕美 3D 專注計時器",
-                    "ogDesc": "告別枯燥的數字。絕美 3D 質感動態沙漏，配合專屬白噪音、下雨等音效和動畫特效，為您打造零干擾的沉浸式專注空間。",
+                    "ogDesc": "告別枯燥的數字。絕美 3D 質感動態沙漏，為您打造零干擾的沉浸式專注空間。",
                     "twitterTitle": "AuraSand 靈動沙漏 | 3D 專注計時器",
                     "twitterDesc": "讓時間流動成藝術。專為深度工作、學習和冥想設計的 3D 質感動態沙漏。",
                     "seoH1": "AuraSand 靈動沙漏 - 3D 沉浸式專注計時器與番茄鐘應用",
-                    "galleryTitle": "探索精美主題",
-                    "galleryLoading": "正在加載主題...",
+                    "galleryTitle": "應用截圖",
+                    "galleryLoading": "正在加載截圖...",
                     "gallerySuccess": "已加載 {count} 張截圖",
-                    "galleryError": "加載主題失敗",
-                    "galleryEmpty": "未找到主題",
+                    "galleryError": "加載截圖失敗",
+                    "galleryEmpty": "未找到截圖",
                     "screenshot": "screenshot_zh-TW.webp",
                     "heroTitle": "讓時間，<br>流動成藝術。",
                     "heroDesc": "告別枯燥的數字。絕美 3D 質感動態沙漏，配合專屬白噪音、下雨等音效和動畫特效，為您打造零干擾的沉浸式專注空間。",
                     "vidMobile": "📱 手機端演示", 
                     "vidTablet": "💻 平板端演示", 
-                    "liveDemo": "✨ 線上試用", 
                     "closeVid": "收起演示 ✕", 
                     "scanQr": "掃碼獲取",
                     "f1Title": "🎨 3D 數位潮玩", 
@@ -883,9 +907,9 @@
                     "f4Title": "⏳ 靈活時間掌控", 
                     "f4Desc": "1-999 分鐘隨心設定。支援鎖屏通知與後台精確運行。",
                     "f5Title": "✨ 隱藏計時 & 專屬禪語 (Pro)", 
-                    "f5Desc": "告別數字焦慮。支援隱藏倒計時滴答，浮現寧靜禪語。讓每一次專注都成為心靈對話。",
+                    "f5Desc": "告別數字焦慮。支援隱藏倒計時滴答，浮現寧靜禪語。",
                     "f6Title": "⛈️ 聲光聯動擬真特效(Pro)", 
-                    "f6Desc": "獨創天氣聯動體驗。當螢幕閃過雷電，雨聲與閃電完美同步交織，帶給您極具穿透力的沉浸式視聽享受。",
+                    "f6Desc": "獨創天氣聯動體驗。雨聲與閃電完美同步交織，帶給您極具穿透力的沉浸式視聽享受。",
                     "privacy": "隱私政策", 
                     "contact": "聯繫我們",
                     "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/zh-tw_badge_web_generic.png",
@@ -897,23 +921,22 @@
                 },
                 "ja": {
                     "pageTitle": "AuraSand | 美しい3D砂時計フォーカスタイマーとポモドーロ",
-                    "metaDesc": "時間を芸術に変える。AuraSandは、深い集中、勉強、瞑想のために設計された没入型3D砂時計タイマーです。美しいテーマ、インタラクティブな天気、リラックスできるホワイトノイズをお楽しみください。",
+                    "metaDesc": "時間を芸術に変える。AuraSandは、深い集中、勉強、瞑想のために設計された没入型3D砂時計タイマーです。",
                     "ogTitle": "AuraSand | 最も美しい3Dフォーカスタイマー",
                     "ogDesc": "時間をデジタルアートに変えましょう。深い集中、勉強、瞑想のための没入型3D砂時計。",
                     "twitterTitle": "AuraSand | 美しい3Dフォーカスタイマー",
                     "twitterDesc": "時間を芸術に変える。深い集中と生産性のための3D砂時計タイマー。",
                     "seoH1": "AuraSand - 美しい3D砂時計フォーカスタイマーとポモドーロアプリ",
-                    "galleryTitle": "美しいテーマを探索",
-                    "galleryLoading": "テーマを読み込み中...",
+                    "galleryTitle": "スクリーンショット",
+                    "galleryLoading": "スクリーンショットを読み込み中...",
                     "gallerySuccess": "{count}枚のスクリーンショットを読み込みました",
-                    "galleryError": "テーマの読み込みに失敗しました",
-                    "galleryEmpty": "テーマが見つかりません",
+                    "galleryError": "読み込みに失敗しました",
+                    "galleryEmpty": "スクリーンショットが見つかりません",
                     "screenshot": "screenshot_jp.webp",
                     "heroTitle": "時間を、<br>芸術に。",
                     "heroDesc": "退屈な数字とはお別れ。美しい3Dの砂時計と、専用のホワイトノイズ、雨音、アニメーション効果が、没入型の集中空間を作ります。",
                     "vidMobile": "📱 モバイルデモ", 
                     "vidTablet": "💻 タブレットデモ", 
-                    "liveDemo": "✨ ライブデモ", 
                     "closeVid": "閉じる ✕", 
                     "scanQr": "スキャンしてDL",
                     "f1Title": "🎨 3Dデジタルアート", 
@@ -925,7 +948,7 @@
                     "f4Title": "⏳ 柔軟な時間管理", 
                     "f4Desc": "1〜999分で自由に設定。正確なバックグラウンド実行をサポート。",
                     "f5Title": "✨ タイマー非表示 & 禅語 (Pro)", 
-                    "f5Desc": "数字の焦りから解放。タイマーを隠し、禅語を表示。好きな言葉のカスタマイズも可能。",
+                    "f5Desc": "数字の焦りから解放。タイマーを隠し、禅語を表示。",
                     "f6Title": "⛈️ 雷雨シンクロエフェクト (Pro)", 
                     "f6Desc": "没入型天候エフェクト。雷と雨の音が完璧にシンクロする究極の体験。",
                     "privacy": "プライバシーポリシー", 
@@ -939,23 +962,22 @@
                 },
                 "ko": {
                     "pageTitle": "AuraSand | 미학적인 3D 모래시계 집중 타이머와 뽀모도로",
-                    "metaDesc": "시간을 예술로 만드세요. AuraSand는 심층 집중, 공부 및 명상을 위해 설계된 몰입형 3D 모래시계 타이머입니다. 아름다운 테마, 인터랙티브한 날씨, 편안한 백색 소음을 즐겨보세요.",
+                    "metaDesc": "시간을 예술로 만드세요. AuraSand는 심층 집중, 공부 및 명상을 위해 설계된 몰입형 3D 모래시계 타이머입니다.",
                     "ogTitle": "AuraSand | 가장 미학적인 3D 집중 타이머",
                     "ogDesc": "시간을 디지털 예술로 변형하세요. 심층 집중, 공부 및 명상을 위한 몰입형 3D 모래시계입니다.",
                     "twitterTitle": "AuraSand | 미학적인 3D 집중 타이머",
                     "twitterDesc": "시간을 예술로 만드세요. 심층 집중과 생산성을 위한 3D 모래시계 타이머.",
                     "seoH1": "AuraSand - 미학적인 3D 모래시계 집중 타이머와 뽀모도로 앱",
-                    "galleryTitle": "아름다운 테마 탐색",
-                    "galleryLoading": "테마 로드 중...",
+                    "galleryTitle": "스크린샷",
+                    "galleryLoading": "스크린샷 로드 중...",
                     "gallerySuccess": "스크린샷 {count}개 로드됨",
-                    "galleryError": "테마 로드 실패",
-                    "galleryEmpty": "테마를 찾을 수 없습니다",
+                    "galleryError": "스크린샷 로드 실패",
+                    "galleryEmpty": "스크린샷을 찾을 수 없습니다",
                     "screenshot": "screenshot_ko.webp",
                     "heroTitle": "시간을<br>예술로 만들다.",
                     "heroDesc": "지루한 숫자와 작별하세요. 아름다운 3D 모래시계와 전용 백색 소음, 빗소리, 애니메이션 효과가 방해 없는 집중 공간을 만듭니다.",
                     "vidMobile": "📱 모바일 데모", 
                     "vidTablet": "💻 태블릿 데모", 
-                    "liveDemo": "✨ 라이브 데모", 
                     "closeVid": "닫기 ✕", 
                     "scanQr": "다운로드 스캔",
                     "f1Title": "🎨 3D 디지털 아트", 
@@ -967,7 +989,7 @@
                     "f4Title": "⏳ 유연한 시간 설정", 
                     "f4Desc": "1-999분 설정. 정확한 백그라운드 실행을 지원합니다.",
                     "f5Title": "✨ 명언 & 타이머 숨기기 (Pro)", 
-                    "f5Desc": "숫자 강박에서 벗어나세요. 타이머를 숨기고 명언을 띄웁니다. 나만의 명언 커스텀 지원.",
+                    "f5Desc": "숫자 강박에서 벗어나세요. 타이머를 숨기고 명언을 띄웁니다.",
                     "f6Title": "⛈️ 날씨 싱크 효과 (Pro)", 
                     "f6Desc": "몰입형 날씨 동기화. 번개 번쩍임과 빗소리의 완벽한 조화를 경험하세요.",
                     "privacy": "개인정보 처리방침", 
@@ -981,43 +1003,42 @@
                 },
                 "pt-BR": {
                     "pageTitle": "AuraSand | Ampulheta 3D Estética - Timer de Foco e Pomodoro",
-                    "metaDesc": "Transforme o tempo em arte digital. AuraSand é uma ampulheta 3D imersiva projetada para foco profundo, estudos e meditação. Desfrute de temas bonitos, clima interativo e ruído branco relaxante.",
+                    "metaDesc": "Transforme o tempo em arte digital. AuraSand é uma ampulheta 3D imersiva projetada para foco profundo, estudos e meditação.",
                     "ogTitle": "AuraSand | O Timer de Foco 3D Mais Estético",
                     "ogDesc": "Transforme seu tempo em arte digital. Ampulheta 3D imersiva para foco profundo, estudos e meditação.",
                     "twitterTitle": "AuraSand | Timer de Foco 3D Estético",
                     "twitterDesc": "Transforme o tempo em arte. Timer de ampulheta 3D para foco profundo e produtividade.",
                     "seoH1": "AuraSand - Ampulheta 3D Estética, Timer de Foco e Aplicativo Pomodoro",
-                    "galleryTitle": "Explore Temas Lindos",
-                    "galleryLoading": "Carregando temas...",
+                    "galleryTitle": "Capturas de Tela",
+                    "galleryLoading": "Carregando capturas...",
                     "gallerySuccess": "{count} capturas de tela carregadas",
-                    "galleryError": "Falha ao carregar temas",
-                    "galleryEmpty": "Nenhum tema encontrado",
+                    "galleryError": "Falha ao carregar capturas",
+                    "galleryEmpty": "Nenhuma captura encontrada",
                     "screenshot": "screenshot_en.jpg",
                     "heroTitle": "Transforme o tempo<br>em arte.",
-                    "heroDesc": "Diga adeus aos números chatos. Ampulhetas 3D deslumbrantes com ruído branco exclusivo, efeitos de chuva e animações criam um espaço de foco imersivo sem distrações.",
+                    "heroDesc": "Diga adeus aos números chatos. Ampulhetas 3D deslumbrantes com ruído branco exclusivo, efeitos de chuva e animações criam um espaço de foco imersivo.",
                     "vidMobile": "📱 Demo Mobile", 
                     "vidTablet": "💻 Demo Tablet", 
-                    "liveDemo": "✨ Demo Ao Vivo", 
                     "closeVid": "Fechar Demo ✕", 
                     "scanQr": "Escanear p/ Baixar",
                     "f1Title": "🎨 Arte Digital 3D", 
-                    "f1Desc": "De unicórnios dos sonhos a baleias de cristal, colecione ampulhetas artísticas exclusivas para construir sua estética de desktop.",
+                    "f1Desc": "De unicórnios dos sonhos a baleias de cristal, colecione ampulhetas artísticas exclusivas.",
                     "f2Title": "🧘 Fluxo Extremo", 
-                    "f2Desc": "Ative o modo Zen para ocultar a interface. Concentre-se inteiramente na areia fluindo e elimine todas as distrações.",
+                    "f2Desc": "Ative o modo Zen para ocultar a interface. Concentre-se inteiramente na areia fluindo.",
                     "f3Title": "🎶 Experiência Sensorial", 
                     "f3Desc": "Ruído branco exclusivo de alta qualidade e feedback tátil tornam cada sessão de foco um ritual.",
                     "f4Title": "⏳ Timer Flexível", 
-                    "f4Desc": "Configure de 1 a 999 minutos. Suporta notificações na tela de bloqueio e rastreamento preciso em segundo plano.",
+                    "f4Desc": "Configure de 1 a 999 minutos. Suporta notificações na tela de bloqueio.",
                     "f5Title": "✨ Ocultar Timer & Frases Zen (Pro)", 
-                    "f5Desc": "Diga adeus à ansiedade digital. Oculte os números do cronômetro e exiba frases Zen calmantes. Personalizável.",
+                    "f5Desc": "Diga adeus à ansiedade digital. Oculte os números e exiba frases Zen calmantes.",
                     "f6Title": "⛈️ Efeitos Climáticos Sincronizados (Pro)", 
                     "f6Desc": "Experiência única sincronizada com o clima. Som de chuva e trovões perfeitamente sincronizados.",
                     "privacy": "Política de Privacidade", 
                     "contact": "Entre em Contato",
                     "playBadge": "https://play.google.com/intl/en_us/badges/static/images/badges/pt_badge_web_generic.png",
-                    "statTotalViews": "Visualizações:", 
-                    "statVisitors": "Visitantes:", 
-                    "statPageViews": "Página:",
+                    "statTotalViews": "Visualizações", 
+                    "statVisitors": "Visitantes", 
+                    "statPageViews": "Página",
                     "statTimes": "vezes",
                     "statPeople": "pessoas"
                 }
@@ -1043,385 +1064,20 @@
             let appVersion = VERSION_CONFIG.fallbackVersion;
             const FLUTTER_APP_URL = "https://aurasand.pages.dev/";
 
-            // ===== 获取版本号 =====
-            async function fetchVersion() {
-                try {
-                    const response = await fetch(VERSION_CONFIG.url, {
-                        cache: 'no-cache'
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.version) {
-                            appVersion = data.version;
-                            updateSchemaVersion(appVersion);
-                            console.log('App version:', appVersion);
-                        }
-                    }
-                } catch (error) {
-                    console.warn('Failed to fetch version:', error);
-                }
-            }
+            // 画廊控制变量
+            let galleryTrack = null;
+            let galleryItems = [];
+            let currentIndex = 0;
+            let autoScrollTimer = null;
+            let isUserInteracting = false;
 
-            // 更新 Schema 版本号
-            function updateSchemaVersion(version) {
-                try {
-                    if (schemaScript) {
-                        const data = JSON.parse(schemaScript.textContent);
-                        data.softwareVersion = version;
-                        schemaScript.textContent = JSON.stringify(data, null, 2);
-                    }
-                } catch (e) {
-                    console.warn('Failed to update schema version:', e);
-                }
-            }
-
-            // ===== GitHub API 动态获取截图 =====
-            async function fetchGalleryImages() {
-                const apiUrl = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}?ref=${GITHUB_CONFIG.branch}`;
-                
-                try {
-                    const response = await fetch(apiUrl, {
-                        headers: {
-                            'Accept': 'application/vnd.github.v3+json'
-                        },
-                        cache: 'no-cache'
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`GitHub API error: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    
-                    // 过滤出 webp 图片文件
-                    const images = data
-                        .filter(item => item.type === 'file' && item.name.endsWith('.webp'))
-                        .map(item => ({
-                            name: item.name,
-                            url: item.download_url,
-                            path: item.path
-                        }))
-                        .sort((a, b) => a.name.localeCompare(b.name));
-                    
-                    return { success: true, images: images };
-                    
-                } catch (error) {
-                    console.warn('Failed to fetch from GitHub API:', error);
-                    return { success: false, images: [] };
-                }
-            }
-
-            // 初始化画廊
-            async function initGallery() {
-                const currentLang = localStorage.getItem('aura_lang') || 'en';
-                const dict = translations[currentLang] || translations['en'];
-                
-                // 显示加载状态
-                galleryStatus.textContent = dict.galleryLoading || 'Loading themes...';
-                galleryStatus.style.background = 'rgba(100,100,100,0.3)';
-                
-                // 尝试从 GitHub API 获取
-                const result = await fetchGalleryImages();
-                let images = result.images;
-                
-                // 处理各种情况
-                if (!result.success) {
-                    // API 调用失败，使用备用
-                    console.log('GitHub API failed, using fallback images');
-                    images = FALLBACK_IMAGES.map(path => ({
-                        name: path.split('/').pop(),
-                        url: path,
-                        path: path
-                    }));
-                    galleryStatus.textContent = dict.galleryError || 'Failed to load themes';
-                    galleryStatus.style.background = 'rgba(255,150,50,0.3)';
-                } else if (images.length === 0) {
-                    // API 成功但目录为空
-                    galleryStatus.textContent = dict.galleryEmpty || 'No themes found';
-                    galleryStatus.style.background = 'rgba(255,100,100,0.3)';
-                    galleryWrapper.innerHTML = `<div class="gallery-empty">${dict.galleryEmpty || 'No themes found'}</div>`;
-                    return;
-                } else {
-                    // 成功获取图片
-                    galleryStatus.textContent = (dict.gallerySuccess || '{count} screenshots loaded').replace('{count}', images.length);
-                    galleryStatus.style.background = 'rgba(50,200,100,0.3)';
-                }
-                
-                galleryImages = images;
-                
-                // 创建画廊 DOM
-                createGallery(images);
-                
-                // 更新结构化数据
-                updateSchemaScreenshots(images);
-            }
-
-            // 创建画廊 DOM
-            function createGallery(images) {
-                galleryWrapper.innerHTML = '';
-                
-                if (images.length === 0) {
-                    galleryWrapper.innerHTML = '<div class="gallery-empty">No themes available</div>';
-                    return;
-                }
-                
-                const track = document.createElement('div');
-                track.className = 'gallery-track';
-                track.id = 'galleryTrack';
-                
-                const allImages = [...images, ...images];
-                
-                // 存储所有 item 用于计算宽度
-                const items = [];
-                let loadedCount = 0;
-                
-                // 获取基础高度（响应式）
-                function getBaseHeight() {
-                    if (window.innerWidth <= 480) return 280;
-                    if (window.innerWidth <= 768) return 320;
-                    return 400;
-                }
-                
-                // 重新计算动画速度（真正的恒定速度）
-                function recalculateSpeed() {
-                    let totalWidth = 0;
-                    items.forEach(item => {
-                        if (item.style.width) {
-                            totalWidth += parseFloat(item.style.width);
-                        }
-                    });
-                    // 加上 gap 间距（20px）
-                    totalWidth += items.length * 20;
-                    
-                    if (totalWidth > 0) {
-                        // 恒定速度：每秒移动 50px
-                        const SPEED = 50; // px/s
-                        const halfWidth = totalWidth / 2;
-                        const duration = halfWidth / SPEED;
-                        track.style.animationDuration = duration + 's';
-                    }
-                }
-                
-                allImages.forEach((img, index) => {
-                    const item = document.createElement('div');
-                    item.className = 'gallery-item';
-                    item.setAttribute('role', 'img');
-                    item.setAttribute('aria-label', `AuraSand theme ${(index % images.length) + 1}: ${img.name.replace('.webp', '')}`);
-                    
-                    const image = new Image();
-                    image.src = img.url;
-                    image.alt = `AuraSand 3D hourglass theme: ${img.name.replace('.webp', '').replace(/_/g, ' ')}`;
-                    image.style.width = '100%';
-                    image.style.height = '100%';
-                    image.style.objectFit = 'cover';
-                    
-                    image.onload = () => {
-                        const isLandscape = image.naturalWidth > image.naturalHeight;
-                        const baseHeight = getBaseHeight();
-                        
-                        if (isLandscape) {
-                            // 横屏：高度固定，宽度按比例
-                            const ratio = image.naturalWidth / image.naturalHeight;
-                            item.style.height = baseHeight + 'px';
-                            item.style.width = (baseHeight * ratio) + 'px';
-                        } else {
-                            // 竖屏：高度固定，宽度为高度的一半
-                            item.style.height = baseHeight + 'px';
-                            item.style.width = (baseHeight * 0.5) + 'px';
-                        }
-                        
-                        loadedCount++;
-                        // 所有图片加载完成后计算速度
-                        if (loadedCount === allImages.length) {
-                            recalculateSpeed();
-                        }
-                    };
-                    
-                    image.onerror = () => {
-                        console.warn('Failed to load image:', img.url);
-                        item.style.display = 'none';
-                        loadedCount++;
-                        if (loadedCount === allImages.length) {
-                            recalculateSpeed();
-                        }
-                    };
-                    
-                    item.appendChild(image);
-                    track.appendChild(item);
-                    items.push(item);
-                });
-                
-                galleryWrapper.appendChild(track);
-            }
-
-            // 更新 Schema.org 截图数据
-            function updateSchemaScreenshots(images) {
-                try {
-                    if (schemaScript) {
-                        const data = JSON.parse(schemaScript.textContent);
-                        if (data['@type'] === 'SoftwareApplication') {
-                            data.screenshot = images.slice(0, 6).map(img => img.url);
-                            schemaScript.textContent = JSON.stringify(data, null, 2);
-                        }
-                    }
-                } catch (e) {
-                    console.warn('Failed to update schema screenshots:', e);
-                }
-            }
-
-            // 辅助函数：关闭所有演示
-            function closeAllDemos() {
-                viewport.style.display = 'none';
-                container.innerHTML = '';
-                container.style.width = '0';
-                container.style.height = '0';
-                currentVideoType = null;
-                currentVideoRatio = null;
-                liveViewport.style.display = 'none';
-                flutterIframe.src = "";
-                flutterLoader.style.display = 'block';
-            }
-
-            // 检测视频真实比例
-            function detectVideoRatio(mp4Url, defaultRatio) {
-                return new Promise((resolve) => {
-                    const tempVideo = document.createElement('video');
-                    tempVideo.style.display = 'none';
-                    tempVideo.preload = "metadata";
-                    const timeout = setTimeout(() => {
-                        resolve(defaultRatio);
-                    }, 3000);
-                    
-                    tempVideo.onloadedmetadata = () => {
-                        clearTimeout(timeout);
-                        const ratio = tempVideo.videoWidth / tempVideo.videoHeight;
-                        resolve(ratio);
-                        tempVideo.remove();
-                    };
-                    
-                    tempVideo.onerror = () => {
-                        clearTimeout(timeout);
-                        resolve(defaultRatio);
-                        tempVideo.remove();
-                    };
-                    
-                    tempVideo.src = mp4Url;
-                });
-            }
-
-            // 计算视频尺寸
-            function applyVideoSize(type, ratio) {
-                const isMobile = window.innerWidth <= 768;
-                const maxWidth = isMobile ? window.innerWidth * 0.9 : 800;
-                const maxHeight = isMobile ? window.innerHeight * 0.6 : 600;
-                
-                let width, height;
-                
-                if (type === 'vertical') {
-                    height = Math.min(maxHeight, isMobile ? 600 : 700);
-                    width = height * ratio;
-                    if (width > maxWidth) {
-                        width = maxWidth;
-                        height = width / ratio;
-                    }
-                } else {
-                    width = Math.min(maxWidth, isMobile ? 500 : 800);
-                    height = width / ratio;
-                    if (height > maxHeight) {
-                        height = maxHeight;
-                        width = height * ratio;
-                    }
-                }
-                
-                width = Math.round(width);
-                height = Math.round(height);
-                
-                container.style.width = width + 'px';
-                container.style.height = height + 'px';
-                
-                return { width, height };
-            }
-
-            // 调整live demo尺寸
-            function adjustLiveDemoSize() {
-                if (!liveMockup || liveViewport.style.display === 'none') return;
-                
-                const ratio = 402 / 874;
-                const maxWidth = window.innerWidth * 0.85;
-                const maxHeight = window.innerHeight * 0.75;
-                
-                let targetW = 402;
-                let targetH = targetW / ratio;
-                
-                if (targetW > maxWidth) {
-                    targetW = maxWidth;
-                    targetH = targetW / ratio;
-                }
-                
-                if (targetH > maxHeight) {
-                    targetH = maxHeight;
-                    targetW = targetH * ratio;
-                }
-                
-                liveMockup.style.width = Math.round(targetW) + 'px';
-                liveMockup.style.height = Math.round(targetH) + 'px';
-            }
-
-            // 视频切换
-            window.toggleVideo = async function(type) {
-                closeAllDemos();
-                currentVideoType = type;
-                const source = videoSources[type];
-                viewport.style.display = 'flex';
-                
-                const realRatio = await detectVideoRatio(source.mp4, source.defaultRatio);
-                currentVideoRatio = realRatio;
-                
-                applyVideoSize(type, realRatio);
-                
-                if (googleAvailable) {
-                    container.innerHTML = `<iframe src="https://www.youtube.com/embed/${source.youtube}?autoplay=1&rel=0&modestbranding=1" allow="autoplay; fullscreen" title="AuraSand ${type} demo video"></iframe>`;
-                } else {
-                    container.innerHTML = `<video playsinline controls loop autoplay src="${source.mp4}" title="AuraSand ${type} demo video"></video>`;
-                }
-                
-                setTimeout(() => viewport.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-            };
-
-            window.hideVideo = function() {
-                viewport.style.display = 'none';
-                container.innerHTML = '';
-                container.style.width = '0';
-                container.style.height = '0';
-                currentVideoType = null;
-                currentVideoRatio = null;
-            };
-
-            window.loadLiveDemo = function() {
-                closeAllDemos();
-                liveViewport.style.display = 'flex';
-                adjustLiveDemoSize();
-                if (flutterIframe.src !== FLUTTER_APP_URL) {
-                    flutterIframe.src = FLUTTER_APP_URL;
-                    flutterIframe.onload = () => { flutterLoader.style.display = 'none'; };
-                }
-                setTimeout(() => liveViewport.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-            };
-
-            window.hideLiveDemo = function() {
-                liveViewport.style.display = 'none';
-                flutterIframe.src = "";
-                flutterLoader.style.display = 'block';
-            };
-
-            // ===== 语言切换（支持 URL 参数） =====
+            // ===== 语言切换 =====
             window.changeLanguage = function(langCode) {
                 const dict = translations[langCode] || translations["en"];
                 
                 document.querySelectorAll('[data-i18n]').forEach(el => {
                     const key = el.getAttribute('data-i18n');
                     if (dict[key] !== undefined) {
-                        // 处理空值情况
                         const value = dict[key];
                         if (value === '&nbsp;' || value === '') {
                             el.innerHTML = '';
@@ -1450,44 +1106,453 @@
                 document.getElementById('langSwitcher').value = langCode;
                 document.documentElement.lang = langCode;
                 
-                // 更新画廊状态文本
                 if (galleryImages.length > 0) {
                     galleryStatus.textContent = (dict.gallerySuccess || '{count} screenshots loaded').replace('{count}', galleryImages.length);
                 }
                 
-                // 更新 URL 参数（不刷新页面）
                 const url = new URL(window.location);
                 url.searchParams.set('lang', langCode);
                 window.history.replaceState({}, '', url);
             };
 
-            // 语言切换
+            // ===== 获取版本号 =====
+            async function fetchVersion() {
+                try {
+                    const response = await fetch(VERSION_CONFIG.url, { cache: 'no-cache' });
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.version) {
+                            appVersion = data.version;
+                            updateSchemaVersion(appVersion);
+                        }
+                    }
+                } catch (error) {}
+            }
+
+            function updateSchemaVersion(version) {
+                try {
+                    if (schemaScript) {
+                        const data = JSON.parse(schemaScript.textContent);
+                        data.softwareVersion = version;
+                        schemaScript.textContent = JSON.stringify(data, null, 2);
+                    }
+                } catch (e) {}
+            }
+
+            // ===== GitHub API 获取截图 =====
+            async function fetchGalleryImages() {
+                const apiUrl = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}?ref=${GITHUB_CONFIG.branch}`;
+                
+                try {
+                    const response = await fetch(apiUrl, {
+                        headers: { 'Accept': 'application/vnd.github.v3+json' },
+                        cache: 'no-cache'
+                    });
+                    
+                    if (!response.ok) throw new Error(`GitHub API error: ${response.status}`);
+                    
+                    const data = await response.json();
+                    const images = data
+                        .filter(item => item.type === 'file' && item.name.endsWith('.webp'))
+                        .map(item => ({
+                            name: item.name,
+                            url: item.download_url,
+                            path: item.path
+                        }))
+                        .sort((a, b) => a.name.localeCompare(b.name));
+                    
+                    return { success: true, images: images };
+                } catch (error) {
+                    return { success: false, images: [] };
+                }
+            }
+
+            async function initGallery() {
+                const currentLang = localStorage.getItem('aura_lang') || 'en';
+                const dict = translations[currentLang] || translations['en'];
+                
+                galleryStatus.textContent = dict.galleryLoading || 'Loading screenshots...';
+                galleryStatus.style.background = 'rgba(100,100,100,0.3)';
+                
+                const result = await fetchGalleryImages();
+                let images = result.images;
+                
+                if (!result.success) {
+                    images = FALLBACK_IMAGES.map(path => ({
+                        name: path.split('/').pop(),
+                        url: path,
+                        path: path
+                    }));
+                    galleryStatus.textContent = dict.galleryError || 'Failed to load screenshots';
+                    galleryStatus.style.background = 'rgba(255,150,50,0.3)';
+                } else if (images.length === 0) {
+                    galleryStatus.textContent = dict.galleryEmpty || 'No screenshots found';
+                    galleryStatus.style.background = 'rgba(255,100,100,0.3)';
+                    galleryWrapper.innerHTML = `<div class="gallery-empty">${dict.galleryEmpty || 'No screenshots found'}</div>`;
+                    return;
+                } else {
+                    galleryStatus.textContent = (dict.gallerySuccess || '{count} screenshots loaded').replace('{count}', images.length);
+                    galleryStatus.style.background = 'rgba(50,200,100,0.3)';
+                }
+                
+                galleryImages = images;
+                createGallery(images);
+                updateSchemaScreenshots(images);
+            }
+
+            function createGallery(images) {
+                galleryWrapper.innerHTML = '';
+                
+                if (images.length === 0) {
+                    galleryWrapper.innerHTML = '<div class="gallery-empty">No screenshots available</div>';
+                    document.getElementById('galleryNav').style.display = 'none';
+                    return;
+                }
+                
+                const track = document.createElement('div');
+                track.className = 'gallery-track';
+                track.id = 'galleryTrack';
+                galleryTrack = track;
+                
+                document.getElementById('galleryNav').style.display = 'flex';
+                
+                const dotsContainer = document.getElementById('galleryDots');
+                dotsContainer.innerHTML = '';
+                images.forEach((_, i) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+                    dot.addEventListener('click', () => scrollToIndex(i));
+                    dotsContainer.appendChild(dot);
+                });
+                
+                const allImages = [...images, ...images];
+                const items = [];
+                let loadedCount = 0;
+                
+                function getBaseHeight() {
+                    if (window.innerWidth <= 480) return 280;
+                    if (window.innerWidth <= 768) return 320;
+                    return 400;
+                }
+                
+                function recalculateSpeed() {
+                    let totalWidth = 0;
+                    items.forEach(item => {
+                        if (item.style.width && item.style.display !== 'none') {
+                            totalWidth += parseFloat(item.style.width);
+                        }
+                    });
+                    totalWidth += items.filter(i => i.style.display !== 'none').length * 20;
+                    
+                    if (totalWidth > 0) {
+                        const SPEED = 50;
+                        const halfWidth = totalWidth / 2;
+                        track.style.animationDuration = (halfWidth / SPEED) + 's';
+                    }
+                }
+                
+                allImages.forEach((img, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.setAttribute('role', 'img');
+                    item.setAttribute('aria-label', `Screenshot ${(index % images.length) + 1}`);
+                    
+                    const image = new Image();
+                    image.src = img.url;
+                    image.alt = `AuraSand screenshot: ${img.name.replace('.webp', '').replace(/_/g, ' ')}`;
+                    image.style.width = '100%';
+                    image.style.height = '100%';
+                    image.style.objectFit = 'cover';
+                    
+                    image.onload = () => {
+                        const isLandscape = image.naturalWidth > image.naturalHeight;
+                        const baseHeight = getBaseHeight();
+                        
+                        if (isLandscape) {
+                            const ratio = image.naturalWidth / image.naturalHeight;
+                            item.style.height = baseHeight + 'px';
+                            item.style.width = (baseHeight * ratio) + 'px';
+                        } else {
+                            item.style.height = baseHeight + 'px';
+                            item.style.width = (baseHeight * 0.5) + 'px';
+                        }
+                        
+                        loadedCount++;
+                        if (loadedCount === allImages.length) {
+                            recalculateSpeed();
+                        }
+                    };
+                    
+                    image.onerror = () => {
+                        item.style.display = 'none';
+                        loadedCount++;
+                        if (loadedCount === allImages.length) {
+                            recalculateSpeed();
+                        }
+                    };
+                    
+                    item.appendChild(image);
+                    track.appendChild(item);
+                    items.push(item);
+                });
+                
+                galleryWrapper.appendChild(track);
+                galleryItems = items;
+                bindGalleryControls(images.length);
+                startAutoScroll();
+            }
+
+            function bindGalleryControls(totalCount) {
+                const prevBtn = document.getElementById('galleryPrev');
+                const nextBtn = document.getElementById('galleryNext');
+                
+                prevBtn.replaceWith(prevBtn.cloneNode(true));
+                nextBtn.replaceWith(nextBtn.cloneNode(true));
+                
+                document.getElementById('galleryPrev').addEventListener('click', () => {
+                    pauseAutoScroll();
+                    scrollPrev();
+                });
+                
+                document.getElementById('galleryNext').addEventListener('click', () => {
+                    pauseAutoScroll();
+                    scrollNext();
+                });
+            }
+
+            function scrollToIndex(index) {
+                if (!galleryTrack) return;
+                
+                const totalImages = galleryImages.length;
+                currentIndex = Math.max(0, Math.min(index, totalImages - 1));
+                
+                let scrollDistance = 0;
+                for (let i = 0; i < currentIndex; i++) {
+                    const item = galleryItems[i];
+                    if (item && item.style.width && item.style.display !== 'none') {
+                        scrollDistance += parseFloat(item.style.width) + 20;
+                    }
+                }
+                
+                galleryTrack.style.transition = 'transform 0.5s ease';
+                galleryTrack.style.animation = 'none';
+                galleryTrack.style.transform = `translateX(-${scrollDistance}px)`;
+                
+                updateDots(currentIndex);
+                pauseAutoScroll();
+            }
+
+            function scrollNext() {
+                const totalImages = galleryImages.length;
+                scrollToIndex((currentIndex + 1) % totalImages);
+            }
+
+            function scrollPrev() {
+                const totalImages = galleryImages.length;
+                scrollToIndex((currentIndex - 1 + totalImages) % totalImages);
+            }
+
+            function updateDots(index) {
+                const dots = document.querySelectorAll('.gallery-dot');
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            }
+
+            function pauseAutoScroll() {
+                isUserInteracting = true;
+                if (galleryTrack) {
+                    galleryTrack.style.animationPlayState = 'paused';
+                }
+                
+                clearTimeout(autoScrollTimer);
+                autoScrollTimer = setTimeout(() => {
+                    resumeAutoScroll();
+                }, 5000);
+            }
+
+            function resumeAutoScroll() {
+                isUserInteracting = false;
+                if (galleryTrack) {
+                    galleryTrack.style.transition = '';
+                    galleryTrack.style.transform = '';
+                    galleryTrack.style.animation = '';
+                    galleryTrack.style.animationPlayState = 'running';
+                    
+                    const items = document.querySelectorAll('.gallery-item');
+                    let totalWidth = 0;
+                    items.forEach(item => {
+                        if (item.style.width && item.style.display !== 'none') {
+                            totalWidth += parseFloat(item.style.width);
+                        }
+                    });
+                    totalWidth += items.length * 20;
+                    
+                    if (totalWidth > 0) {
+                        const SPEED = 50;
+                        const halfWidth = totalWidth / 2;
+                        galleryTrack.style.animationDuration = (halfWidth / SPEED) + 's';
+                    }
+                }
+            }
+
+            function startAutoScroll() {
+                isUserInteracting = false;
+                if (galleryTrack) {
+                    galleryTrack.style.animationPlayState = 'running';
+                }
+            }
+
+            function updateSchemaScreenshots(images) {
+                try {
+                    if (schemaScript) {
+                        const data = JSON.parse(schemaScript.textContent);
+                        if (data['@type'] === 'SoftwareApplication') {
+                            data.screenshot = images.slice(0, 6).map(img => img.url);
+                            schemaScript.textContent = JSON.stringify(data, null, 2);
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            function closeAllDemos() {
+                viewport.style.display = 'none';
+                container.innerHTML = '';
+                container.style.width = '0';
+                container.style.height = '0';
+                currentVideoType = null;
+                currentVideoRatio = null;
+                liveViewport.style.display = 'none';
+                flutterIframe.src = "";
+                flutterLoader.style.display = 'block';
+            }
+
+            function detectVideoRatio(mp4Url, defaultRatio) {
+                return new Promise((resolve) => {
+                    const tempVideo = document.createElement('video');
+                    tempVideo.style.display = 'none';
+                    tempVideo.preload = "metadata";
+                    const timeout = setTimeout(() => resolve(defaultRatio), 3000);
+                    
+                    tempVideo.onloadedmetadata = () => {
+                        clearTimeout(timeout);
+                        resolve(tempVideo.videoWidth / tempVideo.videoHeight);
+                        tempVideo.remove();
+                    };
+                    
+                    tempVideo.onerror = () => {
+                        clearTimeout(timeout);
+                        resolve(defaultRatio);
+                        tempVideo.remove();
+                    };
+                    
+                    tempVideo.src = mp4Url;
+                });
+            }
+
+            function applyVideoSize(type, ratio) {
+                const isMobile = window.innerWidth <= 768;
+                const maxWidth = isMobile ? window.innerWidth * 0.9 : 800;
+                const maxHeight = isMobile ? window.innerHeight * 0.6 : 600;
+                
+                let width, height;
+                
+                if (type === 'vertical') {
+                    height = Math.min(maxHeight, isMobile ? 600 : 700);
+                    width = height * ratio;
+                    if (width > maxWidth) {
+                        width = maxWidth;
+                        height = width / ratio;
+                    }
+                } else {
+                    width = Math.min(maxWidth, isMobile ? 500 : 800);
+                    height = width / ratio;
+                    if (height > maxHeight) {
+                        height = maxHeight;
+                        width = height * ratio;
+                    }
+                }
+                
+                container.style.width = Math.round(width) + 'px';
+                container.style.height = Math.round(height) + 'px';
+            }
+
+            function adjustLiveDemoSize() {
+                if (!liveMockup || liveViewport.style.display === 'none') return;
+                
+                const ratio = 402 / 874;
+                const maxWidth = window.innerWidth * 0.85;
+                const maxHeight = window.innerHeight * 0.75;
+                
+                let targetW = 402;
+                let targetH = targetW / ratio;
+                
+                if (targetW > maxWidth) {
+                    targetW = maxWidth;
+                    targetH = targetW / ratio;
+                }
+                if (targetH > maxHeight) {
+                    targetH = maxHeight;
+                    targetW = targetH * ratio;
+                }
+                
+                liveMockup.style.width = Math.round(targetW) + 'px';
+                liveMockup.style.height = Math.round(targetH) + 'px';
+            }
+
+            window.toggleVideo = async function(type) {
+                closeAllDemos();
+                currentVideoType = type;
+                const source = videoSources[type];
+                viewport.style.display = 'flex';
+                
+                const realRatio = await detectVideoRatio(source.mp4, source.defaultRatio);
+                currentVideoRatio = realRatio;
+                applyVideoSize(type, realRatio);
+                
+                if (googleAvailable) {
+                    container.innerHTML = `<iframe src="https://www.youtube.com/embed/${source.youtube}?autoplay=1&rel=0&modestbranding=1" allow="autoplay; fullscreen"></iframe>`;
+                } else {
+                    container.innerHTML = `<video playsinline controls loop autoplay src="${source.mp4}"></video>`;
+                }
+                
+                setTimeout(() => viewport.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+            };
+
+            window.hideVideo = function() {
+                viewport.style.display = 'none';
+                container.innerHTML = '';
+                container.style.width = '0';
+                container.style.height = '0';
+                currentVideoType = null;
+                currentVideoRatio = null;
+            };
+
+            window.hideLiveDemo = function() {
+                liveViewport.style.display = 'none';
+                flutterIframe.src = "";
+                flutterLoader.style.display = 'block';
+            };
+
+            // ===== 初始化 =====
             window.onload = () => {
                 fetchVersion();
                 initGallery();
                 
-                // ===== 语言检测（优先 URL 参数） =====
                 let lang;
-                
-                // 1. 优先从 URL 参数读取
                 const urlParams = new URLSearchParams(window.location.search);
                 const urlLang = urlParams.get('lang');
                 const validLangs = ['en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'pt-BR'];
                 
                 if (urlLang && validLangs.includes(urlLang)) {
                     lang = urlLang;
-                } 
-                // 2. 其次从 localStorage 读取
-                else {
+                } else {
                     lang = localStorage.getItem('aura_lang');
                 }
                 
-                // 3. 都没有则检测浏览器语言
                 if (!lang) {
                     const browserLang = navigator.language.toLowerCase();
-                    if (browserLang === 'pt-br') lang = 'pt-BR';
-                    else if (browserLang.startsWith('pt-')) lang = 'pt-BR';
-                    else if (browserLang === 'pt') lang = 'pt-BR';
+                    if (browserLang === 'pt-br' || browserLang.startsWith('pt-')) lang = 'pt-BR';
                     else if (browserLang.includes('tw') || browserLang.includes('hk')) lang = 'zh-TW';
                     else if (browserLang.includes('zh')) lang = 'zh-CN';
                     else if (browserLang.includes('ja')) lang = 'ja';
@@ -1499,7 +1564,7 @@
                 adjustLiveDemoSize();
             };
 
-            // ===== 窗口大小变化时重新调整画廊尺寸 =====
+            // ===== 窗口大小变化 =====
             let resizeTimer;
             window.addEventListener('resize', () => {
                 adjustLiveDemoSize();
@@ -1507,11 +1572,9 @@
                     applyVideoSize(currentVideoType, currentVideoRatio);
                 }
                 
-                // 防抖重新计算画廊尺寸
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(() => {
-                    if (galleryImages.length > 0) {
-                        // 重新获取基础高度并调整所有 item
+                    if (galleryImages.length > 0 && !isUserInteracting) {
                         const items = document.querySelectorAll('.gallery-item');
                         const baseHeight = (() => {
                             if (window.innerWidth <= 480) return 280;
@@ -1534,9 +1597,7 @@
                             }
                         });
                         
-                        // 重新计算动画速度
-                        const track = document.getElementById('galleryTrack');
-                        if (track) {
+                        if (galleryTrack) {
                             let totalWidth = 0;
                             items.forEach(item => {
                                 if (item.style.width && item.style.display !== 'none') {
@@ -1548,7 +1609,7 @@
                             if (totalWidth > 0) {
                                 const SPEED = 50;
                                 const halfWidth = totalWidth / 2;
-                                track.style.animationDuration = (halfWidth / SPEED) + 's';
+                                galleryTrack.style.animationDuration = (halfWidth / SPEED) + 's';
                             }
                         }
                     }
