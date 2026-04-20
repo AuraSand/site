@@ -441,11 +441,7 @@
         
         .gallery-item {
             flex-shrink: 0;
-            /* 移除固定宽高 */
-            /* width: 220px; */
-            /* height: 440px; */
-            min-width: 180px;
-            min-height: 200px;
+            /* 移除固定宽高，改为 JS 动态设置 */
             border-radius: 28px;
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0,0,0,0.15);
@@ -454,6 +450,21 @@
             cursor: pointer;
             background: #f0f0f0;
             position: relative;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .gallery-item {
+                border-width: 3px;
+                border-radius: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-item {
+                border-width: 3px;
+                border-radius: 18px;
+            }
         }
         
         .gallery-item:hover {
@@ -550,7 +561,7 @@
             
             .gallery-header { flex-direction: column; text-align: center; }
             .gallery-title { font-size: 24px; }
-            .gallery-item { width: 180px; height: 360px; border-width: 3px; }
+            .gallery-item { border-width: 3px; }
             .gallery-track { gap: 15px; }
             
             .demo-tabs .tab-btn { padding: 10px 18px; font-size: 15px; }
@@ -568,7 +579,7 @@
             .play-badge img { height: 50px; }
             .phone-mockup { width: 200px; height: 400px; }
             
-            .gallery-item { width: 150px; height: 300px; }
+            .gallery-item {}
             
             .phone-frame-mockup, .video-container {
                 border-width: 5px;
@@ -1160,6 +1171,37 @@
                 
                 const allImages = [...images, ...images];
                 
+                // 存储所有 item 用于计算宽度
+                const items = [];
+                let loadedCount = 0;
+                
+                // 获取基础高度（响应式）
+                function getBaseHeight() {
+                    if (window.innerWidth <= 480) return 280;
+                    if (window.innerWidth <= 768) return 320;
+                    return 400;
+                }
+                
+                // 重新计算动画速度（真正的恒定速度）
+                function recalculateSpeed() {
+                    let totalWidth = 0;
+                    items.forEach(item => {
+                        if (item.style.width) {
+                            totalWidth += parseFloat(item.style.width);
+                        }
+                    });
+                    // 加上 gap 间距（20px）
+                    totalWidth += items.length * 20;
+                    
+                    if (totalWidth > 0) {
+                        // 恒定速度：每秒移动 50px
+                        const SPEED = 50; // px/s
+                        const halfWidth = totalWidth / 2;
+                        const duration = halfWidth / SPEED;
+                        track.style.animationDuration = duration + 's';
+                    }
+                }
+                
                 allImages.forEach((img, index) => {
                     const item = document.createElement('div');
                     item.className = 'gallery-item';
@@ -1175,28 +1217,41 @@
                     
                     image.onload = () => {
                         const isLandscape = image.naturalWidth > image.naturalHeight;
+                        const baseHeight = getBaseHeight();
+                        
                         if (isLandscape) {
-                            item.style.width = '280px';
-                            item.style.height = '200px';
+                            // 横屏：高度固定，宽度按比例
+                            const ratio = image.naturalWidth / image.naturalHeight;
+                            item.style.height = baseHeight + 'px';
+                            item.style.width = (baseHeight * ratio) + 'px';
                         } else {
-                            item.style.width = '220px';
-                            item.style.height = '440px';
+                            // 竖屏：高度固定，宽度为高度的一半
+                            item.style.height = baseHeight + 'px';
+                            item.style.width = (baseHeight * 0.5) + 'px';
+                        }
+                        
+                        loadedCount++;
+                        // 所有图片加载完成后计算速度
+                        if (loadedCount === allImages.length) {
+                            recalculateSpeed();
                         }
                     };
                     
                     image.onerror = () => {
                         console.warn('Failed to load image:', img.url);
                         item.style.display = 'none';
+                        loadedCount++;
+                        if (loadedCount === allImages.length) {
+                            recalculateSpeed();
+                        }
                     };
                     
                     item.appendChild(image);
                     track.appendChild(item);
+                    items.push(item);
                 });
                 
                 galleryWrapper.appendChild(track);
-                
-                // 固定速度，不受图片数量影响
-                track.style.animationDuration = '35s';
             }
 
             // 更新 Schema.org 截图数据
@@ -1359,7 +1414,7 @@
                 flutterLoader.style.display = 'block';
             };
 
-            // 语言切换
+            // ===== 语言切换（支持 URL 参数） =====
             window.changeLanguage = function(langCode) {
                 const dict = translations[langCode] || translations["en"];
                 
@@ -1387,59 +1442,28 @@
                 document.getElementById('langSwitcher').value = langCode;
                 document.documentElement.lang = langCode;
                 
-                // 更新画廊状态文本（如果画廊已加载）
+                // 更新画廊状态文本
                 if (galleryImages.length > 0) {
                     galleryStatus.textContent = (dict.gallerySuccess || '{count} themes loaded').replace('{count}', galleryImages.length);
                 }
-
+                
                 // 更新 URL 参数（不刷新页面）
                 const url = new URL(window.location);
                 url.searchParams.set('lang', langCode);
                 window.history.replaceState({}, '', url);
-                
-                // 同时更新所有 hreflang 链接中的域名（可选，保持一致性）
-                document.querySelectorAll('link[rel="alternate"]').forEach(link => {
-                    const hreflang = link.getAttribute('hreflang');
-                    if (hreflang) {
-                        const linkUrl = new URL(link.href);
-                        linkUrl.searchParams.set('lang', hreflang);
-                        link.href = linkUrl.toString();
-                    }
-                });
             };
 
-            // 监听窗口变化
-            window.addEventListener('resize', () => {
-                adjustLiveDemoSize();
-                if (viewport.style.display === 'flex' && currentVideoType && currentVideoRatio) {
-                    applyVideoSize(currentVideoType, currentVideoRatio);
-                }
-            });
-
-            window.addEventListener('orientationchange', () => {
-                setTimeout(() => {
-                    adjustLiveDemoSize();
-                    if (viewport.style.display === 'flex' && currentVideoType && currentVideoRatio) {
-                        applyVideoSize(currentVideoType, currentVideoRatio);
-                    }
-                }, 100);
-            });
-
-            // 初始化
-            // 替换原有的 window.onload 中的语言检测部分
+            // 语言切换
             window.onload = () => {
-                // 并行加载版本号和画廊
                 fetchVersion();
                 initGallery();
                 
-                // ===== 修改这部分 =====
+                // ===== 语言检测（优先 URL 参数） =====
                 let lang;
                 
-                // 1. 优先从 URL 参数读取 ?lang=xx
+                // 1. 优先从 URL 参数读取
                 const urlParams = new URLSearchParams(window.location.search);
                 const urlLang = urlParams.get('lang');
-                
-                // 有效的语言代码列表
                 const validLangs = ['en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'pt-BR'];
                 
                 if (urlLang && validLangs.includes(urlLang)) {
@@ -1466,6 +1490,62 @@
                 changeLanguage(lang);
                 adjustLiveDemoSize();
             };
+
+            // ===== 窗口大小变化时重新调整画廊尺寸 =====
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                adjustLiveDemoSize();
+                if (viewport.style.display === 'flex' && currentVideoType && currentVideoRatio) {
+                    applyVideoSize(currentVideoType, currentVideoRatio);
+                }
+                
+                // 防抖重新计算画廊尺寸
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (galleryImages.length > 0) {
+                        // 重新获取基础高度并调整所有 item
+                        const items = document.querySelectorAll('.gallery-item');
+                        const baseHeight = (() => {
+                            if (window.innerWidth <= 480) return 280;
+                            if (window.innerWidth <= 768) return 320;
+                            return 400;
+                        })();
+                        
+                        items.forEach(item => {
+                            const img = item.querySelector('img');
+                            if (img && img.complete && img.naturalWidth) {
+                                const isLandscape = img.naturalWidth > img.naturalHeight;
+                                if (isLandscape) {
+                                    const ratio = img.naturalWidth / img.naturalHeight;
+                                    item.style.height = baseHeight + 'px';
+                                    item.style.width = (baseHeight * ratio) + 'px';
+                                } else {
+                                    item.style.height = baseHeight + 'px';
+                                    item.style.width = (baseHeight * 0.5) + 'px';
+                                }
+                            }
+                        });
+                        
+                        // 重新计算动画速度
+                        const track = document.getElementById('galleryTrack');
+                        if (track) {
+                            let totalWidth = 0;
+                            items.forEach(item => {
+                                if (item.style.width && item.style.display !== 'none') {
+                                    totalWidth += parseFloat(item.style.width);
+                                }
+                            });
+                            totalWidth += items.length * 20;
+                            
+                            if (totalWidth > 0) {
+                                const SPEED = 50;
+                                const halfWidth = totalWidth / 2;
+                                track.style.animationDuration = (halfWidth / SPEED) + 's';
+                            }
+                        }
+                    }
+                }, 100);
+            });
         })();
     </script>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
