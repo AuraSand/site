@@ -1070,6 +1070,9 @@
             let currentIndex = 0;
             let autoScrollTimer = null;
             let isUserInteracting = false;
+            let autoScrollAnimationId = null;
+            let totalTrackWidth = 0;
+            let halfTrackWidth = 0;
 
             // ===== 语言切换 =====
             window.changeLanguage = function(langCode) {
@@ -1235,19 +1238,25 @@
                     return 400;
                 }
                 
-                function recalculateSpeed() {
-                    let totalWidth = 0;
+                function calculateTotalWidth() {
+                    let total = 0;
                     items.forEach(item => {
                         if (item.style.width && item.style.display !== 'none') {
-                            totalWidth += parseFloat(item.style.width);
+                            total += parseFloat(item.style.width);
                         }
                     });
-                    totalWidth += items.filter(i => i.style.display !== 'none').length * 20;
-                    
+                    total += items.filter(i => i.style.display !== 'none').length * 20;
+                    totalTrackWidth = total;
+                    halfTrackWidth = total / 2;
+                    return total;
+                }
+                
+                function recalculateSpeed() {
+                    const totalWidth = calculateTotalWidth();
                     if (totalWidth > 0) {
                         const SPEED = 50;
-                        const halfWidth = totalWidth / 2;
-                        track.style.animationDuration = (halfWidth / SPEED) + 's';
+                        const duration = halfTrackWidth / SPEED;
+                        track.style.animation = `scrollGallery ${duration}s linear infinite`;
                     }
                 }
                 
@@ -1279,6 +1288,7 @@
                         
                         loadedCount++;
                         if (loadedCount === allImages.length) {
+                            calculateTotalWidth();
                             recalculateSpeed();
                         }
                     };
@@ -1287,6 +1297,7 @@
                         item.style.display = 'none';
                         loadedCount++;
                         if (loadedCount === allImages.length) {
+                            calculateTotalWidth();
                             recalculateSpeed();
                         }
                     };
@@ -1297,7 +1308,7 @@
                 });
                 
                 galleryWrapper.appendChild(track);
-                galleryItems = items;
+                galleryItems = items.filter(item => item.style.display !== 'none');
                 bindGalleryControls(images.length);
                 startAutoScroll();
             }
@@ -1320,6 +1331,82 @@
                 });
             }
 
+            // 获取当前滚动位置
+            function getCurrentTranslateX() {
+                if (!galleryTrack) return 0;
+                
+                const computedStyle = window.getComputedStyle(galleryTrack);
+                const transform = computedStyle.transform;
+                
+                if (transform && transform !== 'none') {
+                    const matrix = transform.match(/matrix.*\((.+)\)/);
+                    if (matrix) {
+                        const values = matrix[1].split(', ');
+                        return Math.abs(parseFloat(values[4]) || 0);
+                    }
+                }
+                return 0;
+            }
+
+            // 根据滚动位置计算当前索引
+            function getCurrentIndexFromPosition() {
+                if (!galleryTrack || galleryImages.length === 0) return 0;
+                
+                const currentX = getCurrentTranslateX();
+                const loopX = currentX % halfTrackWidth;
+                
+                let accumulatedWidth = 0;
+                let bestIndex = 0;
+                let minDistance = Infinity;
+                
+                for (let i = 0; i < galleryImages.length; i++) {
+                    const item = galleryItems[i];
+                    if (item && item.style.width && item.style.display !== 'none') {
+                        const itemWidth = parseFloat(item.style.width) + 20;
+                        const itemCenter = accumulatedWidth + parseFloat(item.style.width) / 2;
+                        
+                        const distance = Math.abs(loopX - itemCenter);
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            bestIndex = i;
+                        }
+                        
+                        accumulatedWidth += itemWidth;
+                    }
+                }
+                
+                return bestIndex;
+            }
+
+            // 自动滚动位置跟踪
+            function startAutoScrollTracking() {
+                if (autoScrollAnimationId) {
+                    cancelAnimationFrame(autoScrollAnimationId);
+                }
+                
+                function trackPosition() {
+                    if (!isUserInteracting && galleryTrack && galleryImages.length > 0) {
+                        const newIndex = getCurrentIndexFromPosition();
+                        
+                        if (newIndex !== currentIndex) {
+                            currentIndex = newIndex;
+                            updateDots(currentIndex);
+                        }
+                    }
+                    
+                    autoScrollAnimationId = requestAnimationFrame(trackPosition);
+                }
+                
+                autoScrollAnimationId = requestAnimationFrame(trackPosition);
+            }
+
+            function stopAutoScrollTracking() {
+                if (autoScrollAnimationId) {
+                    cancelAnimationFrame(autoScrollAnimationId);
+                    autoScrollAnimationId = null;
+                }
+            }
+
             function scrollToIndex(index) {
                 if (!galleryTrack) return;
                 
@@ -1332,6 +1419,12 @@
                     if (item && item.style.width && item.style.display !== 'none') {
                         scrollDistance += parseFloat(item.style.width) + 20;
                     }
+                }
+                
+                // 加上当前图片一半宽度，让图片居中
+                const currentItem = galleryItems[currentIndex];
+                if (currentItem && currentItem.style.width) {
+                    scrollDistance += parseFloat(currentItem.style.width) / 2;
                 }
                 
                 galleryTrack.style.transition = 'transform 0.5s ease';
@@ -1361,6 +1454,8 @@
 
             function pauseAutoScroll() {
                 isUserInteracting = true;
+                stopAutoScrollTracking();
+                
                 if (galleryTrack) {
                     galleryTrack.style.animationPlayState = 'paused';
                 }
@@ -1373,27 +1468,27 @@
 
             function resumeAutoScroll() {
                 isUserInteracting = false;
-                if (galleryTrack) {
-                    galleryTrack.style.transition = '';
-                    galleryTrack.style.transform = '';
-                    galleryTrack.style.animation = '';
+                if (!galleryTrack) return;
+                
+                const currentX = getCurrentTranslateX();
+                
+                // 清除手动样式
+                galleryTrack.style.transition = '';
+                galleryTrack.style.transform = '';
+                galleryTrack.style.animation = 'none';
+                galleryTrack.offsetHeight; // 强制重绘
+                
+                if (halfTrackWidth > 0) {
+                    const SPEED = 50;
+                    const duration = halfTrackWidth / SPEED;
+                    const progress = (currentX % halfTrackWidth) / halfTrackWidth;
+                    
+                    galleryTrack.style.animation = `scrollGallery ${duration}s linear infinite`;
                     galleryTrack.style.animationPlayState = 'running';
-                    
-                    const items = document.querySelectorAll('.gallery-item');
-                    let totalWidth = 0;
-                    items.forEach(item => {
-                        if (item.style.width && item.style.display !== 'none') {
-                            totalWidth += parseFloat(item.style.width);
-                        }
-                    });
-                    totalWidth += items.length * 20;
-                    
-                    if (totalWidth > 0) {
-                        const SPEED = 50;
-                        const halfWidth = totalWidth / 2;
-                        galleryTrack.style.animationDuration = (halfWidth / SPEED) + 's';
-                    }
+                    galleryTrack.style.animationDelay = `-${progress * duration}s`;
                 }
+                
+                startAutoScrollTracking();
             }
 
             function startAutoScroll() {
@@ -1401,6 +1496,7 @@
                 if (galleryTrack) {
                     galleryTrack.style.animationPlayState = 'running';
                 }
+                startAutoScrollTracking();
             }
 
             function updateSchemaScreenshots(images) {
@@ -1574,7 +1670,7 @@
                 
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(() => {
-                    if (galleryImages.length > 0 && !isUserInteracting) {
+                    if (galleryImages.length > 0) {
                         const items = document.querySelectorAll('.gallery-item');
                         const baseHeight = (() => {
                             if (window.innerWidth <= 480) return 280;
@@ -1597,19 +1693,28 @@
                             }
                         });
                         
+                        // 重新计算总宽度
+                        let total = 0;
+                        items.forEach(item => {
+                            if (item.style.width && item.style.display !== 'none') {
+                                total += parseFloat(item.style.width);
+                            }
+                        });
+                        total += items.length * 20;
+                        totalTrackWidth = total;
+                        halfTrackWidth = total / 2;
+                        
                         if (galleryTrack) {
-                            let totalWidth = 0;
-                            items.forEach(item => {
-                                if (item.style.width && item.style.display !== 'none') {
-                                    totalWidth += parseFloat(item.style.width);
-                                }
-                            });
-                            totalWidth += items.length * 20;
-                            
-                            if (totalWidth > 0) {
+                            if (!isUserInteracting) {
                                 const SPEED = 50;
-                                const halfWidth = totalWidth / 2;
-                                galleryTrack.style.animationDuration = (halfWidth / SPEED) + 's';
+                                const duration = halfTrackWidth / SPEED;
+                                const currentX = getCurrentTranslateX();
+                                const progress = (currentX % halfTrackWidth) / halfTrackWidth;
+                                
+                                galleryTrack.style.animation = 'none';
+                                galleryTrack.offsetHeight;
+                                galleryTrack.style.animation = `scrollGallery ${duration}s linear infinite`;
+                                galleryTrack.style.animationDelay = `-${progress * duration}s`;
                             }
                         }
                     }
