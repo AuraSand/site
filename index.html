@@ -13,24 +13,24 @@
     <meta property="og:type" content="website">
     <meta property="og:title" data-i18n="ogTitle" content="AuraSand | The Most Aesthetic 3D Focus Timer">
     <meta property="og:description" data-i18n="ogDesc" content="Transform your time into digital art. Immersive 3D hourglass for deep focus, studying & meditation.">
-    <meta property="og:image" content="https://aurasand.app/og-image.jpg">
-    <meta property="og:url" content="https://aurasand.app">
+    <meta property="og:image" content="https://aurasand.github.io/site/screenshot_en.jpg">
+    <meta property="og:url" content="https://aurasand.github.io/site">
     <meta property="og:site_name" content="AuraSand">
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" data-i18n="twitterTitle" content="AuraSand | Aesthetic 3D Focus Timer">
     <meta name="twitter:description" data-i18n="twitterDesc" content="Transform time into digital art. 3D hourglass timer for deep focus & productivity.">
-    <meta name="twitter:image" content="https://aurasand.app/og-image.jpg">
+    <meta name="twitter:image" content="https://aurasand.github.io/site/screenshot_en.jpg">
     
-    <!-- 多语言 SEO -->
-    <link rel="alternate" hreflang="en" href="https://aurasand.app/en">
-    <link rel="alternate" hreflang="zh-CN" href="https://aurasand.app/zh-cn">
-    <link rel="alternate" hreflang="zh-TW" href="https://aurasand.app/zh-tw">
-    <link rel="alternate" hreflang="ja" href="https://aurasand.app/ja">
-    <link rel="alternate" hreflang="ko" href="https://aurasand.app/ko">
-    <link rel="alternate" hreflang="pt-BR" href="https://aurasand.app/pt-br">
-    <link rel="canonical" href="https://aurasand.app">
+    <!-- 多语言 SEO - 使用查询参数而非子路径 -->
+    <link rel="alternate" hreflang="en" href="https://aurasand.github.io/site?lang=en">
+    <link rel="alternate" hreflang="zh-CN" href="https://aurasand.github.io/site?lang=zh-CN">
+    <link rel="alternate" hreflang="zh-TW" href="https://aurasand.github.io/site?lang=zh-TW">
+    <link rel="alternate" hreflang="ja" href="https://aurasand.github.io/site?lang=ja">
+    <link rel="alternate" hreflang="ko" href="https://aurasand.github.io/site?lang=ko">
+    <link rel="alternate" hreflang="pt-BR" href="https://aurasand.github.io/site?lang=pt-BR">
+    <link rel="canonical" href="https://aurasand.github.io/site">
     
     <!-- 应用下载优化 -->
     <meta name="google-play-app" content="app-id=com.siteflare.hourglass">
@@ -45,12 +45,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://play.google.com">
     <link rel="preconnect" href="https://api.github.com">
+    <link rel="preconnect" href="https://raw.githubusercontent.com">
     
     <!-- 多语言字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     
-    <!-- Schema.org 结构化数据 -->
-    <script type="application/ld+json">
+    <!-- Schema.org 结构化数据 - 动态版本 -->
+    <script type="application/ld+json" id="schemaApp">
     {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
@@ -62,14 +63,9 @@
             "price": "0",
             "priceCurrency": "USD"
         },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "ratingCount": "1000"
-        },
         "description": "Aesthetic 3D hourglass focus timer with Pomodoro technique, white noise, and immersive weather effects.",
         "downloadUrl": "https://play.google.com/store/apps/details?id=com.siteflare.hourglass",
-        "softwareVersion": "2.0",
+        "softwareVersion": "1.0.3",
         "screenshot": [],
         "featureList": "Pomodoro Timer, 3D Hourglass Animation, White Noise, Weather Effects, Zen Mode, ADHD Focus Tools"
     }
@@ -248,114 +244,6 @@
             max-width: 100%;
         }
 
-        /* ===== 动态截图画廊 ===== */
-        .gallery-section {
-            max-width: 1200px;
-            margin: 40px auto 60px;
-            padding: 0 5%;
-            width: 100%;
-            overflow: hidden;
-        }
-        
-        .gallery-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        
-        .gallery-title {
-            font-size: 28px;
-            color: #fff;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            font-weight: 600;
-        }
-        
-        .gallery-status {
-            font-size: 13px;
-            color: rgba(255,255,255,0.8);
-            background: rgba(0,0,0,0.2);
-            padding: 6px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .gallery-wrapper {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
-        }
-        
-        .gallery-track {
-            display: flex;
-            gap: 20px;
-            animation: scrollGallery 40s linear infinite;
-            width: max-content;
-        }
-        
-        .gallery-track:hover {
-            animation-play-state: paused;
-        }
-        
-        .gallery-item {
-            flex-shrink: 0;
-            width: 220px;
-            height: 440px;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            border: 4px solid #fff;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            background: #f0f0f0;
-            position: relative;
-        }
-        
-        .gallery-item:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-        }
-        
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.3s ease;
-        }
-        
-        .gallery-item:hover img {
-            transform: scale(1.05);
-        }
-        
-        .gallery-loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-            color: rgba(255,255,255,0.8);
-            font-size: 14px;
-        }
-        
-        .gallery-error {
-            text-align: center;
-            color: rgba(255,255,255,0.9);
-            padding: 20px;
-            font-size: 14px;
-            background: rgba(255,100,100,0.2);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-        }
-        
-        @keyframes scrollGallery {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
         /* 演示区域 */
         .demo-section { 
             max-width: 1200px; 
@@ -494,6 +382,126 @@
         .feature-card h3 { font-size: 22px; margin-bottom: 15px; color: var(--primary-color); }
         .feature-card p { font-size: 15px; color: var(--text-light); line-height: 1.7; }
 
+        /* ===== 动态截图画廊（移到底部） ===== */
+        .gallery-section {
+            max-width: 1200px;
+            margin: 60px auto 40px;
+            padding: 0 5%;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .gallery-title {
+            font-size: 28px;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+        
+        .gallery-status {
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            background: rgba(0,0,0,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .gallery-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+            min-height: 200px;
+        }
+        
+        .gallery-track {
+            display: flex;
+            gap: 20px;
+            animation: scrollGallery 40s linear infinite;
+            width: max-content;
+        }
+        
+        .gallery-track:hover {
+            animation-play-state: paused;
+        }
+        
+        .gallery-item {
+            flex-shrink: 0;
+            width: 220px;
+            height: 440px;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border: 4px solid #fff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            background: #f0f0f0;
+            position: relative;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .gallery-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+        
+        .gallery-error {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            padding: 20px;
+            font-size: 14px;
+            background: rgba(255,100,100,0.2);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            margin: 20px 0;
+        }
+        
+        .gallery-empty {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            padding: 40px;
+            font-size: 14px;
+        }
+        
+        @keyframes scrollGallery {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
         footer { 
             text-align: center; 
             padding: 40px 20px; 
@@ -587,7 +595,6 @@
     <section class="hero" itemscope itemtype="https://schema.org/MobileApplication">
         <meta itemprop="applicationCategory" content="ProductivityApplication">
         <meta itemprop="operatingSystem" content="Android">
-        <meta itemprop="softwareVersion" content="2.0">
         
         <div class="hero-text">
             <h1 data-i18n="heroTitle">Let time flow <br>into art.</h1>
@@ -612,17 +619,6 @@
         </div>
         <div class="hero-image">
             <div class="phone-mockup" id="phoneMockup" itemprop="screenshot"></div>
-        </div>
-    </section>
-
-    <!-- ===== 动态截图画廊（从 GitHub API 自动获取） ===== -->
-    <section class="gallery-section" aria-label="App Screenshots Gallery">
-        <div class="gallery-header">
-            <h2 class="gallery-title" data-i18n="galleryTitle">Explore Beautiful Themes</h2>
-            <span class="gallery-status" id="galleryStatus">Loading...</span>
-        </div>
-        <div class="gallery-wrapper" id="galleryWrapper">
-            <div class="gallery-loading" id="galleryLoading">⌛ Loading themes...</div>
         </div>
     </section>
 
@@ -677,6 +673,17 @@
         </div>
     </section>
 
+    <!-- ===== 动态截图画廊（移到底部） ===== -->
+    <section class="gallery-section" aria-label="App Screenshots Gallery" id="gallerySection">
+        <div class="gallery-header">
+            <h2 class="gallery-title" data-i18n="galleryTitle">Explore Beautiful Themes</h2>
+            <span class="gallery-status" id="galleryStatus">Loading...</span>
+        </div>
+        <div class="gallery-wrapper" id="galleryWrapper">
+            <div class="gallery-loading" id="galleryLoading">⌛ Loading themes...</div>
+        </div>
+    </section>
+
     <footer itemscope itemtype="https://schema.org/WPFooter">
         <p>© 2026 <span itemprop="name">AuraSand</span>. All rights reserved.</p>
         <div class="footer-links">
@@ -704,24 +711,32 @@
         </div>
     </footer>
 
-    <script>
+        <script>
         (function(){
             // GitHub API 配置 - 动态获取 snapshot 文件夹
             const GITHUB_CONFIG = {
-                owner: 'aurasand',           // 替换为你的 GitHub 用户名
-                repo: 'aurasand.github.io',  // 替换为你的仓库名
-                path: 'snapshot',            // 截图文件夹路径
+                owner: 'AuraSand',           // GitHub 用户名
+                repo: 'site',  // 仓库名
+                path: 'snapshot',            // 截图文件夹路径（根目录下的 snapshot）
                 branch: 'main'               // 默认分支
             };
             
-            // 备用图片列表（API 失败时使用）
+            // 版本号配置
+            const VERSION_CONFIG = {
+                url: 'https://raw.githubusercontent.com/luyiwind/Hourglass-cng/refs/heads/release/version.json',
+                fallbackVersion: '1.0.3'
+            };
+            
+            // 备用图片列表（API 失败时使用）- 使用绝对路径
             const FALLBACK_IMAGES = [
                 'snapshot/src_unicorn_01.webp',
                 'snapshot/src_whale_01.webp',
                 'snapshot/src_jellyfish_01.webp',
                 'snapshot/src_blackgold_01.webp',
                 'snapshot/src_bunny_01.webp',
-                'snapshot/src_cartoon_01.webp'
+                'snapshot/src_cartoon_01.webp',
+                'snapshot/src_zen_01.webp',
+                'snapshot/src_jewel_01.webp'
             ];
 
             // 视频源配置
@@ -738,7 +753,7 @@
                 }
             };
 
-            // 多语言翻译（SEO 优化版本）
+            // 多语言翻译
             const translations = {
                 "en": {
                     "pageTitle": "AuraSand | Aesthetic 3D Hourglass Focus Timer & Pomodoro App",
@@ -749,8 +764,10 @@
                     "twitterDesc": "Transform time into digital art. 3D hourglass timer for deep focus & productivity.",
                     "seoH1": "AuraSand - Aesthetic 3D Hourglass Focus Timer & Pomodoro App for Deep Work",
                     "galleryTitle": "Explore Beautiful Themes",
-                    "galleryLoading": "Loading {count} themes...",
-                    "galleryError": "Failed to load gallery",
+                    "galleryLoading": "Loading themes...",
+                    "gallerySuccess": "{count} themes loaded",
+                    "galleryError": "Failed to load themes",
+                    "galleryEmpty": "No themes found",
                     "screenshot": "screenshot_en.webp",
                     "heroTitle": "Let time flow <br>into art.",
                     "heroDesc": "Transform your time into digital art. AuraSand is an immersive 3D-effect hourglass designed for deep focus, studying, and meditation. Enjoy beautiful themes, interactive weather, and relaxing white noise.",
@@ -789,8 +806,10 @@
                     "twitterDesc": "让时间流动成艺术。专为深度工作、学习和冥想设计的 3D 质感动态沙漏。",
                     "seoH1": "AuraSand 灵动沙漏 - 3D 沉浸式专注计时器与番茄钟应用",
                     "galleryTitle": "探索精美主题",
-                    "galleryLoading": "正在加载 {count} 个主题...",
-                    "galleryError": "加载画廊失败",
+                    "galleryLoading": "正在加载主题...",
+                    "gallerySuccess": "已加载 {count} 个主题",
+                    "galleryError": "加载主题失败",
+                    "galleryEmpty": "未找到主题",
                     "screenshot": "screenshot_zh-CN.webp",
                     "heroTitle": "让时间，<br>流动成艺术。",
                     "heroDesc": "告别枯燥的数字。绝美 3D 质感动态沙漏，配合专属白噪音、下雨等音效和动画特效，为您打造零干扰的沉浸式专注空间。",
@@ -829,8 +848,10 @@
                     "twitterDesc": "讓時間流動成藝術。專為深度工作、學習和冥想設計的 3D 質感動態沙漏。",
                     "seoH1": "AuraSand 靈動沙漏 - 3D 沉浸式專注計時器與番茄鐘應用",
                     "galleryTitle": "探索精美主題",
-                    "galleryLoading": "正在加載 {count} 個主題...",
-                    "galleryError": "加載畫廊失敗",
+                    "galleryLoading": "正在加載主題...",
+                    "gallerySuccess": "已加載 {count} 個主題",
+                    "galleryError": "加載主題失敗",
+                    "galleryEmpty": "未找到主題",
                     "screenshot": "screenshot_zh-TW.webp",
                     "heroTitle": "讓時間，<br>流動成藝術。",
                     "heroDesc": "告別枯燥的數字。絕美 3D 質感動態沙漏，配合專屬白噪音、下雨等音效和動畫特效，為您打造零干擾的沉浸式專注空間。",
@@ -869,8 +890,10 @@
                     "twitterDesc": "時間を芸術に変える。深い集中と生産性のための3D砂時計タイマー。",
                     "seoH1": "AuraSand - 美しい3D砂時計フォーカスタイマーとポモドーロアプリ",
                     "galleryTitle": "美しいテーマを探索",
-                    "galleryLoading": "{count}個のテーマを読み込み中...",
-                    "galleryError": "ギャラリーの読み込みに失敗しました",
+                    "galleryLoading": "テーマを読み込み中...",
+                    "gallerySuccess": "{count}個のテーマを読み込みました",
+                    "galleryError": "テーマの読み込みに失敗しました",
+                    "galleryEmpty": "テーマが見つかりません",
                     "screenshot": "screenshot_jp.webp",
                     "heroTitle": "時間を、<br>芸術に。",
                     "heroDesc": "退屈な数字とはお別れ。美しい3Dの砂時計と、専用のホワイトノイズ、雨音、アニメーション効果が、没入型の集中空間を作ります。",
@@ -909,8 +932,10 @@
                     "twitterDesc": "시간을 예술로 만드세요. 심층 집중과 생산성을 위한 3D 모래시계 타이머.",
                     "seoH1": "AuraSand - 미학적인 3D 모래시계 집중 타이머와 뽀모도로 앱",
                     "galleryTitle": "아름다운 테마 탐색",
-                    "galleryLoading": "{count}개 테마 로드 중...",
-                    "galleryError": "갤러리 로드 실패",
+                    "galleryLoading": "테마 로드 중...",
+                    "gallerySuccess": "{count}개 테마 로드됨",
+                    "galleryError": "테마 로드 실패",
+                    "galleryEmpty": "테마를 찾을 수 없습니다",
                     "screenshot": "screenshot_ko.webp",
                     "heroTitle": "시간을<br>예술로 만들다.",
                     "heroDesc": "지루한 숫자와 작별하세요. 아름다운 3D 모래시계와 전용 백색 소음, 빗소리, 애니메이션 효과가 방해 없는 집중 공간을 만듭니다.",
@@ -949,8 +974,10 @@
                     "twitterDesc": "Transforme o tempo em arte. Timer de ampulheta 3D para foco profundo e produtividade.",
                     "seoH1": "AuraSand - Ampulheta 3D Estética, Timer de Foco e Aplicativo Pomodoro",
                     "galleryTitle": "Explore Temas Lindos",
-                    "galleryLoading": "Carregando {count} temas...",
-                    "galleryError": "Falha ao carregar galeria",
+                    "galleryLoading": "Carregando temas...",
+                    "gallerySuccess": "{count} temas carregados",
+                    "galleryError": "Falha ao carregar temas",
+                    "galleryEmpty": "Nenhum tema encontrado",
                     "screenshot": "screenshot_en.jpg",
                     "heroTitle": "Transforme o tempo<br>em arte.",
                     "heroDesc": "Diga adeus aos números chatos. Ampulhetas 3D deslumbrantes com ruído branco exclusivo, efeitos de chuva e animações criam um espaço de foco imersivo sem distrações.",
@@ -992,14 +1019,47 @@
             const playBadgeImg = document.getElementById('playBadgeImg');
             const phoneMockup = document.getElementById('phoneMockup');
             const galleryWrapper = document.getElementById('galleryWrapper');
-            const galleryLoading = document.getElementById('galleryLoading');
             const galleryStatus = document.getElementById('galleryStatus');
+            const schemaScript = document.getElementById('schemaApp');
             
             let googleAvailable = false;
             let currentVideoType = null;
             let currentVideoRatio = null;
             let galleryImages = [];
+            let appVersion = VERSION_CONFIG.fallbackVersion;
             const FLUTTER_APP_URL = "https://aurasand.pages.dev/";
+
+            // ===== 获取版本号 =====
+            async function fetchVersion() {
+                try {
+                    const response = await fetch(VERSION_CONFIG.url, {
+                        cache: 'no-cache'
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.version) {
+                            appVersion = data.version;
+                            updateSchemaVersion(appVersion);
+                            console.log('App version:', appVersion);
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Failed to fetch version:', error);
+                }
+            }
+
+            // 更新 Schema 版本号
+            function updateSchemaVersion(version) {
+                try {
+                    if (schemaScript) {
+                        const data = JSON.parse(schemaScript.textContent);
+                        data.softwareVersion = version;
+                        schemaScript.textContent = JSON.stringify(data, null, 2);
+                    }
+                } catch (e) {
+                    console.warn('Failed to update schema version:', e);
+                }
+            }
 
             // ===== GitHub API 动态获取截图 =====
             async function fetchGalleryImages() {
@@ -1009,7 +1069,8 @@
                     const response = await fetch(apiUrl, {
                         headers: {
                             'Accept': 'application/vnd.github.v3+json'
-                        }
+                        },
+                        cache: 'no-cache'
                     });
                     
                     if (!response.ok) {
@@ -1028,39 +1089,51 @@
                         }))
                         .sort((a, b) => a.name.localeCompare(b.name));
                     
-                    return images;
+                    return { success: true, images: images };
                     
                 } catch (error) {
                     console.warn('Failed to fetch from GitHub API:', error);
-                    return null;
+                    return { success: false, images: [] };
                 }
             }
 
             // 初始化画廊
             async function initGallery() {
-                // 尝试从 GitHub API 获取
-                let images = await fetchGalleryImages();
-                let useFallback = false;
+                const currentLang = localStorage.getItem('aura_lang') || 'en';
+                const dict = translations[currentLang] || translations['en'];
                 
-                // 如果失败或为空，使用备用列表
-                if (!images || images.length === 0) {
+                // 显示加载状态
+                galleryStatus.textContent = dict.galleryLoading || 'Loading themes...';
+                galleryStatus.style.background = 'rgba(100,100,100,0.3)';
+                
+                // 尝试从 GitHub API 获取
+                const result = await fetchGalleryImages();
+                let images = result.images;
+                
+                // 处理各种情况
+                if (!result.success) {
+                    // API 调用失败，使用备用
+                    console.log('GitHub API failed, using fallback images');
                     images = FALLBACK_IMAGES.map(path => ({
                         name: path.split('/').pop(),
                         url: path,
                         path: path
                     }));
-                    useFallback = true;
+                    galleryStatus.textContent = dict.galleryError || 'Failed to load themes';
+                    galleryStatus.style.background = 'rgba(255,150,50,0.3)';
+                } else if (images.length === 0) {
+                    // API 成功但目录为空
+                    galleryStatus.textContent = dict.galleryEmpty || 'No themes found';
+                    galleryStatus.style.background = 'rgba(255,100,100,0.3)';
+                    galleryWrapper.innerHTML = `<div class="gallery-empty">${dict.galleryEmpty || 'No themes found'}</div>`;
+                    return;
+                } else {
+                    // 成功获取图片
+                    galleryStatus.textContent = (dict.gallerySuccess || '{count} themes loaded').replace('{count}', images.length);
+                    galleryStatus.style.background = 'rgba(50,200,100,0.3)';
                 }
                 
                 galleryImages = images;
-                
-                // 更新状态文本
-                const currentLang = localStorage.getItem('aura_lang') || 'en';
-                const dict = translations[currentLang] || translations['en'];
-                const statusText = useFallback ? 
-                    (dict.galleryError || 'Using cached themes') : 
-                    (dict.galleryLoading || 'Loading...').replace('{count}', images.length);
-                galleryStatus.textContent = statusText;
                 
                 // 创建画廊 DOM
                 createGallery(images);
@@ -1071,15 +1144,13 @@
 
             // 创建画廊 DOM
             function createGallery(images) {
-                // 清除加载状态
                 galleryWrapper.innerHTML = '';
                 
                 if (images.length === 0) {
-                    galleryWrapper.innerHTML = '<div class="gallery-error">No themes found</div>';
+                    galleryWrapper.innerHTML = '<div class="gallery-empty">No themes available</div>';
                     return;
                 }
                 
-                // 创建轨道容器
                 const track = document.createElement('div');
                 track.className = 'gallery-track';
                 track.id = 'galleryTrack';
@@ -1098,8 +1169,8 @@
                     image.alt = `AuraSand 3D hourglass theme: ${img.name.replace('.webp', '').replace(/_/g, ' ')}`;
                     image.loading = 'lazy';
                     
-                    // 错误处理
                     image.onerror = () => {
+                        console.warn('Failed to load image:', img.url);
                         item.style.display = 'none';
                     };
                     
@@ -1110,25 +1181,24 @@
                 galleryWrapper.appendChild(track);
                 
                 // 动态调整动画速度
-                const baseSpeed = 40; // 基础速度（秒）
-                const speedFactor = Math.max(20, baseSpeed - (images.length * 2)); // 图片越多速度越快
+                const baseSpeed = 40;
+                const speedFactor = Math.max(20, baseSpeed - (images.length * 1.5));
                 track.style.animationDuration = `${speedFactor}s`;
             }
 
             // 更新 Schema.org 截图数据
             function updateSchemaScreenshots(images) {
-                const schemas = document.querySelectorAll('script[type="application/ld+json"]');
-                schemas.forEach(script => {
-                    try {
-                        const data = JSON.parse(script.textContent);
-                        if (data['@type'] === 'SoftwareApplication' && data.screenshot) {
+                try {
+                    if (schemaScript) {
+                        const data = JSON.parse(schemaScript.textContent);
+                        if (data['@type'] === 'SoftwareApplication') {
                             data.screenshot = images.slice(0, 6).map(img => img.url);
-                            script.textContent = JSON.stringify(data, null, 2);
+                            schemaScript.textContent = JSON.stringify(data, null, 2);
                         }
-                    } catch (e) {
-                        // 忽略解析错误
                     }
-                });
+                } catch (e) {
+                    console.warn('Failed to update schema screenshots:', e);
+                }
             }
 
             // 辅助函数：关闭所有演示
@@ -1304,10 +1374,25 @@
                 document.getElementById('langSwitcher').value = langCode;
                 document.documentElement.lang = langCode;
                 
-                // 更新画廊状态文本
+                // 更新画廊状态文本（如果画廊已加载）
                 if (galleryImages.length > 0) {
-                    galleryStatus.textContent = (dict.galleryLoading || 'Loading...').replace('{count}', galleryImages.length);
+                    galleryStatus.textContent = (dict.gallerySuccess || '{count} themes loaded').replace('{count}', galleryImages.length);
                 }
+
+                // 更新 URL 参数（不刷新页面）
+                const url = new URL(window.location);
+                url.searchParams.set('lang', langCode);
+                window.history.replaceState({}, '', url);
+                
+                // 同时更新所有 hreflang 链接中的域名（可选，保持一致性）
+                document.querySelectorAll('link[rel="alternate"]').forEach(link => {
+                    const hreflang = link.getAttribute('hreflang');
+                    if (hreflang) {
+                        const linkUrl = new URL(link.href);
+                        linkUrl.searchParams.set('lang', hreflang);
+                        link.href = linkUrl.toString();
+                    }
+                });
             };
 
             // 监听窗口变化
@@ -1328,11 +1413,31 @@
             });
 
             // 初始化
+            // 替换原有的 window.onload 中的语言检测部分
             window.onload = () => {
-                // 启动画廊加载（异步）
+                // 并行加载版本号和画廊
+                fetchVersion();
                 initGallery();
                 
-                let lang = localStorage.getItem('aura_lang');
+                // ===== 修改这部分 =====
+                let lang;
+                
+                // 1. 优先从 URL 参数读取 ?lang=xx
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlLang = urlParams.get('lang');
+                
+                // 有效的语言代码列表
+                const validLangs = ['en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'pt-BR'];
+                
+                if (urlLang && validLangs.includes(urlLang)) {
+                    lang = urlLang;
+                } 
+                // 2. 其次从 localStorage 读取
+                else {
+                    lang = localStorage.getItem('aura_lang');
+                }
+                
+                // 3. 都没有则检测浏览器语言
                 if (!lang) {
                     const browserLang = navigator.language.toLowerCase();
                     if (browserLang === 'pt-br') lang = 'pt-BR';
@@ -1344,6 +1449,7 @@
                     else if (browserLang.includes('ko')) lang = 'ko';
                     else lang = 'en';
                 }
+                
                 changeLanguage(lang);
                 adjustLiveDemoSize();
             };
