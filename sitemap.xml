@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://aurasand.github.io/site</loc>
+    <lastmod>2026-05-07</lastmod>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aurasand.github.io/site?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aurasand.github.io/site?lang=zh-CN"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aurasand.github.io/site?lang=zh-TW"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://aurasand.github.io/site?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://aurasand.github.io/site?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://aurasand.github.io/site?lang=pt-BR"/>
+  </url>
+</urlset>
