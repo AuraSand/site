@@ -1224,6 +1224,16 @@
                 return 400;
             }
 
+            function fetchGalleryImagesLocal() {
+                const images = SNAPSHOT_FILES.map(filename => ({
+                    name: filename,
+                    url: 'snapshot/' + filename,       // 相对路径
+                    path: 'snapshot/' + filename
+                }));
+                return { success: true, images };
+            }
+
+
             // ===== GitHub API 获取截图（多 CDN 备用）=====
             async function fetchGalleryImages() {
                 const apiUrls = [
@@ -1438,7 +1448,7 @@
                 galleryStatus.textContent = dict.galleryLoading || 'Loading screenshots...';
                 galleryStatus.style.background = 'rgba(100,100,100,0.3)';
                 
-                const result = await fetchGalleryImages();
+                const result = fetchGalleryImagesLocal();
                 let images = result.images;
                 
                 if (!result.success || images.length === 0) {
@@ -1786,6 +1796,7 @@
             window.addEventListener('resize', handleResize);
         })();
     </script>
+    <script src="snapshot-list.js"></script>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 </body>
 </html>
