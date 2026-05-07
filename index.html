@@ -1153,10 +1153,23 @@
                 phoneMockup.style.backgroundImage = `url('${dict['screenshot']}')`;
                 
                 const badgeUrl = dict['playBadge'];
-                const detector = new Image();
-                detector.onload = () => { googleAvailable = true; playBadgeImg.src = badgeUrl; };
-                detector.onerror = () => { googleAvailable = false; playBadgeImg.src = badgeUrl; };
-                detector.src = badgeUrl;
+                const FALLBACK_BADGE = 'en_badge_web_generic.png';  // 本地默认英语徽章，确保存在
+                const testImg = new Image();
+                
+                testImg.onload = function() {
+                    playBadgeImg.src = badgeUrl;
+                    googleAvailable = true;
+                };
+                
+                testImg.onerror = function() {
+                    // 加载失败，回退到本地默认徽章（避免显示破碎图片）
+                    if (playBadgeImg.src !== FALLBACK_BADGE) {
+                        playBadgeImg.src = FALLBACK_BADGE;
+                    }
+                    googleAvailable = false;
+                };
+                
+                testImg.src = badgeUrl;
                 
                 localStorage.setItem('aura_lang', langCode);
                 document.getElementById('langSwitcher').value = langCode;
