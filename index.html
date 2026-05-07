@@ -378,6 +378,41 @@
         .feature-card h3 { font-size: 22px; margin-bottom: 15px; color: var(--primary-color); }
         .feature-card p { font-size: 15px; color: var(--text-light); line-height: 1.7; }
 
+        .faq-section {
+            max-width: 1200px;
+            margin: 60px auto 40px;
+            padding: 0 5%;
+            width: 100%;
+        }
+        
+        .faq-section h2 {
+            font-size: 28px;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .faq-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .faq-item h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .faq-item p {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
         /* 动态截图画廊 - 修复抖动问题 */
         .gallery-section {
             max-width: 1200px;
@@ -726,6 +761,18 @@
         </div>
     </section>
 
+    <section class="faq-section">
+        <h2 data-i18n="faqTitle">Frequently Asked Questions</h2>
+        <div class="faq-item">
+            <h3 data-i18n="faq1Q">What makes AuraSand different from other timers?</h3>
+            <p data-i18n="faq1A">AuraSand combines a 3D hourglass visual with focus-enhancing white noise and weather effects, turning time tracking into a calming ritual.</p>
+        </div>
+        <div class="faq-item">
+            <h3 data-i18n="faq2Q">Can I use AuraSand as a Pomodoro timer?</h3>
+            <p data-i18n="faq2A">Absolutely! You can set custom work/break intervals, hide the countdown, and let the sand flow guide your focus.</p>
+        </div>
+    </section>
+
     <!-- 动态截图画廊 -->
     <section class="gallery-section" aria-label="App Screenshots Gallery" id="gallerySection">
         <div class="gallery-header">
@@ -837,8 +884,8 @@
                     "galleryError": "Failed to load screenshots",
                     "galleryEmpty": "No screenshots found",
                     "screenshot": "screenshot_en.webp",
-                    "heroTitle": "Let time flow <br>into art.",
-                    "heroDesc": "Transform your time into digital art. AuraSand is an immersive 3D-effect hourglass designed for deep focus, studying, and meditation.",
+                    "heroTitle": "3D Hourglass Timer & Pomodoro – Let Time Flow<br>into Art",
+                    "heroDesc": "AuraSand is an aesthetic 3D hourglass focus timer and Pomodoro app for deep work, study sessions, and meditation. Featuring calming white noise, weather effects, and a unique sandglass visual that turns time management into digital art.",
                     "vidMobile": "📱 Mobile Demo", 
                     "vidTablet": "💻 Tablet Demo", 
                     "closeVid": "Close Demo ✕", 
@@ -862,7 +909,12 @@
                     "statVisitors": "Visitors", 
                     "statPageViews": "Page Views",
                     "statTimes": "",
-                    "statPeople": ""
+                    "statPeople": "",
+                    "faqTitle": "Frequently Asked Questions",
+                    "faq1Q": "What makes AuraSand different from other timers?",
+                    "faq1A": "AuraSand combines a 3D hourglass visual with focus-enhancing white noise and weather effects, turning time tracking into a calming ritual.",
+                    "faq2Q": "Can I use AuraSand as a Pomodoro timer?",
+                    "faq2A": "Absolutely! You can set custom work/break intervals, hide the countdown, and let the sand flow guide your focus."
                 },
                 "zh-CN": {
                     "pageTitle": "AuraSand 灵动沙漏 | 3D 沉浸式专注计时器与番茄钟",
@@ -878,8 +930,8 @@
                     "galleryError": "加载截图失败",
                     "galleryEmpty": "未找到截图",
                     "screenshot": "screenshot_zh-CN.webp",
-                    "heroTitle": "让时间，<br>流动成艺术。",
-                    "heroDesc": "告别枯燥的数字。绝美 3D 质感动态沙漏，配合专属白噪音、下雨等音效和动画特效，为您打造零干扰的沉浸式专注空间。",
+                    "heroTitle": "3D沙漏计时器 & 番茄钟 – 让时间<br>流动成艺术",
+                    "heroDesc": "AuraSand 是一款绝美的3D沙漏专注计时器和番茄钟应用，专为深度工作、学习和冥想设计。内置白噪音、天气特效和动态沙漏视觉，将枯燥的计时变成一种艺术享受。",
                     "vidMobile": "📱 手机端演示", 
                     "vidTablet": "💻 平板端演示", 
                     "closeVid": "收起演示 ✕", 
@@ -903,7 +955,12 @@
                     "statVisitors": "访客数",
                     "statPageViews": "本页访问",
                     "statTimes": "次",
-                    "statPeople": "人"
+                    "statPeople": "人",
+                    "faqTitle": "常见问题",
+                    "faq1Q": "AuraSand 与其他计时器有什么不同？",
+                    "faq1A": "AuraSand 将 3D 沙漏视觉与提升专注的白噪音和天气特效相结合，让计时变成一种宁静的仪式。",
+                    "faq2Q": "AuraSand 能当番茄钟用吗？",
+                    "faq2A": "当然！您可以自定义工作/休息时长，隐藏倒计时，让流沙引导您的专注节奏。"
                 },
                 "zh-TW": {
                     "pageTitle": "AuraSand 靈動沙漏 | 3D 沉浸式專注計時器與番茄鐘",
@@ -919,8 +976,8 @@
                     "galleryError": "加載截圖失敗",
                     "galleryEmpty": "未找到截圖",
                     "screenshot": "screenshot_zh-TW.webp",
-                    "heroTitle": "讓時間，<br>流動成藝術。",
-                    "heroDesc": "告別枯燥的數字。絕美 3D 質感動態沙漏，配合專屬白噪音、下雨等音效和動畫特效，為您打造零干擾的沉浸式專注空間。",
+                    "heroTitle": "3D沙漏計時器 & 番茄鐘 – 讓時間<br>流動成藝術",
+                    "heroDesc": "AuraSand 是一款絕美的3D沙漏專注計時器和番茄鐘應用，專為深度工作、學習和冥想設計。內建白噪音、天氣特效和動態沙漏視覺，將枯燥的計時變成一種藝術享受。",
                     "vidMobile": "📱 手機端演示", 
                     "vidTablet": "💻 平板端演示", 
                     "closeVid": "收起演示 ✕", 
@@ -944,7 +1001,12 @@
                     "statVisitors": "訪客數", 
                     "statPageViews": "本頁訪問",
                     "statTimes": "次",
-                    "statPeople": "人"
+                    "statPeople": "人",
+                    "faqTitle": "常見問題",
+                    "faq1Q": "AuraSand 與其他計時器有什麼不同？",
+                    "faq1A": "AuraSand 將 3D 沙漏視覺與提升專注的白噪音和天氣效果相結合，讓計時變成一種寧靜的儀式。",
+                    "faq2Q": "AuraSand 能當番茄鐘使用嗎？",
+                    "faq2A": "當然！您可以自定義工作/休息時長，隱藏倒計時，讓流沙引導您的專注節奏。"
                 },
                 "ja": {
                     "pageTitle": "AuraSand | 美しい3D砂時計フォーカスタイマーとポモドーロ",
@@ -960,8 +1022,8 @@
                     "galleryError": "読み込みに失敗しました",
                     "galleryEmpty": "スクリーンショットが見つかりません",
                     "screenshot": "screenshot_jp.webp",
-                    "heroTitle": "時間を、<br>芸術に。",
-                    "heroDesc": "退屈な数字とはお別れ。美しい3Dの砂時計と、専用のホワイトノイズ、雨音、アニメーション効果が、没入型の集中空間を作ります。",
+                    "heroTitle": "3D砂時計タイマー & ポモドーロ – 時間を<br>芸術に変える",
+                    "heroDesc": "AuraSandは、深い集中、学習、瞑想のための美しい3D砂時計フォーカスタイマーとポモドーロアプリです。心を落ち着かせるホワイトノイズ、天気効果、そしてユニークなサンドグラスビジュアルで、時間管理をデジタルアートに変えます。",
                     "vidMobile": "📱 モバイルデモ", 
                     "vidTablet": "💻 タブレットデモ", 
                     "closeVid": "閉じる ✕", 
@@ -985,7 +1047,12 @@
                     "statVisitors": "訪問者数",
                     "statPageViews": "ページ閲覧",
                     "statTimes": "回",
-                    "statPeople": "人"
+                    "statPeople": "人",
+                    "faqTitle": "よくある質問",
+                    "faq1Q": "AuraSandが他のタイマーと違う点は？",
+                    "faq1A": "AuraSandは、3Dの砂時計ビジュアルと集中力を高めるホワイトノイズ、天気効果を組み合わせ、時間の追跡を落ち着く儀式に変えます。",
+                    "faq2Q": "ポモドーロタイマーとして使えますか？",
+                    "faq2A": "もちろん！お好みの作業・休憩時間を設定し、カウントダウンを非表示にして、砂の流れに集中を任せることができます。"
                 },
                 "ko": {
                     "pageTitle": "AuraSand | 미학적인 3D 모래시계 집중 타이머와 뽀모도로",
@@ -1001,8 +1068,8 @@
                     "galleryError": "스크린샷 로드 실패",
                     "galleryEmpty": "스크린샷을 찾을 수 없습니다",
                     "screenshot": "screenshot_ko.webp",
-                    "heroTitle": "시간을<br>예술로 만들다.",
-                    "heroDesc": "지루한 숫자와 작별하세요. 아름다운 3D 모래시계와 전용 백색 소음, 빗소리, 애니메이션 효과가 방해 없는 집중 공간을 만듭니다.",
+                    "heroTitle": "3D 모래시계 타이머 & 뽀모도로 – 시간을<br>예술로 만들다",
+                    "heroDesc": "AuraSand는 깊은 집중, 공부, 명상을 위한 아름다운 3D 모래시계 집중 타이머이자 뽀모도로 앱입니다. 마음을 진정시키는 백색 소음, 날씨 효과, 독특한 모래시계 비주얼이 시간 관리를 디지털 아트로 바꿉니다.",
                     "vidMobile": "📱 모바일 데모", 
                     "vidTablet": "💻 태블릿 데모", 
                     "closeVid": "닫기 ✕", 
@@ -1026,7 +1093,12 @@
                     "statVisitors": "방문자",
                     "statPageViews": "페이지 조회",
                     "statTimes": "회",
-                    "statPeople": "명"
+                    "statPeople": "명",
+                    "faqTitle": "자주 묻는 질문",
+                    "faq1Q": "AuraSand가 다른 타이머와 다른 점은 무엇인가요?",
+                    "faq1A": "AuraSand는 3D 모래시계 비주얼과 집중력을 높이는 백색 소음, 날씨 효과를 결합하여 시간 추적을 차분한 의식으로 바꿉니다.",
+                    "faq2Q": "뽀모도로 타이머로 사용할 수 있나요?",
+                    "faq2A": "물론이죠! 사용자 지정 작업/휴식 시간을 설정하고, 카운트다운을 숨기고, 모래의 흐름이 집중을 안내하도록 할 수 있습니다."
                 },
                 "pt-BR": {
                     "pageTitle": "AuraSand | Ampulheta 3D Estética - Timer de Foco e Pomodoro",
@@ -1042,8 +1114,8 @@
                     "galleryError": "Falha ao carregar capturas",
                     "galleryEmpty": "Nenhuma captura encontrada",
                     "screenshot": "screenshot_en.jpg",
-                    "heroTitle": "Transforme o tempo<br>em arte.",
-                    "heroDesc": "Diga adeus aos números chatos. Ampulhetas 3D deslumbrantes com ruído branco exclusivo, efeitos de chuva e animações criam um espaço de foco imersivo.",
+                    "heroTitle": "Ampulheta 3D & Pomodoro – Transforme o Tempo<br>em Arte",
+                    "heroDesc": "AuraSand é um elegante timer de foco com ampulheta 3D e aplicativo Pomodoro para trabalho profundo, estudos e meditação. Com ruído branco relaxante, efeitos climáticos e um visual exclusivo de areia, transforma o gerenciamento do tempo em arte digital.",
                     "vidMobile": "📱 Demo Mobile", 
                     "vidTablet": "💻 Demo Tablet", 
                     "closeVid": "Fechar Demo ✕", 
@@ -1067,7 +1139,12 @@
                     "statVisitors": "Visitantes", 
                     "statPageViews": "Página",
                     "statTimes": "vezes",
-                    "statPeople": "pessoas"
+                    "statPeople": "pessoas",
+                    "faqTitle": "Perguntas Frequentes",
+                    "faq1Q": "O que torna o AuraSand diferente de outros timers?",
+                    "faq1A": "O AuraSand combina uma ampulheta 3D com ruído branco que aumenta o foco e efeitos climáticos, transformando o controle do tempo em um ritual relaxante.",
+                    "faq2Q": "Posso usar o AuraSand como timer Pomodoro?",
+                    "faq2A": "Com certeza! Você pode definir intervalos personalizados de trabalho/descanso, ocultar a contagem regressiva e deixar o fluxo da areia guiar seu foco."
                 }
             };
 
@@ -1383,7 +1460,7 @@
                     imgElement.style.objectFit = 'cover';
                     imgElement.style.opacity = '0';
                     imgElement.style.transition = 'opacity 0.3s ease';
-                    imgElement.alt = `AuraSand screenshot: ${img.name.replace('.webp', '').replace(/_/g, ' ')}`;
+                    imgElement.alt = `AuraSand 3D hourglass pomodoro timer screenshot - ${img.name.replace('src_', '').replace('.webp', '').replace(/_/g, ' ')} theme`;
                     
                     // 尝试多个 CDN 加载图片
                     const imageUrls = [
@@ -1630,7 +1707,7 @@
                     if (schemaScript) {
                         const data = JSON.parse(schemaScript.textContent);
                         if (data['@type'] === 'SoftwareApplication') {
-                            data.screenshot = images.slice(0, 6).map(img => img.url);
+                            return img.url.startsWith('http') ? img.url : 'https://aurasand.github.io/site/' + img.url;
                             schemaScript.textContent = JSON.stringify(data, null, 2);
                         }
                     }
