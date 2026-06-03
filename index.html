@@ -101,14 +101,14 @@
         :root {
             --sand: #D4A574;
             --sand-light: #E8C9A0;
-            --sand-glow: rgba(212, 165, 116, 0.15);
-            --deep-space: #0B0F1F;
-            --midnight: #121830;
-            --navy: #1A2342;
-            --slate: #2A3455;
-            --mist: rgba(255, 255, 255, 0.03);
-            --glass: rgba(255, 255, 255, 0.04);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --sand-glow: rgba(212, 165, 116, 0.18);
+            --deep-space: #11172B;
+            --midnight: #181F3A;
+            --navy: #232D52;
+            --slate: #3A4568;
+            --mist: rgba(255, 255, 255, 0.04);
+            --glass: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.12);
             --text-primary: #F0E6D3;
             --text-secondary: #8B95B8;
             --text-muted: #5A6380;
@@ -123,7 +123,10 @@
         }
         
         body { 
-            background: var(--deep-space);
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -5%, rgba(212, 165, 116, 0.07) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 40% at 80% 40%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+                var(--deep-space);
             color: var(--text-primary); 
             min-height: 100vh; 
             overflow-x: hidden;
@@ -220,6 +223,14 @@
             background: rgba(255,255,255,0.08);
             border-color: rgba(212, 165, 116, 0.3);
             color: var(--text-primary);
+        }
+        
+        .lang-selector option {
+            background: var(--deep-space);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 13px;
+            padding: 8px;
         }
 
         /* Hero - 非对称布局与光效 */
@@ -723,7 +734,7 @@
             overflow: hidden;
             position: relative;
             z-index: 1;
-            background: linear-gradient(180deg, transparent 0%, rgba(18, 24, 48, 0.4) 30%, rgba(18, 24, 48, 0.4) 70%, transparent 100%);
+            background: linear-gradient(180deg, transparent 0%, rgba(24, 31, 58, 0.45) 30%, rgba(24, 31, 58, 0.45) 70%, transparent 100%);
         }
         
         .gallery-header {
@@ -916,7 +927,7 @@
             border-top: 1px solid var(--glass-border);
             position: relative;
             z-index: 1;
-            background: linear-gradient(180deg, transparent, rgba(11, 15, 31, 0.8));
+            background: linear-gradient(180deg, transparent, rgba(17, 23, 43, 0.85));
         }
         
         footer .footer-links { 
