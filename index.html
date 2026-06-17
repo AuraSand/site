@@ -1407,9 +1407,9 @@
             pointer-events: none;
         }
 
-        /* 侧边栏顶部 FOLLOW 标签 */
+        /* 侧边栏顶部 关注 标签 */
         .social-sidebar::before {
-            content: 'FOLLOW';
+            content: attr(data-follow-label);
             display: block;
             text-align: center;
             font-size: 9px;
@@ -1716,6 +1716,7 @@
                     "statPeople": "",
                     "navDownload": "Baixar App",
                     "navDownload": "Get App",
+                    "socialFollow": "Follow",
                     "faqTitle": "Frequently Asked Questions",
                     "faq1Q": "What makes AuraSand different from other timers?",
                     "faq1A": "AuraSand combines a 3D hourglass visual with focus-enhancing white noise and weather effects, turning time tracking into a calming ritual.",
@@ -1767,6 +1768,7 @@
                     "statPeople": "人",
                     "navDownload": "取得應用",
                     "navDownload": "获取应用",
+                    "socialFollow": "关注",
                     "faqTitle": "常见问题",
                     "faq1Q": "AuraSand 与其他计时器有什么不同？",
                     "faq1A": "AuraSand 将 3D 沙漏视觉与提升专注的白噪音和天气特效相结合，让计时变成一种宁静的仪式。",
@@ -1868,6 +1870,7 @@
                     "statTimes": "回",
                     "statPeople": "人",
                     "navDownload": "アプリ取得",
+                    "socialFollow": "フォロー",
                     "faqTitle": "よくある質問",
                     "faq1Q": "AuraSandが他のタイマーと違う点は？",
                     "faq1A": "AuraSandは、3Dの砂時計ビジュアルと集中力を高めるホワイトノイズ、天気効果を組み合わせ、時間の追跡を落ち着く儀式に変えます。",
@@ -1918,6 +1921,7 @@
                     "statTimes": "회",
                     "statPeople": "명",
                     "navDownload": "앱 다운로드",
+                    "socialFollow": "팔로우",
                     "faqTitle": "자주 묻는 질문",
                     "faq1Q": "AuraSand가 다른 타이머와 다른 점은 무엇인가요?",
                     "faq1A": "AuraSand는 3D 모래시계 비주얼과 집중력을 높이는 백색 소음, 날씨 효과를 결합하여 시간 추적을 차분한 의식으로 바꿉니다.",
@@ -1967,6 +1971,7 @@
                     "statPageViews": "Página",
                     "statTimes": "vezes",
                     "statPeople": "pessoas",
+                    "socialFollow": "Seguir",
                     "faqTitle": "Perguntas Frequentes",
                     "faq1Q": "O que torna o AuraSand diferente de outros timers?",
                     "faq1A": "O AuraSand combina uma ampulheta 3D com ruído branco que aumenta o foco e efeitos climáticos, transformando o controle do tempo em um ritual relaxante.",
@@ -2081,6 +2086,12 @@
                 
                 if (galleryImages.length > 0 && galleryStatus) {
                     galleryStatus.textContent = (dict.gallerySuccess || '{count} screenshots loaded').replace('{count}', galleryImages.length);
+                }
+
+                // 更新侧边栏顶部标签
+                const socialSidebarEl = document.getElementById('socialSidebar');
+                if (socialSidebarEl && dict.socialFollow) {
+                    socialSidebarEl.setAttribute('data-follow-label', dict.socialFollow.toUpperCase());
                 }
                 
                 const url = new URL(window.location);
@@ -2837,9 +2848,9 @@
     <!-- 触发按钮必须在侧边栏前面，CSS 才能用 + 选择器选中后面的兄弟元素 -->
     <div class="social-sidebar-trigger" id="socialSidebarTrigger" title="Social Media">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <span class="trigger-label">Follow</span>
+        <span class="trigger-label" data-i18n="socialFollow">Follow</span>
     </div>
-    <div class="social-sidebar" id="socialSidebar">
+    <div class="social-sidebar" id="socialSidebar" data-follow-label="FOLLOW">
         <a href="https://www.youtube.com/@aurasand3d" target="_blank" rel="noopener" class="social-btn youtube" aria-label="YouTube" title="YouTube">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
         </a>
