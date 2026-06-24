@@ -56,16 +56,30 @@
     {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "AuraSand - Hourglass App & 3D Sand Timer",
+        "name": "Hourglass App & Timer | AuraSand 3D Pomodoro Focus Timer",
         "applicationCategory": "ProductivityApplication",
         "operatingSystem": "Android",
+        "author": {
+            "@type": "Organization",
+            "name": "Siteflare",
+            "url": "https://aurasand.github.io/site"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "AuraSand",
+            "url": "https://aurasand.github.io/site",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://aurasand.github.io/site/logo.png"
+            }
+        },
         "offers": {
             "@type": "Offer",
             "price": "0",
             "priceCurrency": "USD"
         },
         "description": "Aesthetic 3D hourglass focus timer with Pomodoro technique, white noise, and immersive weather effects.",
-        "downloadUrl": "https://play.google.com/store/apps/details?id=com.siteflare.hourglass",
+        "downloadUrl": "https://play.google.com/store/apps/details?id=com.siteflare.hourglass&utm_source=website&utm_medium=hero_button&utm_campaign=landing_page",
         "softwareVersion": "1.1.1",
         "screenshot": [
             "https://aurasand.github.io/site/snapshot/src_zenpro_01.webp",
@@ -1460,7 +1474,7 @@
     <nav id="mainNav">
         <div class="logo" itemprop="name">AuraSand</div>
         <div class="nav-right">
-            <a href="https://play.google.com/store/apps/details?id=com.siteflare.hourglass" target="_blank" class="nav-download-btn" rel="noopener" id="navDownloadBtn" aria-label="Download on Google Play">
+            <a href="https://play.google.com/store/apps/details?id=com.siteflare.hourglass&utm_source=website&utm_medium=hero_button&utm_campaign=landing_page" target="_blank" class="nav-download-btn" rel="noopener" id="navDownloadBtn" aria-label="Download on Google Play">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <span data-i18n="navDownload">Get App</span>
             </a>
@@ -1485,7 +1499,7 @@
             <h1 data-i18n="heroTitle">Let time flow <br>into <span>art.</span></h1>
             <p data-i18n="heroDesc">Transform your time into digital art. AuraSand is an immersive 3D-effect hourglass designed for deep focus, studying, and meditation. Enjoy beautiful themes, interactive weather, and relaxing white noise.</p>
             <div class="download-area">
-                <a href="https://play.google.com/store/apps/details?id=com.siteflare.hourglass" target="_blank" class="play-badge" rel="noopener" itemprop="downloadUrl">
+                <a href="https://play.google.com/store/apps/details?id=com.siteflare.hourglass&utm_source=website&utm_medium=hero_button&utm_campaign=landing_page" target="_blank" class="play-badge" rel="noopener" itemprop="downloadUrl">
                     <img id="playBadgeImg" src="en_badge_web_generic.png" alt="Get AuraSand on Google Play" style="height: 56px;" loading="lazy">
                 </a>
                 <div class="qr-box">
@@ -2420,7 +2434,6 @@
                 
                 galleryImages = images;
                 await createGallery(images);
-                updateSchemaScreenshots(images);
             }
 
             function getCurrentTranslateX() {
@@ -2556,18 +2569,6 @@
                     galleryTrack.style.animationDelay = `-${progress * duration}s`;
                 }
                 startAutoScrollTracking();
-            }
-
-            function updateSchemaScreenshots(images) {
-                try {
-                    if (schemaScript) {
-                        const data = JSON.parse(schemaScript.textContent);
-                        if (data['@type'] === 'SoftwareApplication') {
-                            return img.url.startsWith('http') ? img.url : 'https://aurasand.github.io/site/' + img.url;
-                            schemaScript.textContent = JSON.stringify(data, null, 2);
-                        }
-                    }
-                } catch (e) {}
             }
 
             function closeAllDemos() {
