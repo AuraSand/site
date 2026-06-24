@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="robots" content="index, follow">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
     
     <!-- SEO 核心优化 -->
     <title data-i18n="pageTitle">Hourglass App & Timer | AuraSand 3D Pomodoro Focus Timer for Android</title>
@@ -65,7 +67,17 @@
         "description": "Aesthetic 3D hourglass focus timer with Pomodoro technique, white noise, and immersive weather effects.",
         "downloadUrl": "https://play.google.com/store/apps/details?id=com.siteflare.hourglass",
         "softwareVersion": "1.1.1",
-        "screenshot": [],
+        "screenshot": [
+            "https://aurasand.github.io/site/snapshot/src_zenpro_01.webp",
+            "https://aurasand.github.io/site/snapshot/src_unicorn_01.webp",
+            "https://aurasand.github.io/site/snapshot/src_whale_01.webp",
+            "https://aurasand.github.io/site/snapshot/src_jellyfish_01.webp",
+            "https://aurasand.github.io/site/snapshot/src_blackgold_01.webp",
+            "https://aurasand.github.io/site/snapshot/src_bunny_01.webp",
+            "https://aurasand.github.io/site/snapshot/src_cartoon_01.webp",
+            "https://aurasand.github.io/site/snapshot/src_zen_01.webp",
+            "https://aurasand.github.io/site/snapshot/src_jewel_01.webp"
+        ],
         "featureList": "Hourglass Timer, 3D Sand Animation, Pomodoro Timer, White Noise, Weather Effects, Zen Mode, ADHD Focus Tools, Study Timer",
         "keywords": "hourglass app, sand timer, pomodoro timer, focus app, study timer, meditation timer, ADHD tools, productivity app"
     }
@@ -1438,7 +1450,6 @@
         }
 </style>
 <base target="_blank">
-<base target="_blank">
 </head>
 <body>
 
@@ -2073,6 +2084,14 @@
                 document.querySelector('meta[name="twitter:description"]').setAttribute('content', dict.twitterDesc);
                 
                 phoneMockup.style.backgroundImage = `url('${dict['screenshot']}')`;
+
+                let canonicalLink = document.querySelector('link[rel="canonical"]');
+                if (!canonicalLink) {
+                    canonicalLink = document.createElement('link');
+                    canonicalLink.setAttribute('rel', 'canonical');
+                    document.head.appendChild(canonicalLink);
+                }
+                canonicalLink.setAttribute('href', `https://aurasand.github.io/site?lang=${langCode}`);
                 
                 const badgeUrl = dict['playBadge'];
                 const FALLBACK_BADGE = 'en_badge_web_generic.png';
