@@ -2328,224 +2328,232 @@
             }
         })();
 
-        // ===== 动态画廊 (使用2.html的图片源) =====
-        (function() {
-            var GALLERY_IMAGES = [
-                'https://entro.work/storage/entro/apps/hourglass-timer---aurasand/c2e93f33-0896-4fa7-9dfa-8fb1cf6f15b0.png',
-                'https://entro.work/storage/entro/apps/hourglass-timer---aurasand/9a06e201-89be-4580-ad85-991adcb98507.png',
-                'https://entro.work/storage/entro/apps/hourglass-timer---aurasand/ab4e5e60-8a68-4f74-bb23-29e083956dfd.png',
-                'https://entro.work/storage/entro/apps/hourglass-timer---aurasand/25ec520e-06f2-46d0-84d3-c2c53447d3ae.png',
-                'https://entro.work/storage/entro/apps/hourglass-timer---aurasand/5e3be5bc-0419-472a-959c-a4c926792276.png',
-                'https://entro.work/storage/entro/apps/hourglass-timer---aurasand/7958971c-8296-49f9-b540-75a63d587676.png'
-            ];
+        // ===== 动态画廊 (从 GitHub 获取，参考1.html) =====
+(function() {
+    var GITHUB_CONFIG = {
+        owner: 'AuraSand',
+        repo: 'site',
+        path: 'snapshot',
+        branch: 'main'
+    };
+    var FALLBACK_IMAGES = [
+        'snapshot/src_unicorn_01.webp',
+        'snapshot/src_whale_01.webp',
+        'snapshot/src_jellyfish_01.webp',
+        'snapshot/src_blackgold_01.webp',
+        'snapshot/src_bunny_01.webp',
+        'snapshot/src_cartoon_01.webp',
+        'snapshot/src_zen_01.webp',
+        'snapshot/src_jewel_01.webp'
+    ];
 
-            var wrapper = document.getElementById('galleryWrapper');
-            var status = document.getElementById('galleryStatus');
-            var nav = document.getElementById('galleryNav');
-            var dotsContainer = document.getElementById('galleryDots');
-            var prevBtn = document.getElementById('galleryPrev');
-            var nextBtn = document.getElementById('galleryNext');
-            var currentLang = localStorage.getItem('aurasand-lang') || 'en';
-            var dict = window.I18N ? I18N.data[currentLang] || I18N.data['en'] : {};
+    function buildImageUrl(path) {
+        return 'https://raw.githubusercontent.com/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/' + GITHUB_CONFIG.branch + '/' + path;
+    }
 
-            if (!wrapper) return;
-
-            status.textContent = dict.galleryLoading || 'Loading screenshots...';
-
-            var images = GALLERY_IMAGES;
-            var baseHeight = Math.min(400, Math.max(280, window.innerWidth / 3));
-
-            if (images.length === 0) {
-                wrapper.innerHTML = '<div class="gallery-empty">' + (dict.galleryEmpty || 'No screenshots found') + '</div>';
-                if (nav) nav.style.display = 'none';
-                return;
+    async function fetchGalleryImages() {
+        try {
+            var response = await fetch(
+                'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/contents/' + GITHUB_CONFIG.path + '?ref=' + GITHUB_CONFIG.branch,
+                { headers: { 'Accept': 'application/vnd.github.v3+json' } }
+            );
+            if (response.ok) {
+                var data = await response.json();
+                var images = data
+                    .filter(function(item) { return item.type === 'file' && item.name.endsWith('.webp'); })
+                    .map(function(item) {
+                        return { name: item.name, url: item.download_url, path: item.path };
+                    })
+                    .sort(function(a, b) { return a.name.localeCompare(b.name); });
+                return { success: true, images: images };
             }
+        } catch (e) { console.log('GitHub API error:', e); }
+        return { success: false, images: [] };
+    }
 
-            if (nav) nav.style.display = 'flex';
+    function buildGallery(images) {
+        var wrapper = document.getElementById('galleryWrapper');
+        var status = document.getElementById('galleryStatus');
+        var nav = document.getElementById('galleryNav');
+        var dotsContainer = document.getElementById('galleryDots');
+        var prevBtn = document.getElementById('galleryPrev');
+        var nextBtn = document.getElementById('galleryNext');
+        var currentLang = localStorage.getItem('aurasand-lang') || 'en';
+        var dict = window.I18N ? I18N.data[currentLang] || I18N.data['en'] : {};
 
-            // 创建track
-            var track = document.createElement('div');
-            track.className = 'gallery-track';
-            track.id = 'galleryTrack';
+        if (!wrapper) return;
 
-            var allImages = images.concat(images);
-            var items = [];
+        if (!images || images.length === 0) {
+            wrapper.innerHTML = '<div class="gallery-empty">' + (dict.galleryEmpty || 'No screenshots found') + '</div>';
+            if (nav) nav.style.display = 'none';
+            return;
+        }
 
-            for (var i = 0; i < allImages.length; i++) {
-                var url = allImages[i];
-                var width = baseHeight * 0.5;
-                var height = baseHeight;
-                width = Math.max(width, 140);
-                width = Math.min(width, window.innerWidth * 0.6);
+        if (nav) nav.style.display = 'flex';
 
-                var item = document.createElement('div');
-                item.className = 'gallery-item placeholder';
-                item.style.width = width + 'px';
-                item.style.height = height + 'px';
-                item.style.flexShrink = '0';
+        var baseHeight = Math.min(400, Math.max(280, window.innerWidth / 3));
+        var track = document.createElement('div');
+        track.className = 'gallery-track';
+        track.id = 'galleryTrack';
 
-                var img = document.createElement('img');
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
-                img.style.opacity = '0';
-                img.style.transition = 'opacity 0.4s ease';
-                img.alt = 'AuraSand screenshot ' + (i + 1);
-                img.loading = 'lazy';
+        var allImages = images.concat(images);
+        var items = [];
 
-                var loaded = false;
-                var timeout = setTimeout(function() {
-                    if (!loaded) {
-                        img.src = url;
-                        img.onload = function() {
-                            loaded = true;
-                            item.classList.remove('placeholder');
-                            img.style.opacity = '1';
-                        };
-                        img.onerror = function() {
-                            item.classList.remove('placeholder');
-                            img.style.opacity = '0.5';
-                        };
-                    }
-                }, 100);
+        for (var i = 0; i < allImages.length; i++) {
+            var imgData = allImages[i];
+            var width = baseHeight * 0.5;
+            var height = baseHeight;
+            width = Math.max(width, 140);
+            width = Math.min(width, window.innerWidth * 0.6);
 
-                img.onload = function() {
-                    loaded = true;
-                    clearTimeout(timeout);
-                    item.classList.remove('placeholder');
-                    img.style.opacity = '1';
-                };
-                img.onerror = function() {
-                    clearTimeout(timeout);
-                    item.classList.remove('placeholder');
-                    img.style.opacity = '0.5';
-                };
-                img.src = url;
+            var item = document.createElement('div');
+            item.className = 'gallery-item placeholder';
+            item.style.width = width + 'px';
+            item.style.height = height + 'px';
+            item.style.flexShrink = '0';
 
-                item.appendChild(img);
-                track.appendChild(item);
-                items.push(item);
-            }
+            var img = document.createElement('img');
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.4s ease';
+            img.alt = 'AuraSand screenshot ' + (i + 1);
+            img.loading = 'lazy';
 
-            wrapper.innerHTML = '';
-            wrapper.appendChild(track);
-
-            // 圆点
-            dotsContainer.innerHTML = '';
-            for (var j = 0; j < images.length; j++) {
-                var dot = document.createElement('div');
-                dot.className = 'gallery-dot' + (j === 0 ? ' active' : '');
-                dot.addEventListener('click', (function(idx) {
-                    return function() {
-                        scrollToIndex(idx);
+            var loaded = false;
+            var timeout = setTimeout(function() {
+                if (!loaded) {
+                    img.src = imgData.url;
+                    img.onload = function() {
+                        loaded = true;
+                        item.classList.remove('placeholder');
+                        img.style.opacity = '1';
                     };
-                })(j));
-                dotsContainer.appendChild(dot);
+                    img.onerror = function() {
+                        item.classList.remove('placeholder');
+                        img.style.opacity = '0.5';
+                    };
+                }
+            }, 100);
+
+            img.onload = function() {
+                loaded = true;
+                clearTimeout(timeout);
+                item.classList.remove('placeholder');
+                img.style.opacity = '1';
+            };
+            img.onerror = function() {
+                clearTimeout(timeout);
+                item.classList.remove('placeholder');
+                img.style.opacity = '0.5';
+            };
+            img.src = imgData.url;
+
+            item.appendChild(img);
+            track.appendChild(item);
+            items.push(item);
+        }
+
+        wrapper.innerHTML = '';
+        wrapper.appendChild(track);
+
+        dotsContainer.innerHTML = '';
+        for (var j = 0; j < images.length; j++) {
+            var dot = document.createElement('div');
+            dot.className = 'gallery-dot' + (j === 0 ? ' active' : '');
+            dot.addEventListener('click', (function(idx) {
+                return function() { scrollToIndex(idx); };
+            })(j));
+            dotsContainer.appendChild(dot);
+        }
+
+        var currentIndex = 0;
+        var totalTrackWidth = 0;
+        for (var k = 0; k < items.length; k++) {
+            totalTrackWidth += parseFloat(items[k].style.width) + 24;
+        }
+        var halfTrackWidth = totalTrackWidth / 2;
+
+        var autoScrollTimer = null;
+        var isUserInteracting = false;
+
+        function startAutoScroll() {
+            if (halfTrackWidth > 0) {
+                var SPEED = 50;
+                var duration = halfTrackWidth / SPEED;
+                track.style.animation = 'scrollGallery ' + duration + 's linear infinite';
             }
+        }
+        startAutoScroll();
 
-            var currentIndex = 0;
-            var totalTrackWidth = 0;
-            for (var k = 0; k < items.length; k++) {
-                totalTrackWidth += parseFloat(items[k].style.width) + 24;
-            }
-            var halfTrackWidth = totalTrackWidth / 2;
+        function pauseAutoScroll() {
+            isUserInteracting = true;
+            track.style.animationPlayState = 'paused';
+            clearTimeout(autoScrollTimer);
+            autoScrollTimer = setTimeout(function() {
+                isUserInteracting = false;
+                track.style.animationPlayState = 'running';
+            }, 4000);
+        }
 
-            // 自动滚动
-            var autoScrollTimer = null;
-            var isUserInteracting = false;
-
-            function startAutoScroll() {
-                if (halfTrackWidth > 0) {
-                    var SPEED = 50;
-                    var duration = halfTrackWidth / SPEED;
-                    track.style.animation = 'scrollGallery ' + duration + 's linear infinite';
+        function scrollToIndex(idx) {
+            var total = images.length;
+            currentIndex = Math.max(0, Math.min(idx, total - 1));
+            var scrollDistance = 0;
+            for (var i = 0; i < currentIndex; i++) {
+                var item = items[i];
+                if (item && item.style.width) {
+                    scrollDistance += parseFloat(item.style.width) + 24;
                 }
             }
-            startAutoScroll();
-
-            function pauseAutoScroll() {
-                isUserInteracting = true;
-                track.style.animationPlayState = 'paused';
-                clearTimeout(autoScrollTimer);
-                autoScrollTimer = setTimeout(function() {
-                    isUserInteracting = false;
-                    track.style.animationPlayState = 'running';
-                }, 4000);
+            var currentItem = items[currentIndex];
+            if (currentItem && currentItem.style.width) {
+                scrollDistance += parseFloat(currentItem.style.width) / 2;
             }
 
-            function scrollToIndex(idx) {
-                var total = images.length;
-                currentIndex = Math.max(0, Math.min(idx, total - 1));
-                var scrollDistance = 0;
-                for (var i = 0; i < currentIndex; i++) {
-                    var item = items[i];
-                    if (item && item.style.width) {
-                        scrollDistance += parseFloat(item.style.width) + 24;
-                    }
-                }
-                var currentItem = items[currentIndex];
-                if (currentItem && currentItem.style.width) {
-                    scrollDistance += parseFloat(currentItem.style.width) / 2;
-                }
+            track.style.transition = 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+            track.style.animation = 'none';
+            track.style.transform = 'translateX(-' + scrollDistance + 'px)';
 
-                track.style.transition = 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
-                track.style.animation = 'none';
-                track.style.transform = 'translateX(-' + scrollDistance + 'px)';
-
-                var dots = dotsContainer.querySelectorAll('.gallery-dot');
-                dots.forEach(function(dot, i) {
-                    dot.classList.toggle('active', i === currentIndex);
-                });
-
-                pauseAutoScroll();
-            }
-
-            function scrollNext() {
-                var total = images.length;
-                scrollToIndex((currentIndex + 1) % total);
-            }
-
-            function scrollPrev() {
-                var total = images.length;
-                scrollToIndex((currentIndex - 1 + total) % total);
-            }
-
-            if (prevBtn) prevBtn.addEventListener('click', function() { pauseAutoScroll();
-                scrollPrev(); });
-            if (nextBtn) nextBtn.addEventListener('click', function() { pauseAutoScroll();
-                scrollNext(); });
-
-            status.textContent = (dict.gallerySuccess || '{count} screenshots loaded').replace('{count}', images.length);
-
-            // 窗口resize时重建
-            var resizeTimer;
-            window.addEventListener('resize', function() {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(function() {
-                    var newBaseHeight = Math.min(400, Math.max(280, window.innerWidth / 3));
-                    if (Math.abs(newBaseHeight - baseHeight) > 20) {
-                        baseHeight = newBaseHeight;
-                        // 简单重建
-                        var trackEl = document.getElementById('galleryTrack');
-                        if (trackEl) {
-                            var children = trackEl.querySelectorAll('.gallery-item');
-                            for (var i = 0; i < children.length; i++) {
-                                var child = children[i];
-                                var w = baseHeight * 0.5;
-                                w = Math.max(w, 140);
-                                w = Math.min(w, window.innerWidth * 0.6);
-                                child.style.width = w + 'px';
-                                child.style.height = baseHeight + 'px';
-                            }
-                            // 重置滚动
-                            trackEl.style.animation = 'none';
-                            trackEl.style.transform = '';
-                            startAutoScroll();
-                        }
-                    }
-                }, 300);
+            var dots = dotsContainer.querySelectorAll('.gallery-dot');
+            dots.forEach(function(dot, i) {
+                dot.classList.toggle('active', i === currentIndex);
             });
-        })();
+
+            pauseAutoScroll();
+        }
+
+        if (prevBtn) prevBtn.addEventListener('click', function() { pauseAutoScroll(); scrollToIndex((currentIndex - 1 + images.length) % images.length); });
+        if (nextBtn) nextBtn.addEventListener('click', function() { pauseAutoScroll(); scrollToIndex((currentIndex + 1) % images.length); });
+
+        status.textContent = (dict.gallerySuccess || '{count} screenshots loaded').replace('{count}', images.length);
+    }
+
+    // 初始化
+    async function initGallery() {
+        var status = document.getElementById('galleryStatus');
+        var dict = window.I18N ? I18N.data[localStorage.getItem('aurasand-lang') || 'en'] || I18N.data['en'] : {};
+        if (status) status.textContent = dict.galleryLoading || 'Loading screenshots...';
+
+        var result = await fetchGalleryImages();
+        if (result.success && result.images.length > 0) {
+            buildGallery(result.images);
+        } else {
+            var fallback = FALLBACK_IMAGES.map(function(path) {
+                return { name: path.split('/').pop(), url: buildImageUrl(path), path: path };
+            });
+            buildGallery(fallback);
+            if (status) status.textContent = 'Using fallback images';
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initGallery);
+    } else {
+        initGallery();
+    }
+})();
 
         // ===== 视频演示 =====
         (function() {
@@ -2578,28 +2586,42 @@ window.toggleVideo = function(type) {
     var container = document.getElementById('videoContainer');
     if (!viewport || !container) return;
 
-    // 关闭其他 demo（如 live）
     var liveViewport = document.getElementById('liveDemoViewport');
     if (liveViewport) liveViewport.style.display = 'none';
 
-    // 显示视频容器，并添加加载占位
     viewport.style.display = 'flex';
     container.innerHTML = '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--ev2-muted);">⏳ Loading video...</div>';
 
-    var source = videoSources[type]; // 需要定义 videoSources 对象
+    var source = videoSources[type];
     if (!source) return;
 
-    // 检测 YouTube 是否可访问（通过 favicon）
+    // ⭐ 关键：先设置容器尺寸（占位）
+    applyVideoSize(type, source.defaultRatio);
+
     var img = new Image();
     img.onload = function() {
         container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + source.youtube + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay; fullscreen"></iframe>';
+        // ⭐ 关键：YouTube 加载后也要设置尺寸
+        applyVideoSize(type, source.defaultRatio);
     };
     img.onerror = function() {
         container.innerHTML = '<video playsinline controls autoplay src="' + source.mp4 + '"></video>';
+        // ⭐ 关键：MP4 加载后也要设置尺寸
+        applyVideoSize(type, source.defaultRatio);
+        var video = container.querySelector('video');
+        if (video) {
+            video.style.width = '100%';
+            video.style.height = '100%';
+            video.style.objectFit = 'fill';
+            video.style.display = 'block';
+            video.style.background = '#000';
+            video.onerror = function() {
+                container.innerHTML = '<div style="color:var(--ev2-muted);padding:20px;">Video unavailable</div>';
+            };
+        }
     };
     img.src = 'https://www.youtube.com/favicon.ico';
 
-    // 滚动到视频区域
     viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
 
