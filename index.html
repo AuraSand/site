@@ -2654,7 +2654,7 @@ window.toggleVideo = function(type) {
     var container = document.getElementById('videoContainer');
     if (!viewport || !container) return;
 
-    // 关闭其他 demo（如 live）
+    // 关闭其他 demo
     var liveViewport = document.getElementById('liveDemoViewport');
     if (liveViewport) liveViewport.style.display = 'none';
 
@@ -2670,12 +2670,10 @@ window.toggleVideo = function(type) {
     var img = new Image();
     img.onload = function() {
         container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + source.youtube + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay; fullscreen"></iframe>';
-        // ★ 关键：设置容器尺寸
         applyVideoSize(type, source.defaultRatio);
     };
     img.onerror = function() {
         container.innerHTML = '<video playsinline controls autoplay src="' + source.mp4 + '"></video>';
-        // ★ 关键：设置容器尺寸
         applyVideoSize(type, source.defaultRatio);
         var video = container.querySelector('video');
         if (video) {
