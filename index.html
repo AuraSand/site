@@ -2104,45 +2104,68 @@
             if (window.I18N) window.I18N.apply(lang);
         }
 
-        // ===== 亮暗模式切换 =====
+        // ===== 亮暗模式切换（改进版） =====
         (function() {
-            var themeToggleBtn = document.getElementById('themeToggleBtn');
-            var currentTheme = localStorage.getItem('aurasand-theme') || 'light';
-
-            function setTheme(theme) {
-                if (theme === 'dark') {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                    if (themeToggleBtn) themeToggleBtn.textContent = '☀️';
-                } else {
-                    document.documentElement.removeAttribute('data-theme');
-                    if (themeToggleBtn) themeToggleBtn.textContent = '🌙';
+            function initTheme() {
+                var themeToggleBtn = document.getElementById('themeToggleBtn');
+                if (!themeToggleBtn) {
+                    console.warn('Theme toggle button not found');
+                    return;
                 }
-                localStorage.setItem('aurasand-theme', theme);
-                currentTheme = theme;
-            }
-
-            // 检测系统主题
-            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-            var stored = localStorage.getItem('aurasand-theme');
-            if (stored) {
-                setTheme(stored);
-            } else {
-                setTheme(prefersDark.matches ? 'dark' : 'light');
-            }
-
-            prefersDark.addEventListener('change', function(e) {
-                if (!localStorage.getItem('aurasand-theme')) {
-                    setTheme(e.matches ? 'dark' : 'light');
+        
+                // 获取存储的主题或系统偏好
+                var stored = localStorage.getItem('aurasand-theme');
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var currentTheme = stored || (prefersDark ? 'dark' : 'light');
+        
+                function setTheme(theme) {
+                    var isDark = (theme === 'dark');
+                    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : null);
+                    // 更新按钮图标
+                    themeToggleBtn.textContent = isDark ? '☀️' : '🌙';
+                    localStorage.setItem('aurasand-theme', theme);
+                    currentTheme = theme;
+                    // 更新粒子颜色（如果有）
+                    updateParticleColors(isDark);
                 }
-            });
-
-            if (themeToggleBtn) {
+        
+                // 初始设置
+                setTheme(currentTheme);
+        
+                // 点击切换
                 themeToggleBtn.addEventListener('click', function() {
-                    setTheme(currentTheme === 'light' ? 'dark' : 'light');
+                    var newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    setTheme(newTheme);
                 });
+        
+                // 监听系统主题变化（仅当用户未手动设置时）
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                    if (!localStorage.getItem('aurasand-theme')) {
+                        setTheme(e.matches ? 'dark' : 'light');
+                    }
+                });
+        
+                // 暴露给全局（方便调试）
+                window.setTheme = setTheme;
             }
-
-            window.setTheme = setTheme;
+        
+            // 等待 DOM 加载
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initTheme);
+            } else {
+                initTheme();
+            }
+        
+            // 粒子颜色更新（如果存在）
+            function updateParticleColors(isDark) {
+                var canvas = document.getElementById('sandCanvas');
+                if (!canvas) return;
+                // 假设粒子颜色是通过全局变量控制的，这里可以触发事件或重新初始化
+                // 实际项目中，粒子颜色可以在绘制循环中动态读取 data-theme
+                // 但这里我们简单触发一个自定义事件，让粒子脚本监听
+                var event = new CustomEvent('themeChanged', { detail: { dark: isDark } });
+                document.dispatchEvent(event);
+            }
         })();
 
         // ===== 侧边栏社交逻辑 (完全参考1.html) =====
