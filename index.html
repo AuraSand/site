@@ -2534,14 +2534,30 @@
         startAutoScroll();
 
         function pauseAutoScroll() {
-            isUserInteracting = true;
-            track.style.animationPlayState = 'paused';
-            clearTimeout(autoScrollTimer);
-            autoScrollTimer = setTimeout(function() {
-                isUserInteracting = false;
-                track.style.animationPlayState = 'running';
-            }, 4000);
-        }
+    isUserInteracting = true;
+    track.style.animationPlayState = 'paused';
+    clearTimeout(autoScrollTimer);
+    autoScrollTimer = setTimeout(function() {
+        resumeAutoScroll();   // ← 调用了但函数不存在！
+    }, 4000);
+}
+      function resumeAutoScroll() {
+    isUserInteracting = false;
+    if (!track) return;
+    
+    // 清除手动 transform，恢复 CSS 动画
+    track.style.transition = '';
+    track.style.transform = '';
+    track.style.animation = 'none';
+    track.offsetHeight; // 强制重排
+    
+    if (halfTrackWidth > 0) {
+        var SPEED = 50;
+        var duration = halfTrackWidth / SPEED;
+        track.style.animation = 'scrollGallery ' + duration + 's linear infinite';
+        track.style.animationPlayState = 'running';
+    }
+}  
 
         function scrollToIndex(idx) {
             var total = images.length;
@@ -2650,46 +2666,34 @@
 
             // 将原来的 toggleVideo 改为以下形式（确保挂载到 window）
 window.toggleVideo = function(type) {
-    var viewport = document.getElementById('videoViewport');
-    var container = document.getElementById('videoContainer');
-    if (!viewport || !container) return;
-
-    // 关闭其他 demo
-    var liveViewport = document.getElementById('liveDemoViewport');
-    if (liveViewport) liveViewport.style.display = 'none';
-
-    viewport.style.display = 'flex';
-    container.innerHTML = '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--ev2-muted);">⏳ Loading video...</div>';
-
+    closeAllDemos();
+    currentVideoType = type;
     var source = videoSources[type];
-    if (!source) return;
-
-    // 先设置容器尺寸（占位）
+    viewport.style.display = 'flex';
+    
+    // 直接加载 YouTube iframe
+    container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + source.youtube + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay; fullscreen" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block;"></iframe>';
+    
     applyVideoSize(type, source.defaultRatio);
-
-    var img = new Image();
-    img.onload = function() {
-        container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + source.youtube + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay; fullscreen"></iframe>';
-        applyVideoSize(type, source.defaultRatio);
-    };
-    img.onerror = function() {
-        container.innerHTML = '<video playsinline controls autoplay src="' + source.mp4 + '"></video>';
-        applyVideoSize(type, source.defaultRatio);
-        var video = container.querySelector('video');
-        if (video) {
-            video.style.width = '100%';
-            video.style.height = '100%';
-            video.style.objectFit = 'fill';
-            video.style.display = 'block';
-            video.style.background = '#000';
-            video.onerror = function() {
-                container.innerHTML = '<div style="color:var(--ev2-muted);padding:20px;">Video unavailable</div>';
-            };
+    currentVideoRatio = source.defaultRatio;
+    
+    // 3秒后检测回退到 MP4
+    setTimeout(function() {
+        try {
+            var iframe = container.querySelector('iframe');
+            if (iframe) {
+                var doc = iframe.contentDocument || iframe.contentWindow.document;
+                if (!doc || (doc.body && doc.body.innerHTML === '')) {
+                    throw new Error('empty');
+                }
+            }
+        } catch(e) {
+            container.innerHTML = '<video playsinline controls loop autoplay src="' + source.mp4 + '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block;background:#000;object-fit:fill;"></video>';
+            applyVideoSize(type, source.defaultRatio);
         }
-    };
-    img.src = 'https://www.youtube.com/favicon.ico';
-
-    viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 3000);
+    
+    setTimeout(function() { viewport.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
 };
 
 // 同时确保 hideVideo 和 hideLiveDemo 也是全局的
@@ -2708,16 +2712,25 @@ window.hideLiveDemo = function() {
 };
 
             function closeAllDemos() {
-                viewport.style.display = 'none';
-                container.innerHTML = '';
-                container.style.width = '0';
-                container.style.height = '0';
-                currentVideoType = null;
-                currentVideoRatio = null;
-                liveViewport.style.display = 'none';
-                flutterIframe.src = "";
-                flutterLoader.style.display = 'block';
-            }
+    var vp = document.getElementById('videoViewport');
+    var ct = document.getElementById('videoContainer');
+    var lv = document.getElementById('liveDemoViewport');
+    var fi = document.getElementById('flutterIframe');
+    var fl = document.getElementById('flutterLoading');
+    
+    if (vp) vp.style.display = 'none';
+    if (ct) {
+        ct.innerHTML = '';
+        ct.style.width = '0';
+        ct.style.height = '0';
+    }
+    currentVideoType = null;
+    currentVideoRatio = null;
+    
+    if (lv) lv.style.display = 'none';
+    if (fi) fi.src = '';
+    if (fl) fl.style.display = 'block';
+}
 
             function applyVideoSize(type, ratio) {
                 var isMobile = window.innerWidth <= 768;
