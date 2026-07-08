@@ -989,120 +989,121 @@
         /* 社交链接 (底部) 已合并到 ev2-foot-socials，不再单独使用 .social-links */
 
         /* ===== 悬浮社交侧边栏 (完全参考1.html) ===== */
-        /* ===== 侧边栏社交（增强） ===== */
-.social-sidebar-trigger,
-.social-sidebar {
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
-    will-change: transform, opacity;
-}
-.social-sidebar-trigger {
-    position: fixed;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%) translateX(0);
-    z-index: 199;
-    width: 48px;
-    height: 120px;
-    background: var(--glass);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-right: none;
-    border-radius: 16px 0 0 16px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 8px 4px;
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
-    opacity: 1;
-    pointer-events: auto;
-}
-.social-sidebar-trigger.hidden {
-    transform: translateY(-50%) translateX(100%) !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-}
-.social-sidebar {
-    position: fixed;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%) translateX(100%);
-    z-index: 200;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    background: var(--glass);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-right: none;
-    border-radius: 16px 0 0 16px;
-    padding: 8px 4px 8px 8px;
-    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.3);
-    opacity: 0;
-    pointer-events: none;
-}
-.social-sidebar.visible {
-    transform: translateY(-50%) translateX(0) !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-}
-.social-sidebar .social-btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: transparent;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--ev2-muted);
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-    text-decoration: none;
-    cursor: pointer;
-}
-.social-sidebar .social-btn svg {
-    width: 20px;
-    height: 20px;
-    fill: currentColor;
-}
-.social-sidebar .social-btn:hover {
-    background: rgba(212, 165, 116, 0.1);
-    transform: scale(1.1);
-    color: var(--sand);
-}
-.social-sidebar .social-btn.youtube:hover {
-    color: #FF0000;
-    background: rgba(255, 0, 0, 0.08);
-}
-.social-sidebar::before {
-    content: attr(data-follow-label);
-    display: block;
-    text-align: center;
-    font-size: 9px;
-    font-weight: 700;
-    color: var(--sand);
-    letter-spacing: 2px;
-    padding: 4px 0 8px;
-    border-bottom: 1px solid rgba(212, 165, 116, 0.1);
-    margin-bottom: 4px;
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
-}
-.social-sidebar.visible::before {
-    opacity: 1;
-    transform: translateY(0);
-}
-@media(max-width:768px) {
-    .social-sidebar,
-    .social-sidebar-trigger {
-        display: none;
-    }
-}
+        .social-sidebar { position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%) translateX(100%);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-right: none;
+            border-radius: 16px 0 0 16px;
+            padding: 8px 4px 8px 8px;
+            transition: transform .5s cubic-bezier(.22, 1, .36, 1);
+            box-shadow: -8px 0 30px rgba(0, 0, 0, 0.3); }
+        .social-sidebar.visible { transform: translateY(-50%) translateX(0); }
+        .social-sidebar .social-btn { width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: transparent;
+            border: none;
+            backdrop-filter: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ev2-muted);
+            transition: all .3s cubic-bezier(.22, 1, .36, 1);
+            text-decoration: none;
+            cursor: pointer; }
+        .social-sidebar .social-btn svg { width: 20px;
+            height: 20px;
+            fill: currentColor; }
+        .social-sidebar .social-btn:hover { background: rgba(212, 165, 116, 0.1);
+            transform: scale(1.1);
+            color: var(--sand); }
+        .social-sidebar .social-btn.youtube:hover { color: #FF0000;
+            background: rgba(255, 0, 0, 0.08); }
+
+        .social-sidebar-trigger { position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 199;
+            width: 48px;
+            height: 120px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-right: none;
+            border-radius: 16px 0 0 16px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 4px;
+            transition: all .4s cubic-bezier(.22, 1, .36, 1);
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2); }
+        .social-sidebar-trigger::before { content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 40px;
+            background: var(--sand);
+            border-radius: 0 2px 2px 0;
+            opacity: .6;
+            transition: opacity .3s ease, height .3s ease; }
+        .social-sidebar-trigger svg { width: 18px;
+            height: 18px;
+            color: var(--sand);
+            flex-shrink: 0;
+            transition: transform .3s ease; }
+        .social-sidebar-trigger .trigger-label { writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--ev2-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: color .3s ease; }
+        .social-sidebar-trigger:hover { background: rgba(212, 165, 116, 0.08);
+            border-color: rgba(212, 165, 116, 0.2);
+            width: 52px; }
+        .social-sidebar-trigger:hover::before { opacity: 1;
+            height: 50px; }
+        .social-sidebar-trigger:hover svg { transform: scale(1.15); }
+        .social-sidebar-trigger:hover .trigger-label { color: var(--sand); }
+        .social-sidebar-trigger.hidden { transform: translateY(-50%) translateX(100%);
+            opacity: 0;
+            pointer-events: none; }
+
+        .social-sidebar::before { content: attr(data-follow-label);
+            display: block;
+            text-align: center;
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--sand);
+            letter-spacing: 2px;
+            padding: 4px 0 8px;
+            border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+            margin-bottom: 4px;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: all .4s cubic-bezier(.22, 1, .36, 1) .1s; }
+        .social-sidebar.visible::before { opacity: 1;
+            transform: translateY(0); }
+
+        @media(max-width:768px) { .social-sidebar,
+            .social-sidebar-trigger { display: none; } }
 
         /* ===== 滚动显示动画 ===== */
         .reveal { opacity: 0;
