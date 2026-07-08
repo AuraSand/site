@@ -2572,48 +2572,51 @@
             var currentVideoType = null;
             var currentVideoRatio = null;
 
-            window.toggleVideo = function(type) {
-                closeAllDemos();
-                currentVideoType = type;
-                var source = videoSources[type];
-                viewport.style.display = 'flex';
+            // 将原来的 toggleVideo 改为以下形式（确保挂载到 window）
+window.toggleVideo = function(type) {
+    var viewport = document.getElementById('videoViewport');
+    var container = document.getElementById('videoContainer');
+    if (!viewport || !container) return;
 
-                var realRatio = source.defaultRatio;
-                applyVideoSize(type, realRatio);
-                currentVideoRatio = realRatio;
+    // 关闭其他 demo（如 live）
+    var liveViewport = document.getElementById('liveDemoViewport');
+    if (liveViewport) liveViewport.style.display = 'none';
 
-                // 尝试加载YouTube
-                var testImg = new Image();
-                testImg.onload = function() {
-                    container.innerHTML =
-                        '<iframe src="https://www.youtube.com/embed/' + source.youtube +
-                        '?autoplay=1&rel=0&modestbranding=1" allow="autoplay; fullscreen"></iframe>';
-                };
-                testImg.onerror = function() {
-                    container.innerHTML = '<video playsinline controls loop autoplay src="' + source.mp4 +
-                        '"></video>';
-                };
-                testImg.src = 'https://www.youtube.com/favicon.ico';
+    // 显示视频容器，并添加加载占位
+    viewport.style.display = 'flex';
+    container.innerHTML = '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--ev2-muted);">⏳ Loading video...</div>';
 
-                setTimeout(function() {
-                    viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
-            };
+    var source = videoSources[type]; // 需要定义 videoSources 对象
+    if (!source) return;
 
-            window.hideVideo = function() {
-                viewport.style.display = 'none';
-                container.innerHTML = '';
-                container.style.width = '0';
-                container.style.height = '0';
-                currentVideoType = null;
-                currentVideoRatio = null;
-            };
+    // 检测 YouTube 是否可访问（通过 favicon）
+    var img = new Image();
+    img.onload = function() {
+        container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + source.youtube + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay; fullscreen"></iframe>';
+    };
+    img.onerror = function() {
+        container.innerHTML = '<video playsinline controls autoplay src="' + source.mp4 + '"></video>';
+    };
+    img.src = 'https://www.youtube.com/favicon.ico';
 
-            window.hideLiveDemo = function() {
-                liveViewport.style.display = 'none';
-                flutterIframe.src = "";
-                flutterLoader.style.display = 'block';
-            };
+    // 滚动到视频区域
+    viewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+
+// 同时确保 hideVideo 和 hideLiveDemo 也是全局的
+window.hideVideo = function() {
+    var viewport = document.getElementById('videoViewport');
+    var container = document.getElementById('videoContainer');
+    if (viewport) viewport.style.display = 'none';
+    if (container) container.innerHTML = '';
+};
+window.hideLiveDemo = function() {
+    var viewport = document.getElementById('liveDemoViewport');
+    if (viewport) viewport.style.display = 'none';
+    // 如果有 iframe，可以清空 src
+    var iframe = document.getElementById('flutterIframe');
+    if (iframe) iframe.src = '';
+};
 
             function closeAllDemos() {
                 viewport.style.display = 'none';
