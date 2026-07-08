@@ -2328,7 +2328,7 @@
             }
         })();
 
-        // ===== 动态画廊 (完全采用 1.html 的加载逻辑) =====
+        // ===== 动态画廊 (完全采用 1.html 的加载逻辑 + 横竖图适配) =====
 (function() {
     var GITHUB_CONFIG = {
         owner: 'AuraSand',
@@ -2337,7 +2337,6 @@
         branch: 'main'
     };
 
-    // 备用图片列表（仅当 GitHub 完全无法获取时使用）
     var FALLBACK_IMAGES = [
         'snapshot/src_unicorn_01.webp',
         'snapshot/src_whale_01.webp',
@@ -2349,7 +2348,7 @@
         'snapshot/src_jewel_01.webp'
     ];
 
-    // 构建图片 URL，支持多种 CDN 镜像（参考 1.html）
+    // 构建图片 URL，支持多种 CDN 镜像
     function buildImageUrl(path, mirrorIndex) {
         var mirrors = [
             function(p) { return 'https://raw.githubusercontent.com/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/' + GITHUB_CONFIG.branch + '/' + p; },
@@ -2361,25 +2360,29 @@
         return mirrors[mirrorIndex % mirrors.length](path);
     }
 
-    // 从 GitHub API 获取图片列表
-    async function fetchGalleryImages() {
-        try {
-            var response = await fetch(
-                'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/contents/' + GITHUB_CONFIG.path + '?ref=' + GITHUB_CONFIG.branch,
-                { headers: { 'Accept': 'application/vnd.github.v3+json' } }
-            );
-            if (response.ok) {
-                var data = await response.json();
-                var images = data
-                    .filter(function(item) { return item.type === 'file' && item.name.endsWith('.webp'); })
-                    .map(function(item) {
-                        return { name: item.name, url: item.download_url, path: item.path };
-                    })
-                    .sort(function(a, b) { return a.name.localeCompare(b.name); });
-                return { success: true, images: images };
-            }
-        } catch (e) { console.log('GitHub API error:', e); }
-        return { success: false, images: [] };
+    // 获取图片方向（横图或竖图）
+    function getImageOrientation(url) {
+        return new Promise(function(resolve) {
+            var img = new Image();
+            img.crossOrigin = 'anonymous';
+            var timeout = setTimeout(function() {
+                resolve({ orientation: 'portrait', width: 400, height: 800 });
+            }, 5000);
+            img.onload = function() {
+                clearTimeout(timeout);
+                var isLandscape = img.naturalWidth > img.naturalHeight;
+                resolve({
+                    orientation: isLandscape ? 'landscape' : 'portrait',
+                    width: img.naturalWidth,
+                    height: img.naturalHeight
+                });
+            };
+            img.onerror = function() {
+                clearTimeout(timeout);
+                resolve({ orientation: 'portrait', width: 400, height: 800 });
+            };
+            img.src = url;
+        });
     }
 
     // 加载单张图片（尝试多个 CDN）
@@ -2389,20 +2392,17 @@
 
         function tryNext() {
             if (attempt >= maxRetries) {
-                // 所有镜像都失败，显示占位
                 imgElement.style.opacity = '0.3';
                 return;
             }
             var url = buildImageUrl(path, attempt);
             attempt++;
             var timeout = setTimeout(function() {
-                // 超时则尝试下一个
                 tryNext();
             }, 6000);
             imgElement.onload = function() {
                 clearTimeout(timeout);
                 imgElement.style.opacity = '1';
-                // 移除 placeholder 样式
                 var parent = imgElement.parentNode;
                 if (parent) parent.classList.remove('placeholder');
             };
@@ -2416,7 +2416,7 @@
     }
 
     // 构建画廊
-    function buildGallery(images) {
+    async function buildGallery(images) {
         var wrapper = document.getElementById('galleryWrapper');
         var status = document.getElementById('galleryStatus');
         var nav = document.getElementById('galleryNav');
@@ -2436,21 +2436,45 @@
 
         if (nav) nav.style.display = 'flex';
 
+        // 1. 获取所有图片的方向（使用第一个可用的URL）
         var baseHeight = Math.min(400, Math.max(280, window.innerWidth / 3));
+        var sizePromises = images.map(function(imgData) {
+            // 尝试构建一个可访问的URL来探测尺寸
+            var testUrl = imgData.url || buildImageUrl(imgData.path || imgData.name, 0);
+            return getImageOrientation(testUrl);
+        });
+        var sizes = await Promise.all(sizePromises);
+
+        // 2. 创建 track
         var track = document.createElement('div');
         track.className = 'gallery-track';
         track.id = 'galleryTrack';
 
         // 双倍图片用于无缝滚动
         var allImages = images.concat(images);
+        var allSizes = sizes.concat(sizes);
         var items = [];
 
         for (var i = 0; i < allImages.length; i++) {
             var imgData = allImages[i];
-            var width = baseHeight * 0.5;
-            var height = baseHeight;
-            width = Math.max(width, 140);
-            width = Math.min(width, window.innerWidth * 0.6);
+            var size = allSizes[i];
+            var isLandscape = size.orientation === 'landscape';
+            var width, height;
+
+            if (isLandscape) {
+                // 横图：高度固定，宽度按比例拉伸
+                var ratio = size.width / size.height;
+                height = baseHeight;
+                width = baseHeight * ratio;
+                // 限制最大宽度，防止溢出屏幕
+                width = Math.min(width, window.innerWidth * 0.7);
+                width = Math.max(width, 240);
+            } else {
+                // 竖图：宽度固定为高度的一半左右
+                width = baseHeight * 0.5;
+                width = Math.max(width, 140);
+                height = baseHeight;
+            }
 
             var item = document.createElement('div');
             item.className = 'gallery-item placeholder';
@@ -2467,8 +2491,9 @@
             img.alt = 'AuraSand screenshot ' + (i + 1);
             img.loading = 'lazy';
 
-            // 使用带重试的加载
-            loadImageWithRetry(img, imgData.path || imgData.name);
+            // 使用带重试的加载（传入 path 或 name）
+            var path = imgData.path || imgData.name;
+            loadImageWithRetry(img, path);
 
             item.appendChild(img);
             track.appendChild(item);
@@ -2551,6 +2576,27 @@
         status.textContent = (dict.gallerySuccess || '{count} screenshots loaded').replace('{count}', images.length);
     }
 
+    // 从 GitHub API 获取图片列表
+    async function fetchGalleryImages() {
+        try {
+            var response = await fetch(
+                'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/contents/' + GITHUB_CONFIG.path + '?ref=' + GITHUB_CONFIG.branch,
+                { headers: { 'Accept': 'application/vnd.github.v3+json' } }
+            );
+            if (response.ok) {
+                var data = await response.json();
+                var images = data
+                    .filter(function(item) { return item.type === 'file' && item.name.endsWith('.webp'); })
+                    .map(function(item) {
+                        return { name: item.name, url: item.download_url, path: item.path };
+                    })
+                    .sort(function(a, b) { return a.name.localeCompare(b.name); });
+                return { success: true, images: images };
+            }
+        } catch (e) { console.log('GitHub API error:', e); }
+        return { success: false, images: [] };
+    }
+
     // 初始化
     async function initGallery() {
         var status = document.getElementById('galleryStatus');
@@ -2561,7 +2607,7 @@
         if (result.success && result.images.length > 0) {
             buildGallery(result.images);
         } else {
-            // 使用备用图片路径（只含文件名，由 loadImageWithRetry 构造完整 URL）
+            // 使用备用图片路径
             var fallback = FALLBACK_IMAGES.map(function(path) {
                 return { name: path.split('/').pop(), path: path, url: '' };
             });
