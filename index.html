@@ -2328,7 +2328,7 @@
             }
         })();
 
-        // ===== 动态画廊 (从 GitHub 获取，参考1.html) =====
+        // ===== 动态画廊 (完全采用 1.html 的加载逻辑) =====
 (function() {
     var GITHUB_CONFIG = {
         owner: 'AuraSand',
@@ -2336,6 +2336,8 @@
         path: 'snapshot',
         branch: 'main'
     };
+
+    // 备用图片列表（仅当 GitHub 完全无法获取时使用）
     var FALLBACK_IMAGES = [
         'snapshot/src_unicorn_01.webp',
         'snapshot/src_whale_01.webp',
@@ -2347,10 +2349,19 @@
         'snapshot/src_jewel_01.webp'
     ];
 
-    function buildImageUrl(path) {
-        return 'https://raw.githubusercontent.com/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/' + GITHUB_CONFIG.branch + '/' + path;
+    // 构建图片 URL，支持多种 CDN 镜像（参考 1.html）
+    function buildImageUrl(path, mirrorIndex) {
+        var mirrors = [
+            function(p) { return 'https://raw.githubusercontent.com/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/' + GITHUB_CONFIG.branch + '/' + p; },
+            function(p) { return 'https://cdn.jsdelivr.net/gh/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '@' + GITHUB_CONFIG.branch + '/' + p; },
+            function(p) { return 'https://ghproxy.net/https://raw.githubusercontent.com/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/' + GITHUB_CONFIG.branch + '/' + p; },
+            function(p) { return 'https://raw.gitmirror.com/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/' + GITHUB_CONFIG.branch + '/' + p; }
+        ];
+        if (mirrorIndex === undefined) mirrorIndex = 0;
+        return mirrors[mirrorIndex % mirrors.length](path);
     }
 
+    // 从 GitHub API 获取图片列表
     async function fetchGalleryImages() {
         try {
             var response = await fetch(
@@ -2371,6 +2382,40 @@
         return { success: false, images: [] };
     }
 
+    // 加载单张图片（尝试多个 CDN）
+    function loadImageWithRetry(imgElement, path, maxRetries) {
+        maxRetries = maxRetries || 4;
+        var attempt = 0;
+
+        function tryNext() {
+            if (attempt >= maxRetries) {
+                // 所有镜像都失败，显示占位
+                imgElement.style.opacity = '0.3';
+                return;
+            }
+            var url = buildImageUrl(path, attempt);
+            attempt++;
+            var timeout = setTimeout(function() {
+                // 超时则尝试下一个
+                tryNext();
+            }, 6000);
+            imgElement.onload = function() {
+                clearTimeout(timeout);
+                imgElement.style.opacity = '1';
+                // 移除 placeholder 样式
+                var parent = imgElement.parentNode;
+                if (parent) parent.classList.remove('placeholder');
+            };
+            imgElement.onerror = function() {
+                clearTimeout(timeout);
+                tryNext();
+            };
+            imgElement.src = url;
+        }
+        tryNext();
+    }
+
+    // 构建画廊
     function buildGallery(images) {
         var wrapper = document.getElementById('galleryWrapper');
         var status = document.getElementById('galleryStatus');
@@ -2396,6 +2441,7 @@
         track.className = 'gallery-track';
         track.id = 'galleryTrack';
 
+        // 双倍图片用于无缝滚动
         var allImages = images.concat(images);
         var items = [];
 
@@ -2421,34 +2467,8 @@
             img.alt = 'AuraSand screenshot ' + (i + 1);
             img.loading = 'lazy';
 
-            var loaded = false;
-            var timeout = setTimeout(function() {
-                if (!loaded) {
-                    img.src = imgData.url;
-                    img.onload = function() {
-                        loaded = true;
-                        item.classList.remove('placeholder');
-                        img.style.opacity = '1';
-                    };
-                    img.onerror = function() {
-                        item.classList.remove('placeholder');
-                        img.style.opacity = '0.5';
-                    };
-                }
-            }, 100);
-
-            img.onload = function() {
-                loaded = true;
-                clearTimeout(timeout);
-                item.classList.remove('placeholder');
-                img.style.opacity = '1';
-            };
-            img.onerror = function() {
-                clearTimeout(timeout);
-                item.classList.remove('placeholder');
-                img.style.opacity = '0.5';
-            };
-            img.src = imgData.url;
+            // 使用带重试的加载
+            loadImageWithRetry(img, imgData.path || imgData.name);
 
             item.appendChild(img);
             track.appendChild(item);
@@ -2458,6 +2478,7 @@
         wrapper.innerHTML = '';
         wrapper.appendChild(track);
 
+        // 圆点
         dotsContainer.innerHTML = '';
         for (var j = 0; j < images.length; j++) {
             var dot = document.createElement('div');
@@ -2540,11 +2561,12 @@
         if (result.success && result.images.length > 0) {
             buildGallery(result.images);
         } else {
+            // 使用备用图片路径（只含文件名，由 loadImageWithRetry 构造完整 URL）
             var fallback = FALLBACK_IMAGES.map(function(path) {
-                return { name: path.split('/').pop(), url: buildImageUrl(path), path: path };
+                return { name: path.split('/').pop(), path: path, url: '' };
             });
             buildGallery(fallback);
-            if (status) status.textContent = 'Using fallback images';
+            if (status) status.textContent = 'Using fallback images (CDN)';
         }
     }
 
@@ -2586,6 +2608,7 @@ window.toggleVideo = function(type) {
     var container = document.getElementById('videoContainer');
     if (!viewport || !container) return;
 
+    // 关闭其他 demo（如 live）
     var liveViewport = document.getElementById('liveDemoViewport');
     if (liveViewport) liveViewport.style.display = 'none';
 
@@ -2595,18 +2618,18 @@ window.toggleVideo = function(type) {
     var source = videoSources[type];
     if (!source) return;
 
-    // ⭐ 关键：先设置容器尺寸（占位）
+    // 先设置容器尺寸（占位）
     applyVideoSize(type, source.defaultRatio);
 
     var img = new Image();
     img.onload = function() {
         container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + source.youtube + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay; fullscreen"></iframe>';
-        // ⭐ 关键：YouTube 加载后也要设置尺寸
+        // ★ 关键：设置容器尺寸
         applyVideoSize(type, source.defaultRatio);
     };
     img.onerror = function() {
         container.innerHTML = '<video playsinline controls autoplay src="' + source.mp4 + '"></video>';
-        // ⭐ 关键：MP4 加载后也要设置尺寸
+        // ★ 关键：设置容器尺寸
         applyVideoSize(type, source.defaultRatio);
         var video = container.querySelector('video');
         if (video) {
