@@ -2615,22 +2615,35 @@
 
     // 初始化
     async function initGallery() {
-        var status = document.getElementById('galleryStatus');
-        var dict = window.I18N ? I18N.data[localStorage.getItem('aurasand-lang') || 'en'] || I18N.data['en'] : {};
-        if (status) status.textContent = dict.galleryLoading || 'Loading screenshots...';
-
-        var result = await fetchGalleryImages();
-        if (result.success && result.images.length > 0) {
-            buildGallery(result.images);
-        } else {
-            // 使用备用图片路径
-            var fallback = FALLBACK_IMAGES.map(function(path) {
-                return { name: path.split('/').pop(), path: path, url: '' };
-            });
-            buildGallery(fallback);
-            if (status) status.textContent = 'Using fallback images (CDN)';
-        }
+    const currentLang = localStorage.getItem('aura_lang') || 'en';
+    const dict = translations[currentLang] || translations['en'];
+    
+    galleryStatus.textContent = dict.galleryLoading || 'Loading screenshots...';
+    galleryStatus.style.background = 'var(--glass)';
+    galleryStatus.style.borderColor = 'var(--glass-border)';
+    
+    const result = await fetchGalleryImages();  // ← 改回 GitHub API
+    let images = result.images;
+    
+    if (!result.success || images.length === 0) {
+        images = FALLBACK_IMAGES.map(path => ({
+            name: path.split('/').pop(),
+            url: buildImageUrl(path, true),
+            path: path
+        }));
+        galleryStatus.textContent = dict.galleryError || 'Failed to load screenshots';
+        galleryStatus.style.borderColor = 'rgba(212, 165, 116, 0.3)';
+        setTimeout(() => {
+            galleryStatus.textContent = (dict.gallerySuccess || '{count} screenshots loaded').replace('{count}', images.length);
+            galleryStatus.style.borderColor = 'var(--glass-border)';
+        }, 2000);
+    } else {
+        galleryStatus.textContent = (dict.gallerySuccess || '{count} screenshots loaded').replace('{count}', images.length);
     }
+    
+    galleryImages = images;
+    await createGallery(images);
+}
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initGallery);
@@ -2645,12 +2658,12 @@
                 vertical: {
                     youtube: 'QpeLBJT2Avo',
                     mp4: 'https://www.siteflare.de5.net/api/public/dl/_fb4cklN/portrait.mp4',
-                    defaultRatio: 588 / 1280
+                    defaultRatio: 1280 / 588
                 },
                 horizontal: {
                     youtube: 'kr_1uMlBTPs',
                     mp4: 'https://www.siteflare.de5.net/api/public/dl/4NE6pTSS/land.mp4',
-                    defaultRatio: 1280 / 588
+                    defaultRatio: 588 / 1280
                 }
             };
 
@@ -2665,35 +2678,26 @@
             var currentVideoRatio = null;
 
             // 将原来的 toggleVideo 改为以下形式（确保挂载到 window）
-window.toggleVideo = function(type) {
+window.toggleVideo = async function(type) {
     closeAllDemos();
     currentVideoType = type;
-    var source = videoSources[type];
+    const source = videoSources[type];
     viewport.style.display = 'flex';
+    const realRatio = await detectVideoRatio(source.mp4, source.defaultRatio);
+    currentVideoRatio = realRatio;
+    applyVideoSize(type, realRatio);
     
-    // 直接加载 YouTube iframe
-    container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + source.youtube + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay; fullscreen" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block;"></iframe>';
+    // 用 Image 测试 YouTube 可用性，自动回退到 MP4
+    var testImg = new Image();
+    testImg.onload = function() {
+        container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + source.youtube + '?autoplay=1&rel=0&modestbranding=1" allow="autoplay; fullscreen" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block;"></iframe>';
+    };
+    testImg.onerror = function() {
+        container.innerHTML = '<video playsinline controls loop autoplay src="' + source.mp4 + '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block;background:#000;object-fit:fill;"></video>';
+    };
+    testImg.src = 'https://www.youtube.com/favicon.ico';
     
-    applyVideoSize(type, source.defaultRatio);
-    currentVideoRatio = source.defaultRatio;
-    
-    // 3秒后检测回退到 MP4
-    setTimeout(function() {
-        try {
-            var iframe = container.querySelector('iframe');
-            if (iframe) {
-                var doc = iframe.contentDocument || iframe.contentWindow.document;
-                if (!doc || (doc.body && doc.body.innerHTML === '')) {
-                    throw new Error('empty');
-                }
-            }
-        } catch(e) {
-            container.innerHTML = '<video playsinline controls loop autoplay src="' + source.mp4 + '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block;background:#000;object-fit:fill;"></video>';
-            applyVideoSize(type, source.defaultRatio);
-        }
-    }, 3000);
-    
-    setTimeout(function() { viewport.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+    setTimeout(() => viewport.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
 };
 
 // 同时确保 hideVideo 和 hideLiveDemo 也是全局的
