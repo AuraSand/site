@@ -2269,6 +2269,7 @@
                     if (socialSidebar && t.socialFollow) {
                         socialSidebar.setAttribute('data-follow-label', t.socialFollow.toUpperCase());
                     }
+                    updateGalleryStatus();
                 },
                 init: function() {
                     this.apply(this.getLang());
@@ -2282,6 +2283,28 @@
                 I18N.init();
             }
         })();
+
+        function updateGalleryStatus() {
+            var status = document.getElementById('galleryStatus');
+            var galleryWrapper = document.getElementById('galleryWrapper');
+            if (!status || !galleryWrapper) return;
+            
+            // 检查 gallery 是否已经加载（有内容就不是 loading 状态）
+            var hasContent = galleryWrapper.querySelector('.gallery-track') !== null;
+            if (!hasContent) return;  // 还没加载完，不更新
+            
+            var currentLang = 'en';
+            try { currentLang = localStorage.getItem('aurasand-lang') || 'en'; } catch(e) {}
+            var dict = (window.I18N && window.I18N.data && window.I18N.data[currentLang]) ? window.I18N.data[currentLang] : {};
+            
+            var count = galleryImages.length || 0;
+            if (count > 0) {
+                var successText = dict.gallerySuccess || '{count} screenshots loaded';
+                status.textContent = successText.replace('{count}', count);
+            } else {
+                status.textContent = dict.galleryEmpty || 'No screenshots found';
+            }
+        }
 
         function switchLang(lang) {
             if (window.I18N) window.I18N.apply(lang);
