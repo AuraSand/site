@@ -2237,12 +2237,18 @@
                     document.querySelectorAll('[data-i18n]').forEach(function(el) {
                         var k = el.getAttribute('data-i18n');
                         if (t[k] !== undefined) {
+                            var value = t[k];
+                            var count = el.getAttribute('data-count');
+                          
+                            if (count !== null && value.indexOf('{count}') !== -1) {
+                                value = value.replace('{count}', count);
+                            }
                             if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                                el.value = t[k];
+                                el.value = value;
                             } else if (el.tagName === 'META') {
-                                el.setAttribute('content', t[k]);
+                                el.setAttribute('content', value);
                             } else {
-                                el.innerHTML = t[k];
+                                el.innerHTML = value;
                             }
                         }
                     });
@@ -2904,11 +2910,14 @@
     
                 // 立即显示数量
                 if (status && images && images.length > 0) {
+                    status.setAttribute('data-count', images.length);
+                    status.setAttribute('data-i18n', 'gallerySuccess');
+                    // 立即更新一次（避免等下次 I18N.apply）
                     var currentLang = 'en';
                     try { currentLang = localStorage.getItem('aurasand-lang') || 'en'; } catch(e) {}
                     var dict = (window.I18N && window.I18N.data && window.I18N.data[currentLang]) ? window.I18N.data[currentLang] : {};
-                    var successText = dict.gallerySuccess || '{count} screenshots loaded';
-                    status.textContent = successText.replace('{count}', images.length);
+                    var text = (dict.gallerySuccess || '{count} screenshots loaded').replace('{count}', images.length);
+                    status.textContent = text;
                 }
     
                 if (!wrapper) return;
