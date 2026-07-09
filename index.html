@@ -670,8 +670,8 @@
 
         /* ===== Gallery Section (动态画廊，完全采用旧文件实现) ===== */
         .gallery-section { max-width: 100%;
-            margin: 100px 0;
-            padding: 60px 0;
+            margin: 20px 0;
+            padding: 20px 0;
             width: 100%;
             overflow: hidden;
             position: relative;
@@ -1486,22 +1486,6 @@
         </div>
     </section>
 
-    <!-- ===== Dynamic Gallery Section (完全采用旧文件实现) ===== -->
-    <section class="gallery-section" aria-label="App Screenshots Gallery" id="gallerySection">
-        <div class="gallery-header">
-            <h2 class="gallery-title" data-i18n="galleryTitle">App Screenshots</h2>
-            <span class="gallery-status" id="galleryStatus">Loading...</span>
-        </div>
-        <div class="gallery-wrapper" id="galleryWrapper">
-            <div class="gallery-loading" id="galleryLoading">⌛ Loading screenshots...</div>
-        </div>
-        <div class="gallery-navigation" id="galleryNav" style="display: none;">
-            <div class="gallery-arrow" id="galleryPrev" aria-label="Previous">←</div>
-            <div class="gallery-dots" id="galleryDots"></div>
-            <div class="gallery-arrow" id="galleryNext" aria-label="Next">→</div>
-        </div>
-    </section>
-
     <section id="features" class="ev2-section ev2-section--surface">
         <div class="ev2-wrap">
             <h2 class="ev2-h2 ev2-feat-title" data-i18n="features_title">Every little grain has a job</h2>
@@ -1670,6 +1654,22 @@
                 <summary data-i18n="faq_4_q">Is it gentle enough for little ones?</summary>
                 <p class="ev2-muted" data-i18n="faq_4_a">Yes indeed. It was flowed just for small sleepy eyes.</p>
             </details>
+        </div>
+    </section>
+
+    <!-- ===== Dynamic Gallery Section (完全采用旧文件实现) ===== -->
+    <section class="gallery-section" aria-label="App Screenshots Gallery" id="gallerySection">
+        <div class="gallery-header">
+            <h2 class="gallery-title" data-i18n="galleryTitle">App Screenshots</h2>
+            <span class="gallery-status" id="galleryStatus">Loading...</span>
+        </div>
+        <div class="gallery-wrapper" id="galleryWrapper">
+            <div class="gallery-loading" id="galleryLoading">⌛ Loading screenshots...</div>
+        </div>
+        <div class="gallery-navigation" id="galleryNav" style="display: none;">
+            <div class="gallery-arrow" id="galleryPrev" aria-label="Previous">←</div>
+            <div class="gallery-dots" id="galleryDots"></div>
+            <div class="gallery-arrow" id="galleryNext" aria-label="Next">→</div>
         </div>
     </section>
 
