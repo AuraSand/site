@@ -2634,7 +2634,7 @@
                 path: 'snapshot',
                 branch: 'main'
             };
-
+    
             var FALLBACK_IMAGES = [
                 'snapshot/src_unicorn_01.webp',
                 'snapshot/src_whale_01.webp',
@@ -2645,7 +2645,7 @@
                 'snapshot/src_zen_01.webp',
                 'snapshot/src_jewel_01.webp'
             ];
-
+    
             var CDN_MIRRORS = [
                 function(owner, repo, branch, path) { return 'https://raw.githubusercontent.com/' + owner + '/' +
                         repo + '/' + branch + '/' + path; },
@@ -2656,9 +2656,9 @@
                 function(owner, repo, branch, path) { return 'https://raw.gitmirror.com/' + owner + '/' + repo +
                         '/' + branch + '/' + path; }
             ];
-
+    
             var currentMirrorIndex = 0;
-
+    
             function buildImageUrl(path, tryMirrors) {
                 var rawUrl = 'https://raw.githubusercontent.com/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo +
                     '/' + GITHUB_CONFIG.branch + '/' + path;
@@ -2666,35 +2666,42 @@
                 return CDN_MIRRORS[currentMirrorIndex](GITHUB_CONFIG.owner, GITHUB_CONFIG.repo, GITHUB_CONFIG.branch,
                     path);
             }
-
+    
             function getImageOrientation(url) {
                 return new Promise(function(resolve) {
+                    var resolved = false;
+                    function doResolve(result) {
+                        if (!resolved) {
+                            resolved = true;
+                            resolve(result);
+                        }
+                    }
                     var img = new Image();
-                    img.crossOrigin = 'anonymous';
+                    // 不设置 crossOrigin，避免跨域阻塞
                     var timeout = setTimeout(function() {
-                        resolve({ orientation: 'portrait', width: 400, height: 800 });
-                    }, 5000);
+                        doResolve({ orientation: 'portrait', width: 400, height: 800 });
+                    }, 2000);
                     img.onload = function() {
                         clearTimeout(timeout);
                         var isLandscape = img.naturalWidth > img.naturalHeight;
-                        resolve({
+                        doResolve({
                             orientation: isLandscape ? 'landscape' : 'portrait',
-                            width: img.naturalWidth,
-                            height: img.naturalHeight
+                            width: img.naturalWidth || 400,
+                            height: img.naturalHeight || 800
                         });
                     };
                     img.onerror = function() {
                         clearTimeout(timeout);
-                        resolve({ orientation: 'portrait', width: 400, height: 800 });
+                        doResolve({ orientation: 'portrait', width: 400, height: 800 });
                     };
                     img.src = url;
                 });
             }
-
+    
             function loadImageWithRetry(imgElement, urls, maxRetries) {
                 maxRetries = maxRetries || 3;
                 var attempt = 0;
-
+    
                 function tryNext() {
                     if (attempt >= maxRetries || attempt >= urls.length) {
                         imgElement.style.opacity = '0.3';
@@ -2719,13 +2726,13 @@
                 }
                 tryNext();
             }
-
+    
             function getBaseHeight() {
                 if (window.innerWidth <= 480) return 280;
                 if (window.innerWidth <= 768) return 320;
                 return 400;
             }
-
+    
             var galleryImages = [];
             var galleryTrack = null;
             var galleryItems = [];
@@ -2734,7 +2741,7 @@
             var autoScrollTimer = null;
             var isUserInteracting = false;
             var autoScrollAnimationId = null;
-
+    
             function getCurrentTranslateX() {
                 if (!galleryTrack) return 0;
                 var computedStyle = window.getComputedStyle(galleryTrack);
@@ -2748,60 +2755,61 @@
                 }
                 return 0;
             }
-
+    
             function getCurrentIndexFromPosition() {
-                if (!galleryTrack || galleryImages.length === 0) return 0;
+                if (!galleryTrack || galleryItems.length === 0) return 0;
                 var currentX = getCurrentTranslateX();
                 var loopX = currentX % halfTrackWidth;
+                if (isNaN(loopX)) loopX = 0;
                 var accumulatedWidth = 0;
                 var bestIndex = 0;
                 var minDistance = Infinity;
-                for (var i = 0; i < galleryImages.length; i++) {
+                for (var i = 0; i < galleryItems.length; i++) {
                     var item = galleryItems[i];
                     if (item && item.style.width && item.style.display !== 'none') {
-                        var itemWidth = parseFloat(item.style.width) + 24;
-                        var itemCenter = accumulatedWidth + parseFloat(item.style.width) / 2;
+                        var itemWidth = parseFloat(item.style.width) || 280;
+                        var itemCenter = accumulatedWidth + itemWidth / 2;
                         var distance = Math.abs(loopX - itemCenter);
                         if (distance < minDistance) {
                             minDistance = distance;
                             bestIndex = i;
                         }
-                        accumulatedWidth += itemWidth;
+                        accumulatedWidth += itemWidth + 24;
                     }
                 }
                 return bestIndex;
             }
-
+    
             function updateDots(index) {
                 var dots = document.querySelectorAll('.gallery-dot');
                 dots.forEach(function(dot, i) {
                     dot.classList.toggle('active', i === index);
                 });
             }
-
+    
             function startAutoScrollTracking() {
                 if (autoScrollAnimationId) cancelAnimationFrame(autoScrollAnimationId);
-
+    
                 function trackPosition() {
-                    if (!isUserInteracting && galleryTrack && galleryImages.length > 0) {
+                    if (!isUserInteracting && galleryTrack && galleryItems.length > 0) {
                         var newIndex = getCurrentIndexFromPosition();
                         if (newIndex !== currentIndex) {
                             currentIndex = newIndex;
-                            updateDots(currentIndex);
+                            updateDots(currentIndex % (galleryItems.length / 2 || 1));
                         }
                     }
                     autoScrollAnimationId = requestAnimationFrame(trackPosition);
                 }
                 autoScrollAnimationId = requestAnimationFrame(trackPosition);
             }
-
+    
             function stopAutoScrollTracking() {
                 if (autoScrollAnimationId) {
                     cancelAnimationFrame(autoScrollAnimationId);
                     autoScrollAnimationId = null;
                 }
             }
-
+    
             function pauseAutoScroll() {
                 isUserInteracting = true;
                 if (galleryTrack) galleryTrack.style.animationPlayState = 'paused';
@@ -2811,7 +2819,7 @@
                     resumeAutoScroll();
                 }, 5000);
             }
-
+    
             function resumeAutoScroll() {
                 isUserInteracting = false;
                 if (!galleryTrack) return;
@@ -2830,16 +2838,16 @@
                 }
                 startAutoScrollTracking();
             }
-
+    
             function scrollToIndex(index) {
-                if (!galleryTrack) return;
-                var totalImages = galleryImages.length;
-                currentIndex = Math.max(0, Math.min(index, totalImages - 1));
+                if (!galleryTrack || galleryItems.length === 0) return;
+                var totalItems = galleryItems.length;
+                currentIndex = Math.max(0, Math.min(index, totalItems - 1));
                 var scrollDistance = 0;
                 for (var i = 0; i < currentIndex; i++) {
                     var item = galleryItems[i];
                     if (item && item.style.width && item.style.display !== 'none') {
-                        scrollDistance += parseFloat(item.style.width) + 24;
+                        scrollDistance += (parseFloat(item.style.width) || 280) + 24;
                     }
                 }
                 var currentItem = galleryItems[currentIndex];
@@ -2849,75 +2857,163 @@
                 galleryTrack.style.transition = 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
                 galleryTrack.style.animation = 'none';
                 galleryTrack.style.transform = 'translateX(-' + scrollDistance + 'px)';
-                updateDots(currentIndex);
+                updateDots(currentIndex % (galleryItems.length / 2 || 1));
                 pauseAutoScroll();
             }
-
+    
             function scrollNext() {
-                var totalImages = galleryImages.length;
-                scrollToIndex((currentIndex + 1) % totalImages);
+                var totalItems = galleryItems.length;
+                scrollToIndex((currentIndex + 1) % totalItems);
             }
-
+    
             function scrollPrev() {
-                var totalImages = galleryImages.length;
-                scrollToIndex((currentIndex - 1 + totalImages) % totalImages);
+                var totalItems = galleryItems.length;
+                scrollToIndex((currentIndex - 1 + totalItems) % totalItems);
             }
-
-            // 创建画廊
-            async function createGallery(images) {
+    
+            function createGallery(images) {
                 var wrapper = document.getElementById('galleryWrapper');
                 var status = document.getElementById('galleryStatus');
                 var dotsContainer = document.getElementById('galleryDots');
                 var nav = document.getElementById('galleryNav');
                 var prevBtn = document.getElementById('galleryPrev');
                 var nextBtn = document.getElementById('galleryNext');
-
+    
+                // 立即显示数量
+                if (status && images && images.length > 0) {
+                    var currentLang = 'en';
+                    try { currentLang = localStorage.getItem('aurasand-lang') || 'en'; } catch(e) {}
+                    var dict = (window.I18N && window.I18N.data && window.I18N.data[currentLang]) ? window.I18N.data[currentLang] : {};
+                    var successText = dict.gallerySuccess || '{count} screenshots loaded';
+                    status.textContent = successText.replace('{count}', images.length);
+                }
+    
                 if (!wrapper) return;
-
                 if (!images || images.length === 0) {
-                    var currentLang = localStorage.getItem('aurasand-lang') || 'en';
-                    var dict = window.I18N ? I18N.data[currentLang] || I18N.data['en'] : {};
-                    wrapper.innerHTML = '<div class="gallery-empty">' + (dict.galleryEmpty ||
-                    'No screenshots found') + '</div>';
+                    var currentLang = 'en';
+                    try { currentLang = localStorage.getItem('aurasand-lang') || 'en'; } catch(e) {}
+                    var dict = (window.I18N && window.I18N.data && window.I18N.data[currentLang]) ? window.I18N.data[currentLang] : {};
+                    wrapper.innerHTML = '<div class="gallery-empty">' + (dict.galleryEmpty || 'No screenshots found') + '</div>';
                     if (nav) nav.style.display = 'none';
                     return;
                 }
-
+    
                 galleryImages = images;
                 if (nav) nav.style.display = 'flex';
-
+    
                 var baseHeight = getBaseHeight();
-
-                var sizePromises = images.map(function(img) {
-                    return getImageOrientation(img.url || buildImageUrl(img.path || img.name, true));
-                });
-                var sizes = await Promise.all(sizePromises);
-
+    
+                // 同步创建所有元素，用默认尺寸
                 var track = document.createElement('div');
                 track.className = 'gallery-track';
                 track.id = 'galleryTrack';
                 galleryTrack = track;
-
+    
                 dotsContainer.innerHTML = '';
+                var halfCount = images.length;
                 images.forEach(function(_, i) {
                     var dot = document.createElement('div');
                     dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
                     dot.addEventListener('click', function() { scrollToIndex(i); });
                     dotsContainer.appendChild(dot);
                 });
-
+    
+                // 双倍用于循环
                 var allImages = images.concat(images);
-                var allSizes = sizes.concat(sizes);
                 var items = [];
-
+    
                 for (var i = 0; i < allImages.length; i++) {
                     var imgData = allImages[i];
+                    var isLandscape = false;
+                    var width, height;
+    
+                    // 先用默认 portrait 尺寸
+                    width = baseHeight * 0.5;
+                    width = Math.max(width, 140);
+                    height = baseHeight;
+    
+                    var item = document.createElement('div');
+                    item.className = 'gallery-item placeholder';
+                    item.style.width = width + 'px';
+                    item.style.height = height + 'px';
+                    item.style.flexShrink = '0';
+    
+                    var img = document.createElement('img');
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    img.style.opacity = '0';
+                    img.style.transition = 'opacity 0.4s ease';
+                    img.alt = 'AuraSand screenshot ' + (i + 1);
+                    img.loading = 'lazy';
+    
+                    var urls = [
+                        imgData.url || buildImageUrl(imgData.path || imgData.name, true),
+                        'https://cdn.jsdelivr.net/gh/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '@' +
+                        GITHUB_CONFIG.branch + '/' + (imgData.path || imgData.name),
+                        'https://ghproxy.net/https://raw.githubusercontent.com/' + GITHUB_CONFIG.owner + '/' +
+                        GITHUB_CONFIG.repo + '/' + GITHUB_CONFIG.branch + '/' + (imgData.path || imgData.name)
+                    ];
+                    loadImageWithRetry(img, urls, 4);
+    
+                    item.appendChild(img);
+                    track.appendChild(item);
+                    items.push(item);
+                }
+    
+                wrapper.innerHTML = '';
+                wrapper.appendChild(track);
+                galleryItems = items;
+    
+                // 计算 halfTrackWidth
+                var totalTrackWidth = 0;
+                items.forEach(function(item) {
+                    var w = parseFloat(item.style.width) || 280;
+                    totalTrackWidth += w + 24;
+                });
+                halfTrackWidth = totalTrackWidth / 2;
+    
+                if (halfTrackWidth > 0) {
+                    var SPEED = 50;
+                    var duration = halfTrackWidth / SPEED;
+                    track.style.animation = 'scrollGallery ' + duration + 's linear infinite';
+                }
+    
+                startAutoScrollTracking();
+    
+                if (prevBtn) prevBtn.addEventListener('click', function() { pauseAutoScroll(); scrollPrev(); });
+                if (nextBtn) nextBtn.addEventListener('click', function() { pauseAutoScroll(); scrollNext(); });
+    
+                // 后台异步检测真实尺寸，检测完再更新
+                var sizePromises = images.map(function(img) {
+                    return getImageOrientation(img.url || buildImageUrl(img.path || img.name, true));
+                });
+                Promise.all(sizePromises).then(function(realSizes) {
+                    // 如果有明显差异，重建
+                    var needsRebuild = realSizes.some(function(size, i) {
+                        var defaultW = 400;
+                        return Math.abs(size.width - defaultW) > 50;
+                    });
+                    if (needsRebuild) {
+                        // 重建但不阻塞
+                        rebuildGalleryWithSizes(images, realSizes, baseHeight);
+                    }
+                }).catch(function(err) {
+                    console.log('Size detection failed:', err);
+                });
+            }
+    
+            function rebuildGalleryWithSizes(images, sizes, baseHeight) {
+                // 简化：只更新现有 item 的宽度，不重建 DOM
+                var allSizes = sizes.concat(sizes);
+                for (var i = 0; i < galleryItems.length && i < allSizes.length; i++) {
+                    var item = galleryItems[i];
                     var size = allSizes[i];
+                    if (!item) continue;
                     var isLandscape = size.orientation === 'landscape';
                     var width, height;
-
                     if (isLandscape) {
-                        var ratio = size.width / size.height;
+                        var ratio = size.width / (size.height || 800);
                         height = baseHeight;
                         width = baseHeight * ratio;
                         width = Math.min(width, window.innerWidth * 0.7);
@@ -2927,66 +3023,23 @@
                         width = Math.max(width, 140);
                         height = baseHeight;
                     }
-
-                    var item = document.createElement('div');
-                    item.className = 'gallery-item placeholder';
                     item.style.width = width + 'px';
                     item.style.height = height + 'px';
-                    item.style.flexShrink = '0';
-
-                    var img = document.createElement('img');
-                    img.style.width = '100%';
-                    img.style.height = '100%';
-                    img.style.objectFit = 'cover';
-                    img.style.opacity = '0';
-                    img.style.transition = 'opacity 0.4s ease';
-                    img.alt = 'AuraSand screenshot ' + (i + 1);
-                    img.loading = 'lazy';
-
-                    var urls = [
-                        imgData.url || buildImageUrl(imgData.path || imgData.name, true),
-                        'https://cdn.jsdelivr.net/gh/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '@' +
-                        GITHUB_CONFIG.branch + '/' + (imgData.path || imgData.name),
-                        'https://ghproxy.net/https://raw.githubusercontent.com/' + GITHUB_CONFIG.owner + '/' +
-                        GITHUB_CONFIG.repo + '/' + GITHUB_CONFIG.branch + '/' + (imgData.path || imgData.name)
-                    ];
-                    loadImageWithRetry(img, urls, 4);
-
-                    item.appendChild(img);
-                    track.appendChild(item);
-                    items.push(item);
                 }
-
-                wrapper.innerHTML = '';
-                wrapper.appendChild(track);
-                galleryItems = items;
-
-                totalTrackWidth = 0;
-                items.forEach(function(item) {
-                    totalTrackWidth += parseFloat(item.style.width) + 24;
+                // 重新计算 halfTrackWidth
+                var totalTrackWidth = 0;
+                galleryItems.forEach(function(item) {
+                    var w = parseFloat(item.style.width) || 280;
+                    totalTrackWidth += w + 24;
                 });
                 halfTrackWidth = totalTrackWidth / 2;
-
-                if (halfTrackWidth > 0) {
+                if (halfTrackWidth > 0 && galleryTrack) {
                     var SPEED = 50;
                     var duration = halfTrackWidth / SPEED;
-                    track.style.animation = 'scrollGallery ' + duration + 's linear infinite';
+                    galleryTrack.style.animation = 'scrollGallery ' + duration + 's linear infinite';
                 }
-
-                startAutoScrollTracking();
-
-                if (prevBtn) prevBtn.addEventListener('click', function() { pauseAutoScroll();
-                    scrollPrev(); });
-                if (nextBtn) nextBtn.addEventListener('click', function() { pauseAutoScroll();
-                    scrollNext(); });
-
-                var dict2 = window.I18N ? I18N.data[localStorage.getItem('aurasand-lang') || 'en'] || I18N.data[
-                'en'] : {};
-                if (status) status.textContent = (dict2.gallerySuccess || '{count} screenshots loaded').replace(
-                    '{count}', images.length);
             }
-
-            // 从 GitHub API 获取图片列表
+    
             async function fetchGalleryImages() {
                 try {
                     var response = await fetch(
@@ -2998,8 +3051,7 @@
                     if (response.ok) {
                         var data = await response.json();
                         var images = data
-                            .filter(function(item) { return item.type === 'file' && item.name.endsWith(
-                                '.webp'); })
+                            .filter(function(item) { return item.type === 'file' && item.name.endsWith('.webp'); })
                             .map(function(item) {
                                 return { name: item.name, url: item.download_url, path: item.path };
                             })
@@ -3009,27 +3061,32 @@
                 } catch (e) { console.log('GitHub API error:', e); }
                 return { success: false, images: [] };
             }
-
-            // 初始化画廊
+    
             async function initGallery() {
                 var status = document.getElementById('galleryStatus');
-                var dict = window.I18N ? I18N.data[localStorage.getItem('aurasand-lang') || 'en'] || I18N.data[
-                'en'] : {};
+                var dict = (window.I18N && window.I18N.data && window.I18N.data[window.I18N.getLang ? window.I18N.getLang() : 'en']) || {};
                 if (status) status.textContent = dict.galleryLoading || 'Loading screenshots...';
-
-                var result = await fetchGalleryImages();
-                if (result.success && result.images.length > 0) {
-                    await createGallery(result.images);
-                } else {
-                    // 使用备用图片
+    
+                try {
+                    var result = await fetchGalleryImages();
+                    if (result.success && result.images.length > 0) {
+                        createGallery(result.images);
+                    } else {
+                        var fallback = FALLBACK_IMAGES.map(function(path) {
+                            return { name: path.split('/').pop(), path: path, url: buildImageUrl(path, true) };
+                        });
+                        createGallery(fallback);
+                    }
+                } catch (err) {
+                    console.error('Gallery init error:', err);
+                    if (status) status.textContent = 'Error: ' + (err.message || 'Failed to load');
                     var fallback = FALLBACK_IMAGES.map(function(path) {
                         return { name: path.split('/').pop(), path: path, url: buildImageUrl(path, true) };
                     });
-                    await createGallery(fallback);
-                    if (status) status.textContent = 'Using fallback images (CDN)';
+                    try { createGallery(fallback); } catch(e2) {}
                 }
             }
-
+    
             // =============================================
             // 3. 窗口自适应
             // =============================================
@@ -3039,7 +3096,7 @@
                 if (viewport && viewport.style.display === 'flex' && currentVideoType && currentVideoRatio) {
                     applyVideoSize(currentVideoType, currentVideoRatio);
                 }
-
+    
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(function() {
                     if (galleryImages.length > 0 && galleryItems.length > 0) {
@@ -3063,7 +3120,7 @@
                     }
                 }, 200);
             });
-
+    
             // =============================================
             // 4. 启动
             // =============================================
